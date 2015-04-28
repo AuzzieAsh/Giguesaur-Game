@@ -11,7 +11,8 @@
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 
-#define PIECES_SIZE 9
+#define PI 3.14159265
+#define PIECES_SIZE 4
 #define PIECE_LENGTH 50
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
@@ -37,6 +38,7 @@ typedef struct {
     GLint x_Location;
     GLint y_Location;
     int size;
+    int rotation;
     Edge edges;
     OpenEdges open_edges;
 } Piece;
@@ -47,12 +49,18 @@ bool is_connections = false;
 Piece pieces[PIECES_SIZE];
 
 void DrawPiece(Piece piece) {
+    glPushMatrix();
+    glTranslated(piece.x_Location + (piece.size /2), piece.y_Location + (piece.size /2), 0.0);
+    glRotated(piece.rotation, 0.0, 0.0, 1.0);
+    glTranslated(-(piece.x_Location + (piece.size /2)), -(piece.y_Location + (piece.size /2)), 0.0);
+    
     glBegin(GL_POLYGON);
     glVertex2i(piece.x_Location, piece.y_Location);
     glVertex2i(piece.x_Location + piece.size, piece.y_Location);
     glVertex2i(piece.x_Location + piece.size, piece.y_Location + piece.size);
     glVertex2i(piece.x_Location, piece.y_Location + piece.size);
     glEnd();
+    glPopMatrix();
 }
 
 void DrawLetter(Piece piece) {
@@ -336,7 +344,6 @@ void MouseListener(int button, int state, int x, int y) {
             pieces[holdingPiece].y_Location = y - (pieces[holdingPiece].size/2);
             CheckForConnections(holdingPiece);
             holdingPiece = -1;
-            CheckIfSolved();
         }
         else {
             for (int i = 0; i < PIECES_SIZE; i++) {
@@ -355,8 +362,36 @@ void MouseListener(int button, int state, int x, int y) {
                 }
             }
         }
-        DrawPuzzlePieces();
     }
+    
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+        if (holdingPiece >= 0) {
+            pieces[holdingPiece].rotation += 45;
+            if (pieces[holdingPiece].rotation >= 360) {
+                pieces[holdingPiece].rotation = 0;
+            }
+            printf("Rotated piece %d has rotation %d\n", holdingPiece, pieces[holdingPiece].rotation);
+        }
+        else {
+            for (int i = 0; i < PIECES_SIZE; i++) {
+                if(x >= pieces[i].x_Location && x < pieces[i].x_Location + pieces[i].size) {
+                    if (y >= pieces[i].y_Location && y < pieces[i].y_Location + pieces[i].size) {
+                        pieces[i].rotation += 45;
+                        if (pieces[i].open_edges.up_open == 0) pieces[i].open_edges.up_open = 1;
+                        if (pieces[i].open_edges.down_open == 0) pieces[i].open_edges.down_open = 1;
+                        if (pieces[i].open_edges.left_open == 0) pieces[i].open_edges.left_open = 1;
+                        if (pieces[i].open_edges.right_open == 0) pieces[i].open_edges.right_open = 1;
+                        if (pieces[i].rotation >= 360) {
+                            pieces[i].rotation = 0;
+                        }
+                        printf("Rotated piece %d has rotation %d\n", i, pieces[i].rotation);
+                        i = PIECES_SIZE;
+                    }
+                }
+            }
+        }
+    }
+    DrawPuzzlePieces();
 }
 
 void MousePosition(int x, int y) {
@@ -397,7 +432,8 @@ int main(int argc, char * argv[]) {
         Piece piece = { .pieceID = i,
                         .x_Location = rand()%SCREEN_WIDTH,
                         .y_Location = rand()%SCREEN_HEIGHT,
-                        .size = PIECE_LENGTH};
+                        .size = PIECE_LENGTH,
+                        .rotation = 0};
         pieces[i] = piece;
     }
     MakeConnections();
