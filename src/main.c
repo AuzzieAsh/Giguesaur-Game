@@ -12,8 +12,7 @@
 #include <GLUT/glut.h>
 
 #define PI 3.14159265
-#define PIECES_SIZE 4
-#define PIECE_LENGTH 50
+#define NUM_OF_PIECES 4
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
@@ -43,10 +42,22 @@ typedef struct {
     OpenEdges open_edges;
 } Piece;
 
+typedef struct {
+    double x0;
+    double y0;
+    double x1;
+    double y1;
+    double x2;
+    double y2;
+    double x3;
+    double y3;
+} Rotation_Location;
+
 // Global Varibles
 int holdingPiece = -1;
 bool is_connections = false;
-Piece pieces[PIECES_SIZE];
+bool do_bounding_box = false;
+Piece pieces[NUM_OF_PIECES];
 
 void DrawPiece(Piece piece) {
     glPushMatrix();
@@ -55,12 +66,45 @@ void DrawPiece(Piece piece) {
     glTranslated(-(piece.x_Location + (piece.size /2)), -(piece.y_Location + (piece.size /2)), 0.0);
     
     glBegin(GL_POLYGON);
+    glVertex2i(piece.x_Location + piece.size/2, piece.y_Location + piece.size/2);
     glVertex2i(piece.x_Location, piece.y_Location);
+    if (piece.edges.down_Piece >=0) {
+        glVertex2i(piece.x_Location + (piece.size/2)-10, piece.y_Location);
+        glVertex2i(piece.x_Location + (piece.size/2), piece.y_Location-10);
+        glVertex2i(piece.x_Location + (piece.size/2)+10, piece.y_Location);
+    }
     glVertex2i(piece.x_Location + piece.size, piece.y_Location);
+    if (piece.edges.right_Piece >= 0) {
+        glVertex2i(piece.x_Location + piece.size, piece.y_Location + piece.size/2-10);
+        glVertex2i(piece.x_Location + piece.size+10, piece.y_Location + piece.size/2);
+        glVertex2i(piece.x_Location + piece.size, piece.y_Location + piece.size/2+10);
+    }
     glVertex2i(piece.x_Location + piece.size, piece.y_Location + piece.size);
+    if (piece.edges.up_Piece >= 0) {
+        glVertex2i(piece.x_Location + piece.size/2+10, piece.y_Location + piece.size);
+        glVertex2i(piece.x_Location + piece.size/2, piece.y_Location + piece.size-10);
+        glVertex2i(piece.x_Location + piece.size/2-10, piece.y_Location + piece.size);
+    }
     glVertex2i(piece.x_Location, piece.y_Location + piece.size);
+    if (piece.edges.left_Piece >= 0) {
+        glVertex2i(piece.x_Location, piece.y_Location + piece.size/2+10);
+        glVertex2i(piece.x_Location + 10, piece.y_Location + piece.size/2);
+        glVertex2i(piece.x_Location, piece.y_Location + piece.size/2-10);
+    }
+    glVertex2i(piece.x_Location, piece.y_Location);
     glEnd();
     glPopMatrix();
+    if (do_bounding_box) {
+        glColor4f(1.0f, 0.8f, 0.0f, 0.5f);
+        glBegin(GL_LINE_LOOP);
+        glVertex2i(piece.x_Location, piece.y_Location);
+        glVertex2i(piece.x_Location + piece.size, piece.y_Location);
+        glVertex2i(piece.x_Location + piece.size, piece.y_Location + piece.size);
+        glVertex2i(piece.x_Location, piece.y_Location + piece.size);
+        glVertex2i(piece.x_Location, piece.y_Location);
+        glEnd();
+
+    }
 }
 
 void DrawLetter(Piece piece) {
@@ -83,7 +127,7 @@ void DrawLetter(Piece piece) {
 void DrawPuzzlePieces() {
     glClear(GL_COLOR_BUFFER_BIT);
     
-    for (int i = 0; i < PIECES_SIZE; i++) {
+    for (int i = 0; i < NUM_OF_PIECES; i++) {
         if (i != holdingPiece) {
             glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
             // Fix out of bounds
@@ -98,6 +142,9 @@ void DrawPuzzlePieces() {
             }
             else if (pieces[i].y_Location < 0) {
                 pieces[i].y_Location = 0;
+            }
+            while (pieces[i].rotation >= 360) {
+                pieces[i].rotation -= 360;
             }
             DrawPiece(pieces[i]);
             DrawLetter(pieces[i]);
@@ -116,7 +163,7 @@ void DrawPuzzlePieces() {
 }
 
 void MakeConnections() {
-    if (PIECES_SIZE == 4) {
+    if (NUM_OF_PIECES == 4) {
         
         // Hard coded values
         pieces[0].edges.up_Piece = -1;
@@ -141,7 +188,7 @@ void MakeConnections() {
         
         is_connections = true;
     }
-    else if (PIECES_SIZE == 9) {
+    else if (NUM_OF_PIECES == 9) {
         
         // Hard coded values
         pieces[0].edges.up_Piece = -1;
@@ -196,7 +243,7 @@ void MakeConnections() {
         fprintf(stderr, "Cannnot make connections!\n");
     }
     if (is_connections) {
-        for (int i = 0; i < PIECES_SIZE; i++) {
+        for (int i = 0; i < NUM_OF_PIECES; i++) {
             bool up = 0;
             bool down = 0;
             bool left = 0;
@@ -219,6 +266,39 @@ void MakeConnections() {
     }
 }
 
+Rotation_Location Get_New_Rotation(Piece piece) {
+    int x = piece.x_Location + (piece.size/2);
+    int y = piece.y_Location + (piece.size/2);
+    int side = piece.size;
+    
+    double theta = (double) piece.rotation * PI / 180.0;
+    double xa = x-side/2;
+    double ya = y+side/2;
+    double xb = x+side/2;
+    double yb = y+side/2;
+    double xc = x+side/2;
+    double yc = y-side/2;
+    double xd = x-side/2;
+    double yd = y-side/2;
+    double xa_new = cos(theta) * (xa - x) - sin(theta) * (ya - y) + x;
+    double ya_new = sin(theta) * (xa - x) + cos(theta) * (ya - y) + y;
+    double xb_new = cos(theta) * (xb - x) - sin(theta) * (yb - y) + x;
+    double yb_new = sin(theta) * (xb - x) + cos(theta) * (yb - y) + y;
+    double xc_new = cos(theta) * (xc - x) - sin(theta) * (yc - y) + x;
+    double yc_new = sin(theta) * (xc - x) + cos(theta) * (yc - y) + y;
+    double xd_new = cos(theta) * (xd - x) - sin(theta) * (yd - y) + x;
+    double yd_new = sin(theta) * (xd - x) + cos(theta) * (yd - y) + y;
+    Rotation_Location new_piece_location = {.x0 = xa_new,
+                                            .y0 = ya_new,
+                                            .x1 = xb_new,
+                                            .y1 = yb_new,
+                                            .x2 = xc_new,
+                                            .y2 = yc_new,
+                                            .x3 = xd_new,
+                                            .y3 = yd_new};
+    return new_piece_location;
+}
+
 void CheckForConnections(int piece_num) {
     if (piece_num >= 0 && is_connections) {
         
@@ -230,7 +310,42 @@ void CheckForConnections(int piece_num) {
         int x1, x2, y1, y2;
         int distance = pieces[piece_num].size/2;
         
+        Rotation_Location orginal_piece = Get_New_Rotation(pieces[piece_num]);
+        //printf("[(%.2f, %.2f), (%.2f, %.2f), (%.2f, %.2f), (%.2f, %.2f)]\n", orginal_piece.x0, orginal_piece.y0, orginal_piece.x1, orginal_piece.y1, orginal_piece.x2, orginal_piece.y2, orginal_piece.x3, orginal_piece.y3);
+        
         if (up_p >= 0) {
+            Rotation_Location up_piece = Get_New_Rotation(pieces[up_p]);
+            x1 = orginal_piece.x0;
+            x2 = up_piece.x3;
+            y1 = orginal_piece.y0;
+            y2 = up_piece.y3;
+            double distance_1 = pow((x1 - x2), 2)+ pow((y1 - y2), 2);
+            x1 = orginal_piece.x1;
+            x2 = up_piece.x2;
+            y1 = orginal_piece.y1;
+            y2 = up_piece.y2;
+            double distance_2 = pow((x1 - x2), 2)+ pow((y1 - y2), 2);
+            
+            if (distance_1 < 200 && distance_2 < 200) {
+                double rads = pieces[up_p].rotation * PI / 180.0;
+                double adj = pieces[up_p].size * cos(rads);
+                double opp = pieces[up_p].size * sin(rads);
+                int x_new = up_piece.x3 + opp;
+                int y_new = up_piece.y3 - adj;
+                
+                int x = pieces[up_p].x_Location + (pieces[up_p].size/2);
+                int y = pieces[up_p].y_Location + (pieces[up_p].size/2);
+                x = x + pieces[up_p].size * sin(rads);
+                y = y - pieces[up_p].size * cos(rads);
+                double x_t = cos(-rads) * (x_new - x) - sin(-rads) * (y_new - y) + x;
+                double y_t = sin(-rads) * (x_new - x) + cos(-rads) * (y_new - y) + y;
+                printf("%d, %d == %.0f, %.0f\n", pieces[piece_num].x_Location, pieces[piece_num].y_Location, x_t, y_t);
+                pieces[piece_num].x_Location = x_t;
+                pieces[piece_num].y_Location = y_t;
+                printf("New: %d, %d\n", pieces[piece_num].x_Location, pieces[piece_num].y_Location);
+            }
+            
+            /*
             x1 = pieces[piece_num].x_Location;
             x2 = pieces[up_p].x_Location;
             y1 = pieces[piece_num].y_Location + pieces[piece_num].size;
@@ -246,6 +361,8 @@ void CheckForConnections(int piece_num) {
                     pieces[up_p].open_edges.down_open = 0;
                 }
             }
+            */
+            
         }
         if (right_p >= 0) {
             x1 = pieces[piece_num].x_Location + pieces[piece_num].size;
@@ -304,26 +421,26 @@ void CheckForConnections(int piece_num) {
 
 void CheckIfSolved() {
     bool solved = true;
-    for (int i = 0; i < PIECES_SIZE; i++) {
+    for (int i = 0; i < NUM_OF_PIECES; i++) {
         int up = pieces[i].open_edges.up_open;
         int down = pieces[i].open_edges.down_open;
         int left = pieces[i].open_edges.left_open;
         int right = pieces[i].open_edges.right_open;
         if (up == 1) {
             solved = false;
-            i = PIECES_SIZE;
+            i = NUM_OF_PIECES;
         }
         if (down == 1) {
             solved = false;
-            i = PIECES_SIZE;
+            i = NUM_OF_PIECES;
         }
         if (left == 1) {
             solved = false;
-            i = PIECES_SIZE;
+            i = NUM_OF_PIECES;
         }
         if (right == 1) {
             solved = false;
-            i = PIECES_SIZE;
+            i = NUM_OF_PIECES;
         }
     }
     if (solved) printf("Solved!\n");
@@ -346,7 +463,7 @@ void MouseListener(int button, int state, int x, int y) {
             holdingPiece = -1;
         }
         else {
-            for (int i = 0; i < PIECES_SIZE; i++) {
+            for (int i = 0; i < NUM_OF_PIECES; i++) {
                 if(x >= pieces[i].x_Location && x < pieces[i].x_Location + pieces[i].size) {
                     if (y >= pieces[i].y_Location && y < pieces[i].y_Location + pieces[i].size) {
                         pieces[i].x_Location = x - (pieces[i].size/2);
@@ -357,7 +474,7 @@ void MouseListener(int button, int state, int x, int y) {
                         if (pieces[i].open_edges.left_open == 0) pieces[i].open_edges.left_open = 1;
                         if (pieces[i].open_edges.right_open == 0) pieces[i].open_edges.right_open = 1;
                         printf("Picked up piece: %d\n", holdingPiece);
-                        i = PIECES_SIZE;
+                        i = NUM_OF_PIECES;
                     }
                 }
             }
@@ -367,13 +484,10 @@ void MouseListener(int button, int state, int x, int y) {
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
         if (holdingPiece >= 0) {
             pieces[holdingPiece].rotation += 45;
-            if (pieces[holdingPiece].rotation >= 360) {
-                pieces[holdingPiece].rotation = 0;
-            }
             printf("Rotated piece %d has rotation %d\n", holdingPiece, pieces[holdingPiece].rotation);
         }
         else {
-            for (int i = 0; i < PIECES_SIZE; i++) {
+            for (int i = 0; i < NUM_OF_PIECES; i++) {
                 if(x >= pieces[i].x_Location && x < pieces[i].x_Location + pieces[i].size) {
                     if (y >= pieces[i].y_Location && y < pieces[i].y_Location + pieces[i].size) {
                         pieces[i].rotation += 45;
@@ -381,11 +495,8 @@ void MouseListener(int button, int state, int x, int y) {
                         if (pieces[i].open_edges.down_open == 0) pieces[i].open_edges.down_open = 1;
                         if (pieces[i].open_edges.left_open == 0) pieces[i].open_edges.left_open = 1;
                         if (pieces[i].open_edges.right_open == 0) pieces[i].open_edges.right_open = 1;
-                        if (pieces[i].rotation >= 360) {
-                            pieces[i].rotation = 0;
-                        }
                         printf("Rotated piece %d has rotation %d\n", i, pieces[i].rotation);
-                        i = PIECES_SIZE;
+                        i = NUM_OF_PIECES;
                     }
                 }
             }
@@ -407,6 +518,25 @@ void MousePosition(int x, int y) {
 void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
     
     switch (theKey) {
+        case 'p':
+        case 'P':
+            for (int i = 0; i < NUM_OF_PIECES; i++) {
+                printf("%d: x = %d, y = %d\n", i, pieces[i].x_Location, pieces[i].y_Location);
+            }
+            break;
+        case 'r':
+        case 'R':
+            for (int i = 0; i < NUM_OF_PIECES; i++) {
+                pieces[i].rotation = 0;
+            }
+            DrawPuzzlePieces();
+            break;
+        case 't':
+        case 'T':
+            if (do_bounding_box) do_bounding_box = false;
+            else do_bounding_box = true;
+            DrawPuzzlePieces();
+            break;
         case 32: // space
             CheckIfSolved();
             break;
@@ -428,11 +558,11 @@ int main(int argc, char * argv[]) {
     
     srand((unsigned)time(NULL));
     
-    for (int i = 0; i < PIECES_SIZE; i++) {
+    for (int i = 0; i < NUM_OF_PIECES; i++) {
         Piece piece = { .pieceID = i,
                         .x_Location = rand()%SCREEN_WIDTH,
                         .y_Location = rand()%SCREEN_HEIGHT,
-                        .size = PIECE_LENGTH,
+                        .size = 50,
                         .rotation = 0};
         pieces[i] = piece;
     }
