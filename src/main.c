@@ -10,13 +10,11 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
+#include "headers/stdfun.h"
 
-#define PI 3.14159265
-#define NUM_OF_PIECES 4
+#define NUM_OF_PIECES 9
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
-
-typedef enum {false, true} bool;
 
 typedef struct {
     int up_Piece;
@@ -58,6 +56,7 @@ int holdingPiece = -1;
 bool is_connections = false;
 bool do_bounding_box = false;
 Piece pieces[NUM_OF_PIECES];
+int plus_rotation = 15;
 
 void DrawPiece(Piece piece) {
     glPushMatrix();
@@ -146,6 +145,9 @@ void DrawPuzzlePieces() {
             while (pieces[i].rotation >= 360) {
                 pieces[i].rotation -= 360;
             }
+            while (pieces[i].rotation < 0) {
+                pieces[i].rotation += 360;
+            }
             DrawPiece(pieces[i]);
             DrawLetter(pieces[i]);
         }
@@ -157,6 +159,12 @@ void DrawPuzzlePieces() {
         DrawPiece(pieces[holdingPiece]);
         DrawLetter(pieces[holdingPiece]);
         glDisable(GL_BLEND);
+        while (pieces[holdingPiece].rotation >= 360) {
+            pieces[holdingPiece].rotation -= 360;
+        }
+        while (pieces[holdingPiece].rotation < 0) {
+            pieces[holdingPiece].rotation += 360;
+        }
     }
     
     glFlush();
@@ -311,7 +319,6 @@ void CheckForConnections(int piece_num) {
         int distance = pieces[piece_num].size/2;
         
         Rotation_Location orginal_piece = Get_New_Rotation(pieces[piece_num]);
-        //printf("[(%.2f, %.2f), (%.2f, %.2f), (%.2f, %.2f), (%.2f, %.2f)]\n", orginal_piece.x0, orginal_piece.y0, orginal_piece.x1, orginal_piece.y1, orginal_piece.x2, orginal_piece.y2, orginal_piece.x3, orginal_piece.y3);
         
         if (up_p >= 0) {
             Rotation_Location up_piece = Get_New_Rotation(pieces[up_p]);
@@ -339,30 +346,10 @@ void CheckForConnections(int piece_num) {
                 y = y - pieces[up_p].size * cos(rads);
                 double x_t = cos(-rads) * (x_new - x) - sin(-rads) * (y_new - y) + x;
                 double y_t = sin(-rads) * (x_new - x) + cos(-rads) * (y_new - y) + y;
-                printf("%d, %d == %.0f, %.0f\n", pieces[piece_num].x_Location, pieces[piece_num].y_Location, x_t, y_t);
                 pieces[piece_num].x_Location = x_t;
                 pieces[piece_num].y_Location = y_t;
-                printf("New: %d, %d\n", pieces[piece_num].x_Location, pieces[piece_num].y_Location);
+                pieces[piece_num].rotation = pieces[up_p].rotation;
             }
-            
-            /*
-            x1 = pieces[piece_num].x_Location;
-            x2 = pieces[up_p].x_Location;
-            y1 = pieces[piece_num].y_Location + pieces[piece_num].size;
-            y2 = pieces[up_p].y_Location;
-            
-            if (x1 - x2 < distance && x1 - x2 > -distance) {
-                if (y1 - y2 < distance && y1 - y2 > -distance) {
-                    printf("Piece %d joined piece %d\n", piece_num, up_p);
-                    pieces[piece_num].x_Location = pieces[up_p].x_Location;
-                    pieces[piece_num].y_Location = pieces[up_p].y_Location - pieces[piece_num].size;
-                    
-                    pieces[piece_num].open_edges.up_open = 0;
-                    pieces[up_p].open_edges.down_open = 0;
-                }
-            }
-            */
-            
         }
         if (right_p >= 0) {
             x1 = pieces[piece_num].x_Location + pieces[piece_num].size;
@@ -483,14 +470,14 @@ void MouseListener(int button, int state, int x, int y) {
     
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
         if (holdingPiece >= 0) {
-            pieces[holdingPiece].rotation += 45;
+            pieces[holdingPiece].rotation += plus_rotation;
             printf("Rotated piece %d has rotation %d\n", holdingPiece, pieces[holdingPiece].rotation);
         }
         else {
             for (int i = 0; i < NUM_OF_PIECES; i++) {
                 if(x >= pieces[i].x_Location && x < pieces[i].x_Location + pieces[i].size) {
                     if (y >= pieces[i].y_Location && y < pieces[i].y_Location + pieces[i].size) {
-                        pieces[i].rotation += 45;
+                        pieces[i].rotation += plus_rotation;
                         if (pieces[i].open_edges.up_open == 0) pieces[i].open_edges.up_open = 1;
                         if (pieces[i].open_edges.down_open == 0) pieces[i].open_edges.down_open = 1;
                         if (pieces[i].open_edges.left_open == 0) pieces[i].open_edges.left_open = 1;
@@ -573,7 +560,7 @@ int main(int argc, char * argv[]) {
     
     glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
     glutInitWindowPosition((1920-SCREEN_WIDTH)/2, 0);
-    glutCreateWindow("Jigsaw");
+    glutCreateWindow("Giguesaur Alpha");
     
     glutDisplayFunc(Render);
     glutMouseFunc(MouseListener);
