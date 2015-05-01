@@ -4,8 +4,8 @@
  Description: Adds some extra functionality to your C programs.
  */
 
-#ifndef stdfun_h
-#define stdfun_h
+#ifndef std_stuff_h
+#define std_stuff_h
 
 #define PI 3.14159265
 
