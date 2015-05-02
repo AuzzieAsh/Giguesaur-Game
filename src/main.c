@@ -396,11 +396,13 @@ void CheckForConnections(int piece_num) {
             double x_new = pieces[up_id].x_centre + opp;
             double y_new = pieces[up_id].y_centre - adj;
             
-            if (pieces[piece_num].x_centre == x_new && pieces[piece_num].y_centre == y_new) {
+			bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
+			bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
+            if (x_true && y_true) {
                 pieces[piece_num].open_edges.up_open = closed;
                 pieces[up_id].open_edges.down_open = closed;
                 printf("Piece %d joined piece %d\n", piece_num, up_id);
-            }
+			}
 
         }
         if (right_id >= 0) {
@@ -409,11 +411,15 @@ void CheckForConnections(int piece_num) {
             double opp = pieces[right_id].side_length * cos(rads);
             double x_new = pieces[right_id].x_centre - opp;
             double y_new = pieces[right_id].y_centre - adj;
-            if (pieces[piece_num].x_centre == x_new && pieces[piece_num].y_centre == y_new) {
+
+			bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
+			bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
+			if (x_true && y_true) {
                 pieces[piece_num].open_edges.right_open = closed;
                 pieces[right_id].open_edges.left_open = closed;
-                printf("Piece %d joined piece %d\n", piece_num, right_id);
-            }
+				printf("Piece %d joined piece %d\n", piece_num, right_id);
+			}
+
         }
         if (down_id >= 0) {
             double rads = pieces[down_id].rotation * PI / 180.0;
@@ -421,11 +427,15 @@ void CheckForConnections(int piece_num) {
             double opp = pieces[down_id].side_length * sin(rads);
             double x_new = pieces[down_id].x_centre - opp;
             double y_new = pieces[down_id].y_centre + adj;
-            if (pieces[piece_num].x_centre == x_new && pieces[piece_num].y_centre == y_new) {
+
+			bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
+			bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
+			if (x_true && y_true) {
                 pieces[piece_num].open_edges.down_open = closed;
                 pieces[down_id].open_edges.up_open = closed;
-                printf("Piece %d joined piece %d\n", piece_num, down_id);
-            }
+				printf("Piece %d joined piece %d\n", piece_num, down_id);
+			}
+
         }
         if (left_id >= 0) {
             double rads = pieces[left_id].rotation * PI / 180.0;
@@ -433,11 +443,15 @@ void CheckForConnections(int piece_num) {
             double opp = pieces[left_id].side_length * cos(rads);
             double x_new = pieces[left_id].x_centre + opp;
             double y_new = pieces[left_id].y_centre + adj;
-            if (pieces[piece_num].x_centre == x_new && pieces[piece_num].y_centre == y_new) {
+
+			bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
+			bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
+			if (x_true && y_true) {
                 pieces[piece_num].open_edges.left_open = closed;
                 pieces[left_id].open_edges.right_open = closed;
-                printf("Piece %d joined piece %d\n", piece_num, left_id);
-            }
+				printf("Piece %d joined piece %d\n", piece_num, left_id);
+			}
+
         }
     }
 }
