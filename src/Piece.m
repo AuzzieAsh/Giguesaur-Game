@@ -1,5 +1,0 @@
-/*
- 
- */
-
-#include "headers/Piece.h"
