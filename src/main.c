@@ -26,7 +26,9 @@
 #include "headers/std_stuff.h"
 #include "headers/Piece.h"
 
-#define NUM_OF_PIECES 4
+#define NUM_OF_ROWS 4
+#define NUM_OF_COLS 5
+#define NUM_OF_PIECES NUM_OF_ROWS*NUM_OF_COLS
 #define PLUS_ROTATION 15
 #define DISTANCE_BEFORE_SNAP 250
 #define SCREEN_WIDTH 1280
@@ -170,99 +172,62 @@ void Draw_Puzzle_Pieces() {
 }
 
 void MakeConnections() {
-    if (NUM_OF_PIECES == 4) {
-        
-        // Hard coded values
-        pieces[0].edges.up_piece = -1;
-        pieces[0].edges.right_piece = 1;
-        pieces[0].edges.down_piece = 2;
-        pieces[0].edges.left_piece = -1;
-        
-        pieces[1].edges.up_piece = -1;
-        pieces[1].edges.right_piece = -1;
-        pieces[1].edges.down_piece = 3;
-        pieces[1].edges.left_piece = 0;
-        
-        pieces[2].edges.up_piece = 0;
-        pieces[2].edges.right_piece = 3;
-        pieces[2].edges.down_piece = -1;
-        pieces[2].edges.left_piece = -1;
-        
-        pieces[3].edges.up_piece = 1;
-        pieces[3].edges.right_piece = -1;
-        pieces[3].edges.down_piece = -1;
-        pieces[3].edges.left_piece = 2;
-        
-        is_connections = true;
-    }
-    else if (NUM_OF_PIECES == 9) {
-        
-        // Hard coded values
-        pieces[0].edges.up_piece = -1;
-        pieces[0].edges.right_piece = 1;
-        pieces[0].edges.down_piece = 3;
-        pieces[0].edges.left_piece = -1;
-        
-        pieces[1].edges.up_piece = -1;
-        pieces[1].edges.right_piece = 2;
-        pieces[1].edges.down_piece = 4;
-        pieces[1].edges.left_piece = 0;
-        
-        pieces[2].edges.up_piece = -1;
-        pieces[2].edges.right_piece = -1;
-        pieces[2].edges.down_piece = 5;
-        pieces[2].edges.left_piece = 1;
-        
-        pieces[3].edges.up_piece = 0;
-        pieces[3].edges.right_piece = 4;
-        pieces[3].edges.down_piece = 6;
-        pieces[3].edges.left_piece = -1;
-        
-        pieces[4].edges.up_piece = 1;
-        pieces[4].edges.right_piece = 5;
-        pieces[4].edges.down_piece = 7;
-        pieces[4].edges.left_piece = 3;
-        
-        pieces[5].edges.up_piece = 2;
-        pieces[5].edges.right_piece = -1;
-        pieces[5].edges.down_piece = 8;
-        pieces[5].edges.left_piece = 4;
-        
-        pieces[6].edges.up_piece = 3;
-        pieces[6].edges.right_piece = 7;
-        pieces[6].edges.down_piece = -1;
-        pieces[6].edges.left_piece = -1;
-        
-        pieces[7].edges.up_piece = 4;
-        pieces[7].edges.right_piece = 8;
-        pieces[7].edges.down_piece = -1;
-        pieces[7].edges.left_piece = 6;
-        
-        pieces[8].edges.up_piece = 5;
-        pieces[8].edges.right_piece = -1;
-        pieces[8].edges.down_piece = -1;
-        pieces[8].edges.left_piece = 7;
- 
-        is_connections = true;
-    }
+	if (NUM_OF_PIECES > 0) {
+		int index = 0;
+		for (int row = 0; row < NUM_OF_ROWS; row++) {
+			for (int col = 0; col < NUM_OF_COLS; col++) {
+				if (row == 0) {
+					pieces[index].edges.up_piece = -1;
+				}
+				else {
+					pieces[index].edges.up_piece = index - NUM_OF_COLS;
+				}
+				if (row + 1 == NUM_OF_ROWS) {
+					pieces[index].edges.down_piece = -1;
+				}
+				else {
+					pieces[index].edges.down_piece = index + NUM_OF_COLS;
+				}
+				if (col == 0) {
+					pieces[index].edges.left_piece = -1;
+				}
+				else {
+					pieces[index].edges.left_piece = index - 1;
+				}
+				if (col + 1 == NUM_OF_COLS) {
+					pieces[index].edges.right_piece = -1;
+				}
+				else {
+					pieces[index].edges.right_piece = index + 1;
+				}
+				index++;
+			}
+		}
+		is_connections = true;
+		/*
+		for (int i = 0; i < NUM_OF_PIECES; i++) {
+			printf("%d: Up %d, Down %d, Left %d, Right %d\n", i, pieces[i].edges.up_piece, pieces[i].edges.down_piece, pieces[i].edges.left_piece, pieces[i].edges.right_piece);
+		}
+		*/
+	}
     else {
         is_connections = false;
         fprintf(stderr, "Cannnot make connections!\n");
     }
     if (is_connections) {
         for (int i = 0; i < NUM_OF_PIECES; i++) {
-            Accessible up = 0;
-            Accessible down = 0;
-            Accessible left = 0;
-            Accessible right = 0;
+            Accessible up = closed;
+            Accessible down = closed;
+			Accessible left = closed;
+			Accessible right = closed;
             
-            if (pieces[i].edges.up_piece > 0) up = opened;
+            if (pieces[i].edges.up_piece >= 0) up = opened;
             else up = invalid;
-            if (pieces[i].edges.down_piece > 0) down = opened;
+            if (pieces[i].edges.down_piece >= 0) down = opened;
             else down = invalid;
-            if (pieces[i].edges.left_piece > 0) left = opened;
+            if (pieces[i].edges.left_piece >= 0) left = opened;
             else left = invalid;
-            if (pieces[i].edges.right_piece > 0) right = opened;
+            if (pieces[i].edges.right_piece >= 0) right = opened;
             else right = invalid;
             
             pieces[i].open_edges.up_open = up;
@@ -313,7 +278,7 @@ void CheckForConnections(int piece_num) {
         int right_id = pieces[piece_num].edges.right_piece;
         int down_id = pieces[piece_num].edges.down_piece;
         int left_id = pieces[piece_num].edges.left_piece;
-        
+
         Points_Rotated new_points = Get_Rotated_Points(pieces[piece_num]);
         
         if (up_id >= 0) {
@@ -459,23 +424,19 @@ void CheckForConnections(int piece_num) {
 void CheckIfSolved() {
     bool solved = true;
     for (int i = 0; i < NUM_OF_PIECES; i++) {
-        Accessible up = pieces[i].open_edges.up_open;
-        Accessible down = pieces[i].open_edges.down_open;
-        Accessible left = pieces[i].open_edges.left_open;
-        Accessible right = pieces[i].open_edges.right_open;
-        if (up == opened) {
+		if (pieces[i].open_edges.up_open == opened) {
             solved = false;
             i = NUM_OF_PIECES;
         }
-        if (down == opened) {
+		if (pieces[i].open_edges.down_open == opened) {
             solved = false;
             i = NUM_OF_PIECES;
         }
-        if (left == opened) {
+		if (pieces[i].open_edges.left_open == opened) {
             solved = false;
             i = NUM_OF_PIECES;
         }
-        if (right == opened) {
+		if (pieces[i].open_edges.right_open == opened) {
             solved = false;
             i = NUM_OF_PIECES;
         }
@@ -490,7 +451,8 @@ void Render() {
 
 void MouseListener(int button, int state, int x, int y) {
     y = glutGet(GLUT_WINDOW_HEIGHT)-y; // Fix Mouse Y
-    
+	//x = -(SCREEN_WIDTH - x * 2 - 1);
+	//y = SCREEN_HEIGHT - y * 2 - 1;
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         // Place piece back on board if holding a piece
         if (holdingPiece >= 0) {
@@ -544,7 +506,9 @@ void MouseListener(int button, int state, int x, int y) {
 
 void MousePosition(int x, int y) {
     y = glutGet(GLUT_WINDOW_HEIGHT)-y; // Fix Mouse Y
-     
+	//x = -(SCREEN_WIDTH - x * 2 - 1);
+	//y = SCREEN_HEIGHT - y * 2 - 1;
+	//printf("Mouse: %d %d\n", x, y);
     if (holdingPiece >= 0) {
         pieces[holdingPiece].x_centre = x;
         pieces[holdingPiece].y_centre = y;
@@ -565,7 +529,12 @@ void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
         case 'R':
             for (int i = 0; i < NUM_OF_PIECES; i++) {
                 pieces[i].rotation = 0;
+				if (pieces[i].open_edges.up_open == closed) pieces[i].open_edges.up_open = opened;
+				if (pieces[i].open_edges.down_open == closed) pieces[i].open_edges.down_open = opened;
+				if (pieces[i].open_edges.left_open == closed) pieces[i].open_edges.left_open = opened;
+				if (pieces[i].open_edges.right_open == closed) pieces[i].open_edges.right_open = opened;
             }
+			printf("Puzzle reset\n");
             Draw_Puzzle_Pieces();
             break;
         case 't':
@@ -574,10 +543,10 @@ void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
             else do_bounding_box = true;
             Draw_Puzzle_Pieces();
             break;
-        case 32: // space
+        case BTN_SPACE:
             CheckIfSolved();
             break;
-        case 27: // escape
+        case BTN_ESCAPE:
         case 'q':
         case 'Q':
             exit(0);
@@ -587,7 +556,22 @@ void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
     }
 }
 
-void WindowResize(int w, int h) {
+void WindowResize(int width, int height) {
+
+	/* Prevent A Divide By Zero If The Window Is Too Small */
+	if (height == 0) {
+		height = 1;
+	}
+
+	/* Reset The Current Viewport And Perspective Transformation */
+	glViewport(0, 0, width, height);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	/* Calculate The Aspect Ratio Of The Window */
+	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	glMatrixMode(GL_MODELVIEW);
     Draw_Puzzle_Pieces();
 }
 
@@ -616,7 +600,7 @@ int main(int argc, char * argv[]) {
     glutMouseFunc(MouseListener);
     glutPassiveMotionFunc(MousePosition);
     glutKeyboardFunc(KeyboardListener);
-    glutReshapeFunc(WindowResize);
+    //glutReshapeFunc(WindowResize);
     
     // Background Colour
     glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -625,6 +609,7 @@ int main(int argc, char * argv[]) {
     glLoadIdentity();
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     gluOrtho2D(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT);
+	//glFrustum(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, -1.0, 1.0);
     
     glutMainLoop();
     
