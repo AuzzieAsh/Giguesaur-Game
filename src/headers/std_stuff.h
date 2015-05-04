@@ -1,7 +1,7 @@
 /* 
  File: stdfun.h
  Author: Ashley Manson
- Description: Adds some extra functionality to your C programs.
+ Description: Adds some basic functionality to your C programs.
  */
 
 #ifndef std_stuff_h

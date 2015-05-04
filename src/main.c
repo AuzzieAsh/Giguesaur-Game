@@ -27,7 +27,7 @@
 #include "headers/Piece.h"
 
 #define NUM_OF_ROWS 4
-#define NUM_OF_COLS 5
+#define NUM_OF_COLS 3
 #define NUM_OF_PIECES NUM_OF_ROWS*NUM_OF_COLS
 #define PLUS_ROTATION 15
 #define DISTANCE_BEFORE_SNAP 250
@@ -117,11 +117,18 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
         
         int div;
         for (div = 1; div <= letter; div *= 10);
-        do {
+
+        for(;;) {
             div /= 10;
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, (letter == 0 ? 0 : (letter / div)) + '0');
             if (letter != 0) letter %= div;
-        } while (letter);
+            if (piece.piece_id % 10 == 0 && piece.piece_id != 0) {
+                glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, '0');
+            }
+            if (letter == 0) {
+                break;
+            }
+        }
     }
 }
 
@@ -456,10 +463,24 @@ void MouseListener(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         // Place piece back on board if holding a piece
         if (holdingPiece >= 0) {
-            pieces[holdingPiece].x_centre = x;
-            pieces[holdingPiece].y_centre = y;
-            CheckForConnections(holdingPiece);
-            holdingPiece = -1;
+            bool can_place = true;
+            for (int i = 0; i < NUM_OF_PIECES; i++) {
+                if(pieces[holdingPiece].x_centre >= pieces[i].x_centre - (pieces[i].side_length/2) && pieces[holdingPiece].x_centre < pieces[i].x_centre + (pieces[i].side_length/2)) {
+                    if (pieces[holdingPiece].y_centre >= pieces[i].y_centre - (pieces[i].side_length/2) && pieces[holdingPiece].y_centre < pieces[i].y_centre + (pieces[i].side_length/2)) {
+                        if (i != holdingPiece) {
+                            printf("Cannot place piece %d on piece %d\n", holdingPiece, i);
+                            can_place = false;
+                            i = NUM_OF_PIECES;
+                        }
+                    }
+                }
+            }
+            if (can_place) {
+                pieces[holdingPiece].x_centre = x;
+                pieces[holdingPiece].y_centre = y;
+                CheckForConnections(holdingPiece);
+                holdingPiece = -1;
+            }
         }
         else {
             for (int i = 0; i < NUM_OF_PIECES; i++) {
