@@ -4,8 +4,8 @@
  Description: Header File for the pieces that go into a Giguesaur puzzle.
  */
 
-#ifndef Giguesaur_Piece_h
-#define Giguesaur_Piece_h
+#ifndef GIGUESAUR_PIECE_H
+#define GIGUESAUR_PIECE_H
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>

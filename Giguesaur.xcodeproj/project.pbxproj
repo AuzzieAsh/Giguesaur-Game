@@ -30,6 +30,7 @@
 		CE680F7D1AF2E710009792D5 /* Piece.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Piece.h; sourceTree = "<group>"; };
 		CE680F801AF6EC04009792D5 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = src/main.c; sourceTree = SOURCE_ROOT; };
 		CE680F811AF6EC04009792D5 /* Piece.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Piece.c; path = src/Piece.c; sourceTree = SOURCE_ROOT; };
+		CE680FAB1AF9AD85009792D5 /* puppy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = puppy.png; path = resources/puppy.png; sourceTree = SOURCE_ROOT; };
 		CEA0C6FA1AC8C98A002F5D80 /* Giguesaur */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Giguesaur; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA0C7041AC8C9C4002F5D80 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		CEA0C7061AC8C9CD002F5D80 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -61,10 +62,10 @@
 		CEA0C6F11AC8C98A002F5D80 = {
 			isa = PBXGroup;
 			children = (
+				CEA0C6FB1AC8C98A002F5D80 /* Products */,
 				CEA0C7061AC8C9CD002F5D80 /* GLUT.framework */,
 				CEA0C7041AC8C9C4002F5D80 /* OpenGL.framework */,
 				CEA0C6FC1AC8C98A002F5D80 /* src */,
-				CEA0C6FB1AC8C98A002F5D80 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -79,6 +80,7 @@
 		CEA0C6FC1AC8C98A002F5D80 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				CE680FAB1AF9AD85009792D5 /* puppy.png */,
 				CE680F801AF6EC04009792D5 /* main.c */,
 				CE680F811AF6EC04009792D5 /* Piece.c */,
 				CE680F7B1AF1BC15009792D5 /* headers */,

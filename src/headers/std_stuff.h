@@ -4,8 +4,8 @@
  Description: Adds some basic functionality to your C programs.
  */
 
-#ifndef std_stuff_h
-#define std_stuff_h
+#ifndef STD_STUFF_H
+#define STD_STUFF_H
 
 #define BTN_ESCAPE 27
 #define BTN_SPACE 32

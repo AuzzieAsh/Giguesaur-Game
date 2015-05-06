@@ -55,43 +55,97 @@ bool is_connections = false;
 bool do_bounding_box = false;
 Piece pieces[NUM_OF_PIECES];
 
+#define checkImageWidth 64
+#define checkImageHeight 64
+static GLubyte checkImage[checkImageHeight][checkImageWidth][4];
+static GLuint texName;
+
+void makeCheckImage(void)
+{
+    int i, j, c;
+    
+    for (i = 0; i < checkImageHeight; i++) {
+        for (j = 0; j < checkImageWidth; j++) {
+            c = ((((i&0x8)==0)^((j&0x8))==0))*255;
+            checkImage[i][j][0] = (GLubyte) c;
+            checkImage[i][j][1] = (GLubyte) c;
+            checkImage[i][j][2] = (GLubyte) c;
+            checkImage[i][j][3] = (GLubyte) 255;
+        }
+    }
+}
+
+void init(void)
+{
+    //glClearColor (0.0, 0.0, 0.0, 0.0);
+    glShadeModel(GL_FLAT);
+    glEnable(GL_DEPTH_TEST);
+    
+    makeCheckImage();
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    
+    glGenTextures(1, &texName);
+    glBindTexture(GL_TEXTURE_2D, texName);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                    GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, checkImageWidth,
+                 checkImageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                 checkImage);
+}
 
 void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
     
-    glShadeModel(GL_SMOOTH);
-    int half_length = piece.side_length / 2;
+    init();
+    
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    glBindTexture(GL_TEXTURE_2D, texName);
+    
+    //glShadeModel(GL_SMOOTH);
+    GLint half_length = piece.side_length / 2;
     glPushMatrix();
     glTranslated(piece.x_centre, piece.y_centre, 0.0);
     glRotated(piece.rotation, 0.0, 0.0, 1.0);
     glTranslated(-piece.x_centre, -piece.y_centre, 0.0);
     
     glBegin(GL_POLYGON);
-    glVertex2d(piece.x_centre, piece.y_centre);
+    //glVertex2d(piece.x_centre, piece.y_centre);
+    glTexCoord2f(0.0, 0.0);
     glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
     if (piece.edges.down_piece >=0) {
         glVertex2d(piece.x_centre - 10, piece.y_centre - half_length);
         glVertex2d(piece.x_centre, piece.y_centre - half_length - 10);
         glVertex2d(piece.x_centre + 10, piece.y_centre - half_length);
     }
+    glTexCoord2f(0.0, 1.0);
     glVertex2d(piece.x_centre + half_length, piece.y_centre - half_length);
     if (piece.edges.right_piece >= 0) {
         glVertex2d(piece.x_centre + half_length, piece.y_centre - 10);
         glVertex2d(piece.x_centre + half_length + 10, piece.y_centre);
         glVertex2d(piece.x_centre + half_length, piece.y_centre + 10);
     }
+    glTexCoord2f(1.0, 1.0);
     glVertex2d(piece.x_centre + half_length, piece.y_centre + half_length);
     if (piece.edges.up_piece >= 0) {
         glVertex2d(piece.x_centre + 10, piece.y_centre + half_length);
         glVertex2d(piece.x_centre, piece.y_centre + half_length - 10);
         glVertex2d(piece.x_centre - 10, piece.y_centre + half_length);
     }
+    
+    glTexCoord2f(1.0, 0.0);
     glVertex2d(piece.x_centre - half_length, piece.y_centre + half_length);
     if (piece.edges.left_piece >= 0) {
         glVertex2d(piece.x_centre - half_length, piece.y_centre + 10);
         glVertex2d(piece.x_centre - half_length + 10, piece.y_centre);
         glVertex2d(piece.x_centre - half_length, piece.y_centre - 10);
     }
-    glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
+    //glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
     glEnd();
     
     glPopMatrix();
@@ -134,29 +188,30 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
 
 void Draw_Puzzle_Pieces() {
     glClear(GL_COLOR_BUFFER_BIT);
-    
     for (int i = 0; i < NUM_OF_PIECES; i++) {
+        // Fix out of bounds
+        if (pieces[i].x_centre + (pieces[i].side_length / 2) > glutGet(GLUT_WINDOW_WIDTH)) {
+            pieces[i].x_centre = glutGet(GLUT_WINDOW_WIDTH) - (pieces[i].side_length / 2);
+        }
+        else if (pieces[i].x_centre - (pieces[i].side_length / 2) < 0) {
+            pieces[i].x_centre = pieces[i].side_length / 2;
+        }
+        if (pieces[i].y_centre + (pieces[i].side_length / 2) > glutGet(GLUT_WINDOW_HEIGHT)) {
+            pieces[i].y_centre = glutGet(GLUT_WINDOW_HEIGHT) - (pieces[i].side_length / 2);
+        }
+        else if (pieces[i].y_centre - (pieces[i].side_length / 2) < 0) {
+            pieces[i].y_centre = pieces[i].side_length / 2;
+        }
+        // Fix rotations getting too small or too big
+        while (pieces[i].rotation >= 360) {
+            pieces[i].rotation -= 360;
+        }
+        while (pieces[i].rotation < 0) {
+            pieces[i].rotation += 360;
+        }
+        
         if (i != holdingPiece) {
             glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-            // Fix out of bounds
-            if (pieces[i].x_centre + (pieces[i].side_length / 2) > glutGet(GLUT_WINDOW_WIDTH)) {
-                pieces[i].x_centre = glutGet(GLUT_WINDOW_WIDTH) - (pieces[i].side_length / 2);
-            }
-            else if (pieces[i].x_centre - (pieces[i].side_length / 2) < 0) {
-                pieces[i].x_centre = pieces[i].side_length / 2;
-            }
-            if (pieces[i].y_centre + (pieces[i].side_length / 2) > glutGet(GLUT_WINDOW_HEIGHT)) {
-                pieces[i].y_centre = glutGet(GLUT_WINDOW_HEIGHT) - (pieces[i].side_length / 2);
-            }
-            else if (pieces[i].y_centre - (pieces[i].side_length / 2) < 0) {
-                pieces[i].y_centre = pieces[i].side_length / 2;
-            }
-            while (pieces[i].rotation >= 360) {
-                pieces[i].rotation -= 360;
-            }
-            while (pieces[i].rotation < 0) {
-                pieces[i].rotation += 360;
-            }
             Draw_Piece(pieces[i], do_bounding_box, true);
         }
     }
@@ -166,12 +221,6 @@ void Draw_Puzzle_Pieces() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         Draw_Piece(pieces[holdingPiece], do_bounding_box, true);
         glDisable(GL_BLEND);
-        while (pieces[holdingPiece].rotation >= 360) {
-            pieces[holdingPiece].rotation -= 360;
-        }
-        while (pieces[holdingPiece].rotation < 0) {
-            pieces[holdingPiece].rotation += 360;
-        }
     }
     
     glFlush();
@@ -211,11 +260,6 @@ void MakeConnections() {
 			}
 		}
 		is_connections = true;
-		/*
-		for (int i = 0; i < NUM_OF_PIECES; i++) {
-			printf("%d: Up %d, Down %d, Left %d, Right %d\n", i, pieces[i].edges.up_piece, pieces[i].edges.down_piece, pieces[i].edges.left_piece, pieces[i].edges.right_piece);
-		}
-		*/
 	}
     else {
         is_connections = false;
@@ -630,7 +674,7 @@ int main(int argc, char * argv[]) {
     glLoadIdentity();
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     gluOrtho2D(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT);
-	//glFrustum(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, -1.0, 1.0);
+	//glFrustum(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, -250.0, 250.0);
     
     glutMainLoop();
     
