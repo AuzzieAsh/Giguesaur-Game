@@ -22,6 +22,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #endif
+#include "soil/SOIL.h"
 // My Stuff
 #include "headers/std_stuff.h"
 #include "headers/Piece.h"
