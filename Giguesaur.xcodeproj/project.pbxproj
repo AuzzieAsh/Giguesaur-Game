@@ -34,7 +34,6 @@
 		CE680F7D1AF2E710009792D5 /* Piece.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Piece.h; sourceTree = "<group>"; };
 		CE680F801AF6EC04009792D5 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = src/main.c; sourceTree = SOURCE_ROOT; };
 		CE680F811AF6EC04009792D5 /* Piece.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Piece.c; path = src/Piece.c; sourceTree = SOURCE_ROOT; };
-		CE680FAB1AF9AD85009792D5 /* puppy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = puppy.png; path = resources/puppy.png; sourceTree = SOURCE_ROOT; };
 		CE6810001AFAF27A009792D5 /* image_DXT.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = image_DXT.c; sourceTree = "<group>"; };
 		CE6810011AFAF27A009792D5 /* image_DXT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = image_DXT.h; sourceTree = "<group>"; };
 		CE6810021AFAF27A009792D5 /* image_helper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = image_helper.c; sourceTree = "<group>"; };
@@ -45,6 +44,7 @@
 		CE6810071AFAF27A009792D5 /* stb_image_aug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_image_aug.h; sourceTree = "<group>"; };
 		CE6810081AFAF27A009792D5 /* stbi_DDS_aug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stbi_DDS_aug.h; sourceTree = "<group>"; };
 		CE6810091AFAF27A009792D5 /* stbi_DDS_aug_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stbi_DDS_aug_c.h; sourceTree = "<group>"; };
+		CE6810121AFC3B03009792D5 /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resources; sourceTree = "<group>"; };
 		CEA0C6FA1AC8C98A002F5D80 /* Giguesaur */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Giguesaur; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA0C7041AC8C9C4002F5D80 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		CEA0C7061AC8C9CD002F5D80 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -94,6 +94,7 @@
 		CEA0C6F11AC8C98A002F5D80 = {
 			isa = PBXGroup;
 			children = (
+				CE6810121AFC3B03009792D5 /* resources */,
 				CEA0C6FB1AC8C98A002F5D80 /* Products */,
 				CEA0C7061AC8C9CD002F5D80 /* GLUT.framework */,
 				CEA0C7041AC8C9C4002F5D80 /* OpenGL.framework */,
@@ -112,11 +113,10 @@
 		CEA0C6FC1AC8C98A002F5D80 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				CE680FFF1AFAF27A009792D5 /* soil */,
-				CE680FAB1AF9AD85009792D5 /* puppy.png */,
 				CE680F801AF6EC04009792D5 /* main.c */,
 				CE680F811AF6EC04009792D5 /* Piece.c */,
 				CE680F7B1AF1BC15009792D5 /* headers */,
+				CE680FFF1AFAF27A009792D5 /* soil */,
 			);
 			name = src;
 			path = Jigsaw;
