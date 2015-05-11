@@ -101,11 +101,12 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
     glTranslated(-piece.x_centre, -piece.y_centre, 0.0);
     
     glBegin(GL_POLYGON);
+    //glTexCoord2d((texture_length * col) + (texture_length/2), (texture_height * row) + (texture_height/2));
     //glVertex2d(piece.x_centre, piece.y_centre);
     //glTexCoord2d(0.0, 1.0);
     glTexCoord2d(texture_length * col, texture_height * (row + 1));
     glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
-  /*  if (piece.edges.down_piece >=0) {
+   /* if (piece.edges.down_piece >=0) {
         glVertex2d(piece.x_centre - 10, piece.y_centre - half_length);
         glVertex2d(piece.x_centre, piece.y_centre - half_length - 10);
         glVertex2d(piece.x_centre + 10, piece.y_centre - half_length);
@@ -113,7 +114,7 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
     //glTexCoord2d(1.0, 1.0);
     glTexCoord2d(texture_length * (col + 1), texture_height * (row + 1));
     glVertex2d(piece.x_centre + half_length, piece.y_centre - half_length);
-  /*  if (piece.edges.right_piece >= 0) {
+    /*if (piece.edges.right_piece >= 0) {
         glVertex2d(piece.x_centre + half_length, piece.y_centre - 10);
         glVertex2d(piece.x_centre + half_length + 10, piece.y_centre);
         glVertex2d(piece.x_centre + half_length, piece.y_centre + 10);
@@ -121,11 +122,12 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
     //glTexCoord2d(1.0, 0.0);
     glTexCoord2d(texture_length * (col + 1), texture_height * row);
     glVertex2d(piece.x_centre + half_length, piece.y_centre + half_length);
-   /* if (piece.edges.up_piece >= 0) {
+  /*  if (piece.edges.up_piece >= 0) {
         glVertex2d(piece.x_centre + 10, piece.y_centre + half_length);
         glVertex2d(piece.x_centre, piece.y_centre + half_length - 10);
         glVertex2d(piece.x_centre - 10, piece.y_centre + half_length);
     }*/
+    
     //glTexCoord2d(0.0, 0.0);
     glTexCoord2d(texture_length * col, texture_height * row);
     glVertex2d(piece.x_centre - half_length, piece.y_centre + half_length);
@@ -134,6 +136,7 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
         glVertex2d(piece.x_centre - half_length + 10, piece.y_centre);
         glVertex2d(piece.x_centre - half_length, piece.y_centre - 10);
     }*/
+    //glTexCoord2d((texture_length * (col + 1))/2, (texture_height * (row + 1))/2);
     //glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
     glEnd();
     
