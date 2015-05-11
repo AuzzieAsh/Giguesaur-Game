@@ -11,7 +11,7 @@
 		CE680F831AF6EC04009792D5 /* Piece.c in Sources */ = {isa = PBXBuildFile; fileRef = CE680F811AF6EC04009792D5 /* Piece.c */; };
 		CE68100A1AFAF27A009792D5 /* image_DXT.c in Sources */ = {isa = PBXBuildFile; fileRef = CE6810001AFAF27A009792D5 /* image_DXT.c */; };
 		CE68100B1AFAF27A009792D5 /* image_helper.c in Sources */ = {isa = PBXBuildFile; fileRef = CE6810021AFAF27A009792D5 /* image_helper.c */; };
-		CE68100C1AFAF27A009792D5 /* SOIL.c in Sources */ = {isa = PBXBuildFile; fileRef = CE6810041AFAF27A009792D5 /* SOIL.c */; };
+		CE68100C1AFAF27A009792D5 /* SOIL.c in Sources */ = {isa = PBXBuildFile; fileRef = CE6810041AFAF27A009792D5 /* SOIL.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		CE68100D1AFAF27A009792D5 /* stb_image_aug.c in Sources */ = {isa = PBXBuildFile; fileRef = CE6810061AFAF27A009792D5 /* stb_image_aug.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		CEA0C7051AC8C9C4002F5D80 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA0C7041AC8C9C4002F5D80 /* OpenGL.framework */; };
 		CEA0C7071AC8C9CD002F5D80 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA0C7061AC8C9CD002F5D80 /* GLUT.framework */; };

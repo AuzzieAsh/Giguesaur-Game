@@ -55,6 +55,8 @@ int holdingPiece = -1;
 bool is_connections = false;
 bool do_bounding_box = false;
 Piece pieces[NUM_OF_PIECES];
+double texture_height = 1.0/NUM_OF_ROWS;
+double texture_length = 1.0/NUM_OF_COLS;
 
 GLuint textures[1];
 
@@ -78,6 +80,19 @@ void load_textures(char* name) {
 
 void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
     
+    int row = 0;
+    int col = 0;
+    int index = 0;
+    while (index != piece.piece_id) {
+        col++;
+        index++;
+        if (col >= NUM_OF_COLS) {
+            col = 0;
+            row++;
+        }
+    }
+    //printf("%d: %d %d\n", index, row, col);
+    
     //glShadeModel(GL_SMOOTH);
     GLint half_length = piece.side_length / 2;
     glPushMatrix();
@@ -87,30 +102,34 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
     
     glBegin(GL_POLYGON);
     //glVertex2d(piece.x_centre, piece.y_centre);
-    glTexCoord2f(0.0, 0.0);
+    //glTexCoord2d(0.0, 1.0);
+    glTexCoord2d(texture_length * col, texture_height * (row + 1));
     glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
-   /* if (piece.edges.down_piece >=0) {
+  /*  if (piece.edges.down_piece >=0) {
         glVertex2d(piece.x_centre - 10, piece.y_centre - half_length);
         glVertex2d(piece.x_centre, piece.y_centre - half_length - 10);
         glVertex2d(piece.x_centre + 10, piece.y_centre - half_length);
     }*/
-    glTexCoord2f(0.0, 1.0);
+    //glTexCoord2d(1.0, 1.0);
+    glTexCoord2d(texture_length * (col + 1), texture_height * (row + 1));
     glVertex2d(piece.x_centre + half_length, piece.y_centre - half_length);
   /*  if (piece.edges.right_piece >= 0) {
         glVertex2d(piece.x_centre + half_length, piece.y_centre - 10);
         glVertex2d(piece.x_centre + half_length + 10, piece.y_centre);
         glVertex2d(piece.x_centre + half_length, piece.y_centre + 10);
     }*/
-    glTexCoord2f(1.0, 1.0);
+    //glTexCoord2d(1.0, 0.0);
+    glTexCoord2d(texture_length * (col + 1), texture_height * row);
     glVertex2d(piece.x_centre + half_length, piece.y_centre + half_length);
    /* if (piece.edges.up_piece >= 0) {
         glVertex2d(piece.x_centre + 10, piece.y_centre + half_length);
         glVertex2d(piece.x_centre, piece.y_centre + half_length - 10);
         glVertex2d(piece.x_centre - 10, piece.y_centre + half_length);
     }*/
-    glTexCoord2f(1.0, 0.0);
+    //glTexCoord2d(0.0, 0.0);
+    glTexCoord2d(texture_length * col, texture_height * row);
     glVertex2d(piece.x_centre - half_length, piece.y_centre + half_length);
-  /*  if (piece.edges.left_piece >= 0) {
+   /* if (piece.edges.left_piece >= 0) {
         glVertex2d(piece.x_centre - half_length, piece.y_centre + 10);
         glVertex2d(piece.x_centre - half_length + 10, piece.y_centre);
         glVertex2d(piece.x_centre - half_length, piece.y_centre - 10);
@@ -181,7 +200,7 @@ void Draw_Puzzle_Pieces() {
         }
         
         if (i != holdingPiece) {
-            glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+            glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
             Draw_Piece(pieces[i], do_bounding_box, true);
         }
     }
@@ -648,7 +667,8 @@ int main(int argc, char * argv[]) {
     //gluPerspective(90.0, SCREEN_WIDTH/SCREEN_HEIGHT, 250, -250);
 	//glFrustum(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, -10.0, 10.0);
     
-    char filepath[] = "/Users/localash/Desktop/Giguesaur_Game/resources/puppy.png";
+    printf("%f %f\n", texture_height, texture_length);
+    char filepath[] = "/Users/localash/Desktop/Giguesaur-Game/resources/puppy.png";
     FILE *fp;
     if ((fp = fopen(filepath, "rb")) == NULL)
         fprintf(stderr, "Failed to load image!\n");
