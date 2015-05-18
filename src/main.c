@@ -27,8 +27,8 @@
 #include "headers/std_stuff.h"
 #include "headers/Piece.h"
 
-#define NUM_OF_ROWS 4
-#define NUM_OF_COLS 3
+#define NUM_OF_ROWS 5
+#define NUM_OF_COLS 4
 #define NUM_OF_PIECES NUM_OF_ROWS*NUM_OF_COLS
 #define PLUS_ROTATION 15
 #define DISTANCE_BEFORE_SNAP 250
@@ -54,9 +54,10 @@ typedef struct {
 int holdingPiece = -1;
 bool is_connections = false;
 bool do_bounding_box = false;
+bool do_draw_ids = false;
 Piece pieces[NUM_OF_PIECES];
-double texture_height = 1.0/NUM_OF_ROWS;
-double texture_length = 1.0/NUM_OF_COLS;
+double texture_height = 1.0 / NUM_OF_ROWS;
+double texture_length = 1.0 / NUM_OF_COLS;
 
 GLuint textures[1];
 
@@ -91,27 +92,31 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
             row++;
         }
     }
-    //printf("%d: %d %d\n", index, row, col);
-    
-    //glShadeModel(GL_SMOOTH);
+    glShadeModel(GL_SMOOTH);
     GLint half_length = piece.side_length / 2;
     glPushMatrix();
     glTranslated(piece.x_centre, piece.y_centre, 0.0);
     glRotated(piece.rotation, 0.0, 0.0, 1.0);
     glTranslated(-piece.x_centre, -piece.y_centre, 0.0);
     
-    glBegin(GL_POLYGON);
-    //glTexCoord2d((texture_length * col) + (texture_length/2), (texture_height * row) + (texture_height/2));
-    //glVertex2d(piece.x_centre, piece.y_centre);
-    //glTexCoord2d(0.0, 1.0);
+    double tex_x_half = texture_length / 2;
+    double tex_y_half = texture_height / 2;
+    double tex_x_pt = texture_length / 5;
+    double tex_y_pt = texture_height / 5;
+    //glBegin(GL_POLYGON);
+    glBegin(GL_TRIANGLE_FAN);
+    glTexCoord2d((texture_length * col) + (texture_length/2), (texture_height * row) + (texture_height/2));
+    glVertex2d(piece.x_centre, piece.y_centre);
     glTexCoord2d(texture_length * col, texture_height * (row + 1));
     glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
-   /* if (piece.edges.down_piece >=0) {
+    /*if (piece.edges.down_piece >=0) {
+        glTexCoord2d((tex_x_half * (col + 1)) - tex_x_pt, texture_height * (row + 1));
         glVertex2d(piece.x_centre - 10, piece.y_centre - half_length);
+        glTexCoord2d((tex_x_half * (col + 1)), (texture_height * (row + 1)) + tex_y_pt);
         glVertex2d(piece.x_centre, piece.y_centre - half_length - 10);
+        glTexCoord2d((tex_x_half * (col + 1)) + tex_x_pt, texture_height * (row + 1));
         glVertex2d(piece.x_centre + 10, piece.y_centre - half_length);
     }*/
-    //glTexCoord2d(1.0, 1.0);
     glTexCoord2d(texture_length * (col + 1), texture_height * (row + 1));
     glVertex2d(piece.x_centre + half_length, piece.y_centre - half_length);
     /*if (piece.edges.right_piece >= 0) {
@@ -119,7 +124,6 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
         glVertex2d(piece.x_centre + half_length + 10, piece.y_centre);
         glVertex2d(piece.x_centre + half_length, piece.y_centre + 10);
     }*/
-    //glTexCoord2d(1.0, 0.0);
     glTexCoord2d(texture_length * (col + 1), texture_height * row);
     glVertex2d(piece.x_centre + half_length, piece.y_centre + half_length);
   /*  if (piece.edges.up_piece >= 0) {
@@ -127,8 +131,6 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
         glVertex2d(piece.x_centre, piece.y_centre + half_length - 10);
         glVertex2d(piece.x_centre - 10, piece.y_centre + half_length);
     }*/
-    
-    //glTexCoord2d(0.0, 0.0);
     glTexCoord2d(texture_length * col, texture_height * row);
     glVertex2d(piece.x_centre - half_length, piece.y_centre + half_length);
    /* if (piece.edges.left_piece >= 0) {
@@ -136,8 +138,8 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
         glVertex2d(piece.x_centre - half_length + 10, piece.y_centre);
         glVertex2d(piece.x_centre - half_length, piece.y_centre - 10);
     }*/
-    //glTexCoord2d((texture_length * (col + 1))/2, (texture_height * (row + 1))/2);
-    //glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
+    glTexCoord2d(texture_length * col, texture_height * (row + 1));
+    glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
     glEnd();
     
     glPopMatrix();
@@ -180,6 +182,14 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
 
 void Draw_Puzzle_Pieces() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+    glBegin(GL_LINE_LOOP);
+    glVertex2d(0, 0);
+    glVertex2d(SCREEN_WIDTH, 0);
+    glVertex2d(SCREEN_WIDTH, SCREEN_HEIGHT);
+    glVertex2d(0, SCREEN_HEIGHT);
+    glVertex2d(0, 0);
+    glEnd();
     for (int i = 0; i < NUM_OF_PIECES; i++) {
         // Fix out of bounds
         if (pieces[i].x_centre + (pieces[i].side_length / 2) > glutGet(GLUT_WINDOW_WIDTH)) {
@@ -204,14 +214,14 @@ void Draw_Puzzle_Pieces() {
         
         if (i != holdingPiece) {
             glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-            Draw_Piece(pieces[i], do_bounding_box, true);
+            Draw_Piece(pieces[i], do_bounding_box, do_draw_ids);
         }
     }
     if (holdingPiece >= 0) {
         glColor4f(0.5f, 0.5f, 0.5f, 0.5f);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        Draw_Piece(pieces[holdingPiece], do_bounding_box, true);
+        Draw_Piece(pieces[holdingPiece], do_bounding_box, do_draw_ids);
         glDisable(GL_BLEND);
     }
     
@@ -493,6 +503,38 @@ void Render() {
 }
 
 void MouseListener(int button, int state, int x, int y) {
+    
+    GLdouble model[16];
+    GLdouble project[16];
+    GLint viewport[4];
+    glGetDoublev(GL_MODELVIEW_MATRIX, model);
+    glGetDoublev(GL_PROJECTION_MATRIX, project);
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    GLdouble new_projection[4];
+    /*
+    puts("model");
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            printf("%f ", model[i*4+j]);
+        }
+        printf("\n");
+    }
+    / *
+    puts("project");
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            printf("%f ", project[i*4+j]);
+        }
+        printf("\n");
+    }
+    */
+    new_projection[0] = 2.0 * x / viewport[2] - 1;
+    new_projection[1] = -(2.0 * y / viewport[3] - 1);
+    new_projection[2] = 0;
+    new_projection[3] = 1.0;
+    
+    
+    
     y = glutGet(GLUT_WINDOW_HEIGHT)-y; // Fix Mouse Y
 	//x = -(SCREEN_WIDTH - x * 2 - 1);
 	//y = SCREEN_HEIGHT - y * 2 - 1;
@@ -576,6 +618,75 @@ void MousePosition(int x, int y) {
 void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
     
     switch (theKey) {
+        // ==========
+        case '-':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glScaled(0.5, 0.5, 0.5);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+        case '=':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glScaled(2, 2, 2);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+        case '[':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glRotated(15, -1, 0, 0);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+        case ']':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glRotated(15, 1, 0, 0);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+        case '{':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glRotated(15, 0, -1, 0);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+        case '}':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glRotated(15, 0, 1, 0);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+        case 'w':
+        case 'W':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(0,10,0);
+            glutPostRedisplay();
+            break;
+        case 's':
+        case 'S':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(0,-10,0);
+            glutPostRedisplay();
+            break;
+        case 'a':
+        case 'A':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(-10,0,0);
+            glutPostRedisplay();
+            break;
+        case 'd':
+        case 'D':
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(10,0,0);
+            glutPostRedisplay();
+            break;
+        //==========
+            
         case 'p':
         case 'P':
             for (int i = 0; i < NUM_OF_PIECES; i++) {
@@ -665,15 +776,12 @@ int main(int argc, char * argv[]) {
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    glOrtho(-0, SCREEN_WIDTH, -0, SCREEN_HEIGHT, -1000, 1000);
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-    gluOrtho2D(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT);
-    //gluPerspective(90.0, SCREEN_WIDTH/SCREEN_HEIGHT, 250, -250);
-	//glFrustum(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT, -10.0, 10.0);
     
-    printf("%f %f\n", texture_height, texture_length);
     char filepath[] = "/Users/localash/Desktop/Giguesaur-Game/resources/puppy.png";
     FILE *fp;
-    if ((fp = fopen(filepath, "rb")) == NULL)
+    if ((fp = fopen(filepath, "r")) == NULL)
         fprintf(stderr, "Failed to load image!\n");
     else {
         fclose(fp);
