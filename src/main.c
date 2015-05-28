@@ -14,6 +14,7 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
+#include <unistd.h>
 #else
 #ifdef _WIN32
 #include <windows.h>
@@ -501,11 +502,142 @@ void CheckIfSolved() {
 void Render() {
     Draw_Puzzle_Pieces();
 }
-
+/*
+ bool gluInvertMatrix(const double m[16], double invOut[16])
+ {
+ double inv[16], det;
+ int i;
+ 
+ inv[0] = m[5]  * m[10] * m[15] -
+ m[5]  * m[11] * m[14] -
+ m[9]  * m[6]  * m[15] +
+ m[9]  * m[7]  * m[14] +
+ m[13] * m[6]  * m[11] -
+ m[13] * m[7]  * m[10];
+ 
+ inv[4] = -m[4]  * m[10] * m[15] +
+ m[4]  * m[11] * m[14] +
+ m[8]  * m[6]  * m[15] -
+ m[8]  * m[7]  * m[14] -
+ m[12] * m[6]  * m[11] +
+ m[12] * m[7]  * m[10];
+ 
+ inv[8] = m[4]  * m[9] * m[15] -
+ m[4]  * m[11] * m[13] -
+ m[8]  * m[5] * m[15] +
+ m[8]  * m[7] * m[13] +
+ m[12] * m[5] * m[11] -
+ m[12] * m[7] * m[9];
+ 
+ inv[12] = -m[4]  * m[9] * m[14] +
+ m[4]  * m[10] * m[13] +
+ m[8]  * m[5] * m[14] -
+ m[8]  * m[6] * m[13] -
+ m[12] * m[5] * m[10] +
+ m[12] * m[6] * m[9];
+ 
+ inv[1] = -m[1]  * m[10] * m[15] +
+ m[1]  * m[11] * m[14] +
+ m[9]  * m[2] * m[15] -
+ m[9]  * m[3] * m[14] -
+ m[13] * m[2] * m[11] +
+ m[13] * m[3] * m[10];
+ 
+ inv[5] = m[0]  * m[10] * m[15] -
+ m[0]  * m[11] * m[14] -
+ m[8]  * m[2] * m[15] +
+ m[8]  * m[3] * m[14] +
+ m[12] * m[2] * m[11] -
+ m[12] * m[3] * m[10];
+ 
+ inv[9] = -m[0]  * m[9] * m[15] +
+ m[0]  * m[11] * m[13] +
+ m[8]  * m[1] * m[15] -
+ m[8]  * m[3] * m[13] -
+ m[12] * m[1] * m[11] +
+ m[12] * m[3] * m[9];
+ 
+ inv[13] = m[0]  * m[9] * m[14] -
+ m[0]  * m[10] * m[13] -
+ m[8]  * m[1] * m[14] +
+ m[8]  * m[2] * m[13] +
+ m[12] * m[1] * m[10] -
+ m[12] * m[2] * m[9];
+ 
+ inv[2] = m[1]  * m[6] * m[15] -
+ m[1]  * m[7] * m[14] -
+ m[5]  * m[2] * m[15] +
+ m[5]  * m[3] * m[14] +
+ m[13] * m[2] * m[7] -
+ m[13] * m[3] * m[6];
+ 
+ inv[6] = -m[0]  * m[6] * m[15] +
+ m[0]  * m[7] * m[14] +
+ m[4]  * m[2] * m[15] -
+ m[4]  * m[3] * m[14] -
+ m[12] * m[2] * m[7] +
+ m[12] * m[3] * m[6];
+ 
+ inv[10] = m[0]  * m[5] * m[15] -
+ m[0]  * m[7] * m[13] -
+ m[4]  * m[1] * m[15] +
+ m[4]  * m[3] * m[13] +
+ m[12] * m[1] * m[7] -
+ m[12] * m[3] * m[5];
+ 
+ inv[14] = -m[0]  * m[5] * m[14] +
+ m[0]  * m[6] * m[13] +
+ m[4]  * m[1] * m[14] -
+ m[4]  * m[2] * m[13] -
+ m[12] * m[1] * m[6] +
+ m[12] * m[2] * m[5];
+ 
+ inv[3] = -m[1] * m[6] * m[11] +
+ m[1] * m[7] * m[10] +
+ m[5] * m[2] * m[11] -
+ m[5] * m[3] * m[10] -
+ m[9] * m[2] * m[7] +
+ m[9] * m[3] * m[6];
+ 
+ inv[7] = m[0] * m[6] * m[11] -
+ m[0] * m[7] * m[10] -
+ m[4] * m[2] * m[11] +
+ m[4] * m[3] * m[10] +
+ m[8] * m[2] * m[7] -
+ m[8] * m[3] * m[6];
+ 
+ inv[11] = -m[0] * m[5] * m[11] +
+ m[0] * m[7] * m[9] +
+ m[4] * m[1] * m[11] -
+ m[4] * m[3] * m[9] -
+ m[8] * m[1] * m[7] +
+ m[8] * m[3] * m[5];
+ 
+ inv[15] = m[0] * m[5] * m[10] -
+ m[0] * m[6] * m[9] -
+ m[4] * m[1] * m[10] +
+ m[4] * m[2] * m[9] +
+ m[8] * m[1] * m[6] -
+ m[8] * m[2] * m[5];
+ 
+ det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+ 
+ if (det == 0)
+ return false;
+ 
+ det = 1.0 / det;
+ 
+ for (i = 0; i < 16; i++)
+ invOut[i] = inv[i] * det;
+ 
+ return true;
+ }
+ */
 void MouseListener(int button, int state, int x, int y) {
     
     GLdouble model[16];
     GLdouble project[16];
+    GLdouble model_project[16];
     GLint viewport[4];
     glGetDoublev(GL_MODELVIEW_MATRIX, model);
     glGetDoublev(GL_PROJECTION_MATRIX, project);
@@ -529,11 +661,16 @@ void MouseListener(int button, int state, int x, int y) {
     }
     */
     new_projection[0] = 2.0 * x / viewport[2] - 1;
-    new_projection[1] = -(2.0 * y / viewport[3] - 1);
+    new_projection[1] = -(2.0 * y / viewport[3] + 1);
     new_projection[2] = 0;
     new_projection[3] = 1.0;
     
+    model_project[0] = project[0] * model[0] + project[1] * model[4] + project[2] * model[8] + project[3] * model[12];
+    model_project[1] = project[0] * model[1] + project[1] * model[5] + project[2] * model[9] + project[3] * model[13];
+    model_project[2] = project[0] * model[2] + project[1] * model[6] + project[2] * model[10] + project[3] * model[14];
+    model_project[3] = project[0] * model[3] + project[1] * model[7] + project[2] * model[11] + project[3] * model[15];
     
+    //model_project[4] = project
     
     y = glutGet(GLUT_WINDOW_HEIGHT)-y; // Fix Mouse Y
 	//x = -(SCREEN_WIDTH - x * 2 - 1);
@@ -615,6 +752,39 @@ void MousePosition(int x, int y) {
     }
 }
 
+void SpecialInput(int key, int x, int y) {
+    switch (key) {
+        case GLUT_KEY_UP:
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glRotated(15, -1, 0, 0);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+        case GLUT_KEY_DOWN:
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glRotated(15, 1, 0, 0);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+        case GLUT_KEY_LEFT:
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glRotated(15, 0, -1, 0);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+        case GLUT_KEY_RIGHT:
+            glMatrixMode(GL_MODELVIEW);
+            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+            glRotated(15, 0, 1, 0);
+            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
+            glutPostRedisplay();
+            break;
+    }
+}
+
 void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
     
     switch (theKey) {
@@ -636,53 +806,39 @@ void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
         case '[':
             glMatrixMode(GL_MODELVIEW);
             glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
-            glRotated(15, -1, 0, 0);
+            glRotated(15, 0, 0, 1);
             glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
             glutPostRedisplay();
             break;
         case ']':
             glMatrixMode(GL_MODELVIEW);
             glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
-            glRotated(15, 1, 0, 0);
-            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
-            glutPostRedisplay();
-            break;
-        case '{':
-            glMatrixMode(GL_MODELVIEW);
-            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
-            glRotated(15, 0, -1, 0);
-            glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
-            glutPostRedisplay();
-            break;
-        case '}':
-            glMatrixMode(GL_MODELVIEW);
-            glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
-            glRotated(15, 0, 1, 0);
+            glRotated(15, 0, 0, -1);
             glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
             glutPostRedisplay();
             break;
         case 'w':
         case 'W':
             glMatrixMode(GL_MODELVIEW);
-            glTranslated(0,10,0);
+            glTranslated(0,15,0);
             glutPostRedisplay();
             break;
         case 's':
         case 'S':
             glMatrixMode(GL_MODELVIEW);
-            glTranslated(0,-10,0);
+            glTranslated(0,-15,0);
             glutPostRedisplay();
             break;
         case 'a':
         case 'A':
             glMatrixMode(GL_MODELVIEW);
-            glTranslated(-10,0,0);
+            glTranslated(-15,0,0);
             glutPostRedisplay();
             break;
         case 'd':
         case 'D':
             glMatrixMode(GL_MODELVIEW);
-            glTranslated(10,0,0);
+            glTranslated(15,0,0);
             glutPostRedisplay();
             break;
         //==========
@@ -743,7 +899,6 @@ void WindowResize(int width, int height) {
     Draw_Puzzle_Pieces();
 }
 
-#include <unistd.h>
 int main(int argc, char * argv[]) {
     
     srand((unsigned)time(NULL));
@@ -769,6 +924,7 @@ int main(int argc, char * argv[]) {
     glutMouseFunc(MouseListener);
     glutPassiveMotionFunc(MousePosition);
     glutKeyboardFunc(KeyboardListener);
+    glutSpecialFunc(SpecialInput);
     //glutReshapeFunc(WindowResize);
     
     // Background Colour
