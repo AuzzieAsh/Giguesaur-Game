@@ -10,19 +10,10 @@
 #include <time.h>
 #include <math.h>
 // OpenGL stuff
-#ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 #include <unistd.h>
-#else
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-#endif
 #include "soil/SOIL.h"
 // My Stuff
 #include "headers/std_stuff.h"
@@ -82,6 +73,7 @@ void load_textures(char* name) {
 
 void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
     
+    // WTF was I doing here >:(
     int row = 0;
     int col = 0;
     int index = 0;
@@ -93,7 +85,7 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
             row++;
         }
     }
-    glShadeModel(GL_SMOOTH);
+    
     GLint half_length = piece.side_length / 2;
     glPushMatrix();
     glTranslated(piece.x_centre, piece.y_centre, 0.0);
@@ -110,7 +102,7 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
     glVertex2d(piece.x_centre, piece.y_centre);
     glTexCoord2d(texture_length * col, texture_height * (row + 1));
     glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
-    /*if (piece.edges.down_piece >=0) {
+   /* if (piece.edges.down_piece >=0) {
         glTexCoord2d((tex_x_half * (col + 1)) - tex_x_pt, texture_height * (row + 1));
         glVertex2d(piece.x_centre - 10, piece.y_centre - half_length);
         glTexCoord2d((tex_x_half * (col + 1)), (texture_height * (row + 1)) + tex_y_pt);
@@ -882,20 +874,6 @@ void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
 
 void WindowResize(int width, int height) {
 
-	/* Prevent A Divide By Zero If The Window Is Too Small */
-	if (height == 0) {
-		height = 1;
-	}
-
-	/* Reset The Current Viewport And Perspective Transformation */
-	glViewport(0, 0, width, height);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	/* Calculate The Aspect Ratio Of The Window */
-	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
-	glMatrixMode(GL_MODELVIEW);
     Draw_Puzzle_Pieces();
 }
 
@@ -906,7 +884,7 @@ int main(int argc, char * argv[]) {
     for (int i = 0; i < NUM_OF_PIECES; i++) {
         Piece piece = { .piece_id = i,
                         .x_centre = rand()%SCREEN_WIDTH,
-                        .y_centre= rand()%SCREEN_HEIGHT,
+                        .y_centre = rand()%SCREEN_HEIGHT,
                         .side_length = 50,
                         .rotation = 0};
         pieces[i] = piece;
@@ -929,11 +907,22 @@ int main(int argc, char * argv[]) {
     
     // Background Colour
     glClearColor(1.0, 1.0, 1.0, 0.0);
+    glEnable(GL_DEPTH_TEST);
     
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-0, SCREEN_WIDTH, -0, SCREEN_HEIGHT, -1000, 1000);
-    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    
+    gluPerspective(90.0f, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.01f, 1000.0f);
+    //glOrtho(-0, SCREEN_WIDTH, -0, SCREEN_HEIGHT, -1000, 1000);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    gluLookAt(0, 0, -1, 1280/2, 720/2, 1, 0, 1, 0);
+    glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
+    glRotated(-90, 0, 1, 0);
+    glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
     
     char filepath[] = "/Users/localash/Desktop/Giguesaur-Game/resources/puppy.png";
     FILE *fp;
