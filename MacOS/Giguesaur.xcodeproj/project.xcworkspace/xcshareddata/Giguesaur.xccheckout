@@ -14,11 +14,11 @@
 		<string>https://www.github.com/AuzzieAsh/Giguesaur-Game.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Giguesaur.xcodeproj</string>
+	<string>MacOS/Giguesaur.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>6B3C76B1071D239E3B9B5E546688B5AB6BA52569</key>
-		<string>../..</string>
+		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://www.github.com/AuzzieAsh/Giguesaur-Game.git</string>

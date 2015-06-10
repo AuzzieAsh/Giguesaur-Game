@@ -102,35 +102,35 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
     glVertex2d(piece.x_centre, piece.y_centre);
     glTexCoord2d(texture_length * col, texture_height * (row + 1));
     glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
-   /* if (piece.edges.down_piece >=0) {
-        glTexCoord2d((tex_x_half * (col + 1)) - tex_x_pt, texture_height * (row + 1));
-        glVertex2d(piece.x_centre - 10, piece.y_centre - half_length);
-        glTexCoord2d((tex_x_half * (col + 1)), (texture_height * (row + 1)) + tex_y_pt);
-        glVertex2d(piece.x_centre, piece.y_centre - half_length - 10);
-        glTexCoord2d((tex_x_half * (col + 1)) + tex_x_pt, texture_height * (row + 1));
-        glVertex2d(piece.x_centre + 10, piece.y_centre - half_length);
-    }*/
+    /* if (piece.edges.down_piece >=0) {
+     glTexCoord2d((tex_x_half * (col + 1)) - tex_x_pt, texture_height * (row + 1));
+     glVertex2d(piece.x_centre - 10, piece.y_centre - half_length);
+     glTexCoord2d((tex_x_half * (col + 1)), (texture_height * (row + 1)) + tex_y_pt);
+     glVertex2d(piece.x_centre, piece.y_centre - half_length - 10);
+     glTexCoord2d((tex_x_half * (col + 1)) + tex_x_pt, texture_height * (row + 1));
+     glVertex2d(piece.x_centre + 10, piece.y_centre - half_length);
+     }*/
     glTexCoord2d(texture_length * (col + 1), texture_height * (row + 1));
     glVertex2d(piece.x_centre + half_length, piece.y_centre - half_length);
     /*if (piece.edges.right_piece >= 0) {
-        glVertex2d(piece.x_centre + half_length, piece.y_centre - 10);
-        glVertex2d(piece.x_centre + half_length + 10, piece.y_centre);
-        glVertex2d(piece.x_centre + half_length, piece.y_centre + 10);
-    }*/
+     glVertex2d(piece.x_centre + half_length, piece.y_centre - 10);
+     glVertex2d(piece.x_centre + half_length + 10, piece.y_centre);
+     glVertex2d(piece.x_centre + half_length, piece.y_centre + 10);
+     }*/
     glTexCoord2d(texture_length * (col + 1), texture_height * row);
     glVertex2d(piece.x_centre + half_length, piece.y_centre + half_length);
-  /*  if (piece.edges.up_piece >= 0) {
-        glVertex2d(piece.x_centre + 10, piece.y_centre + half_length);
-        glVertex2d(piece.x_centre, piece.y_centre + half_length - 10);
-        glVertex2d(piece.x_centre - 10, piece.y_centre + half_length);
-    }*/
+    /*  if (piece.edges.up_piece >= 0) {
+     glVertex2d(piece.x_centre + 10, piece.y_centre + half_length);
+     glVertex2d(piece.x_centre, piece.y_centre + half_length - 10);
+     glVertex2d(piece.x_centre - 10, piece.y_centre + half_length);
+     }*/
     glTexCoord2d(texture_length * col, texture_height * row);
     glVertex2d(piece.x_centre - half_length, piece.y_centre + half_length);
-   /* if (piece.edges.left_piece >= 0) {
-        glVertex2d(piece.x_centre - half_length, piece.y_centre + 10);
-        glVertex2d(piece.x_centre - half_length + 10, piece.y_centre);
-        glVertex2d(piece.x_centre - half_length, piece.y_centre - 10);
-    }*/
+    /* if (piece.edges.left_piece >= 0) {
+     glVertex2d(piece.x_centre - half_length, piece.y_centre + 10);
+     glVertex2d(piece.x_centre - half_length + 10, piece.y_centre);
+     glVertex2d(piece.x_centre - half_length, piece.y_centre - 10);
+     }*/
     glTexCoord2d(texture_length * col, texture_height * (row + 1));
     glVertex2d(piece.x_centre - half_length, piece.y_centre - half_length);
     glEnd();
@@ -158,7 +158,7 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
         
         int div;
         for (div = 1; div <= letter; div *= 10);
-
+        
         for(;;) {
             div /= 10;
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, (letter == 0 ? 0 : (letter / div)) + '0');
@@ -223,39 +223,39 @@ void Draw_Puzzle_Pieces() {
 }
 
 void MakeConnections() {
-	if (NUM_OF_PIECES > 0) {
-		int index = 0;
-		for (int row = 0; row < NUM_OF_ROWS; row++) {
-			for (int col = 0; col < NUM_OF_COLS; col++) {
-				if (row == 0) {
-					pieces[index].edges.up_piece = -1;
-				}
-				else {
-					pieces[index].edges.up_piece = index - NUM_OF_COLS;
-				}
-				if (row + 1 == NUM_OF_ROWS) {
-					pieces[index].edges.down_piece = -1;
-				}
-				else {
-					pieces[index].edges.down_piece = index + NUM_OF_COLS;
-				}
-				if (col == 0) {
-					pieces[index].edges.left_piece = -1;
-				}
-				else {
-					pieces[index].edges.left_piece = index - 1;
-				}
-				if (col + 1 == NUM_OF_COLS) {
-					pieces[index].edges.right_piece = -1;
-				}
-				else {
-					pieces[index].edges.right_piece = index + 1;
-				}
-				index++;
-			}
-		}
-		is_connections = true;
-	}
+    if (NUM_OF_PIECES > 0) {
+        int index = 0;
+        for (int row = 0; row < NUM_OF_ROWS; row++) {
+            for (int col = 0; col < NUM_OF_COLS; col++) {
+                if (row == 0) {
+                    pieces[index].edges.up_piece = -1;
+                }
+                else {
+                    pieces[index].edges.up_piece = index - NUM_OF_COLS;
+                }
+                if (row + 1 == NUM_OF_ROWS) {
+                    pieces[index].edges.down_piece = -1;
+                }
+                else {
+                    pieces[index].edges.down_piece = index + NUM_OF_COLS;
+                }
+                if (col == 0) {
+                    pieces[index].edges.left_piece = -1;
+                }
+                else {
+                    pieces[index].edges.left_piece = index - 1;
+                }
+                if (col + 1 == NUM_OF_COLS) {
+                    pieces[index].edges.right_piece = -1;
+                }
+                else {
+                    pieces[index].edges.right_piece = index + 1;
+                }
+                index++;
+            }
+        }
+        is_connections = true;
+    }
     else {
         is_connections = false;
         fprintf(stderr, "Cannnot make connections!\n");
@@ -264,8 +264,8 @@ void MakeConnections() {
         for (int i = 0; i < NUM_OF_PIECES; i++) {
             Accessible up = closed;
             Accessible down = closed;
-			Accessible left = closed;
-			Accessible right = closed;
+            Accessible left = closed;
+            Accessible right = closed;
             
             if (pieces[i].edges.up_piece >= 0) up = opened;
             else up = invalid;
@@ -307,13 +307,13 @@ Points_Rotated Get_Rotated_Points(Piece piece) {
     double xd_new = cos(theta) * (xd - x) - sin(theta) * (yd - y) + x;
     double yd_new = sin(theta) * (xd - x) + cos(theta) * (yd - y) + y;
     Points_Rotated new_piece_location = {.x0 = xa_new,
-                                            .y0 = ya_new,
-                                            .x1 = xb_new,
-                                            .y1 = yb_new,
-                                            .x2 = xc_new,
-                                            .y2 = yc_new,
-                                            .x3 = xd_new,
-                                            .y3 = yd_new};
+        .y0 = ya_new,
+        .x1 = xb_new,
+        .y1 = yb_new,
+        .x2 = xc_new,
+        .y2 = yc_new,
+        .x3 = xd_new,
+        .y3 = yd_new};
     return new_piece_location;
 }
 
@@ -324,15 +324,15 @@ void CheckForConnections(int piece_num) {
         int right_id = pieces[piece_num].edges.right_piece;
         int down_id = pieces[piece_num].edges.down_piece;
         int left_id = pieces[piece_num].edges.left_piece;
-
+        
         Points_Rotated new_points = Get_Rotated_Points(pieces[piece_num]);
         
         if (up_id >= 0) {
             Points_Rotated up_points = Get_Rotated_Points(pieces[up_id]);
             double distance_1 = pow((new_points.x0 - up_points.x3), 2)
-                              + pow((new_points.y0 - up_points.y3), 2);
+            + pow((new_points.y0 - up_points.y3), 2);
             double distance_2 = pow((new_points.x1 - up_points.x2), 2)
-                              + pow((new_points.y1 - up_points.y2), 2);
+            + pow((new_points.y1 - up_points.y2), 2);
             
             if (distance_1 < DISTANCE_BEFORE_SNAP && distance_2 < DISTANCE_BEFORE_SNAP) {
                 double rads = pieces[up_id].rotation * PI / 180.0;
@@ -348,9 +348,9 @@ void CheckForConnections(int piece_num) {
         if (right_id >= 0) {
             Points_Rotated right_points = Get_Rotated_Points(pieces[right_id]);
             double distance_1 = pow((new_points.x1 - right_points.x0), 2)
-                              + pow((new_points.y1 - right_points.y0), 2);
+            + pow((new_points.y1 - right_points.y0), 2);
             double distance_2 = pow((new_points.x2 - right_points.x3), 2)
-                              + pow((new_points.y2 - right_points.y3), 2);
+            + pow((new_points.y2 - right_points.y3), 2);
             
             if (distance_1 < DISTANCE_BEFORE_SNAP && distance_2 < DISTANCE_BEFORE_SNAP) {
                 double rads = pieces[right_id].rotation * PI / 180.0;
@@ -366,9 +366,9 @@ void CheckForConnections(int piece_num) {
         if (down_id >= 0) {
             Points_Rotated down_points = Get_Rotated_Points(pieces[down_id]);
             double distance_1 = pow((new_points.x3 - down_points.x0), 2)
-                              + pow((new_points.y3 - down_points.y0), 2);
+            + pow((new_points.y3 - down_points.y0), 2);
             double distance_2 = pow((new_points.x2 - down_points.x1), 2)
-                              + pow((new_points.y2 - down_points.y1), 2);
+            + pow((new_points.y2 - down_points.y1), 2);
             
             if (distance_1 < DISTANCE_BEFORE_SNAP && distance_2 < DISTANCE_BEFORE_SNAP) {
                 double rads = pieces[down_id].rotation * PI / 180.0;
@@ -384,9 +384,9 @@ void CheckForConnections(int piece_num) {
         if (left_id >= 0) {
             Points_Rotated left_points = Get_Rotated_Points(pieces[left_id]);
             double distance_1 = pow((new_points.x0 - left_points.x1), 2)
-                              + pow((new_points.y0 - left_points.y1), 2);
+            + pow((new_points.y0 - left_points.y1), 2);
             double distance_2 = pow((new_points.x3 - left_points.x2), 2)
-                              + pow((new_points.y3 - left_points.y2), 2);
+            + pow((new_points.y3 - left_points.y2), 2);
             
             if (distance_1 < DISTANCE_BEFORE_SNAP && distance_2 < DISTANCE_BEFORE_SNAP) {
                 double rads = pieces[left_id].rotation * PI / 180.0;
@@ -407,14 +407,14 @@ void CheckForConnections(int piece_num) {
             double x_new = pieces[up_id].x_centre + opp;
             double y_new = pieces[up_id].y_centre - adj;
             
-			bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
-			bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
+            bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
+            bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
             if (x_true && y_true) {
                 pieces[piece_num].open_edges.up_open = closed;
                 pieces[up_id].open_edges.down_open = closed;
                 printf("Piece %d joined piece %d\n", piece_num, up_id);
-			}
-
+            }
+            
         }
         if (right_id >= 0) {
             double rads = pieces[right_id].rotation * PI / 180.0;
@@ -422,15 +422,15 @@ void CheckForConnections(int piece_num) {
             double opp = pieces[right_id].side_length * cos(rads);
             double x_new = pieces[right_id].x_centre - opp;
             double y_new = pieces[right_id].y_centre - adj;
-
-			bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
-			bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
-			if (x_true && y_true) {
+            
+            bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
+            bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
+            if (x_true && y_true) {
                 pieces[piece_num].open_edges.right_open = closed;
                 pieces[right_id].open_edges.left_open = closed;
-				printf("Piece %d joined piece %d\n", piece_num, right_id);
-			}
-
+                printf("Piece %d joined piece %d\n", piece_num, right_id);
+            }
+            
         }
         if (down_id >= 0) {
             double rads = pieces[down_id].rotation * PI / 180.0;
@@ -438,15 +438,15 @@ void CheckForConnections(int piece_num) {
             double opp = pieces[down_id].side_length * sin(rads);
             double x_new = pieces[down_id].x_centre - opp;
             double y_new = pieces[down_id].y_centre + adj;
-
-			bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
-			bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
-			if (x_true && y_true) {
+            
+            bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
+            bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
+            if (x_true && y_true) {
                 pieces[piece_num].open_edges.down_open = closed;
                 pieces[down_id].open_edges.up_open = closed;
-				printf("Piece %d joined piece %d\n", piece_num, down_id);
-			}
-
+                printf("Piece %d joined piece %d\n", piece_num, down_id);
+            }
+            
         }
         if (left_id >= 0) {
             double rads = pieces[left_id].rotation * PI / 180.0;
@@ -454,15 +454,15 @@ void CheckForConnections(int piece_num) {
             double opp = pieces[left_id].side_length * cos(rads);
             double x_new = pieces[left_id].x_centre + opp;
             double y_new = pieces[left_id].y_centre + adj;
-
-			bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
-			bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
-			if (x_true && y_true) {
+            
+            bool x_true = pieces[piece_num].x_centre - x_new < 1 && pieces[piece_num].x_centre - x_new > -1;
+            bool y_true = pieces[piece_num].y_centre - y_new < 1 && pieces[piece_num].y_centre - y_new > -1;
+            if (x_true && y_true) {
                 pieces[piece_num].open_edges.left_open = closed;
                 pieces[left_id].open_edges.right_open = closed;
-				printf("Piece %d joined piece %d\n", piece_num, left_id);
-			}
-
+                printf("Piece %d joined piece %d\n", piece_num, left_id);
+            }
+            
         }
     }
 }
@@ -470,19 +470,19 @@ void CheckForConnections(int piece_num) {
 void CheckIfSolved() {
     bool solved = true;
     for (int i = 0; i < NUM_OF_PIECES; i++) {
-		if (pieces[i].open_edges.up_open == opened) {
+        if (pieces[i].open_edges.up_open == opened) {
             solved = false;
             i = NUM_OF_PIECES;
         }
-		if (pieces[i].open_edges.down_open == opened) {
+        if (pieces[i].open_edges.down_open == opened) {
             solved = false;
             i = NUM_OF_PIECES;
         }
-		if (pieces[i].open_edges.left_open == opened) {
+        if (pieces[i].open_edges.left_open == opened) {
             solved = false;
             i = NUM_OF_PIECES;
         }
-		if (pieces[i].open_edges.right_open == opened) {
+        if (pieces[i].open_edges.right_open == opened) {
             solved = false;
             i = NUM_OF_PIECES;
         }
@@ -494,179 +494,179 @@ void CheckIfSolved() {
 void Render() {
     Draw_Puzzle_Pieces();
 }
-/*
- bool gluInvertMatrix(const double m[16], double invOut[16])
- {
- double inv[16], det;
- int i;
- 
- inv[0] = m[5]  * m[10] * m[15] -
- m[5]  * m[11] * m[14] -
- m[9]  * m[6]  * m[15] +
- m[9]  * m[7]  * m[14] +
- m[13] * m[6]  * m[11] -
- m[13] * m[7]  * m[10];
- 
- inv[4] = -m[4]  * m[10] * m[15] +
- m[4]  * m[11] * m[14] +
- m[8]  * m[6]  * m[15] -
- m[8]  * m[7]  * m[14] -
- m[12] * m[6]  * m[11] +
- m[12] * m[7]  * m[10];
- 
- inv[8] = m[4]  * m[9] * m[15] -
- m[4]  * m[11] * m[13] -
- m[8]  * m[5] * m[15] +
- m[8]  * m[7] * m[13] +
- m[12] * m[5] * m[11] -
- m[12] * m[7] * m[9];
- 
- inv[12] = -m[4]  * m[9] * m[14] +
- m[4]  * m[10] * m[13] +
- m[8]  * m[5] * m[14] -
- m[8]  * m[6] * m[13] -
- m[12] * m[5] * m[10] +
- m[12] * m[6] * m[9];
- 
- inv[1] = -m[1]  * m[10] * m[15] +
- m[1]  * m[11] * m[14] +
- m[9]  * m[2] * m[15] -
- m[9]  * m[3] * m[14] -
- m[13] * m[2] * m[11] +
- m[13] * m[3] * m[10];
- 
- inv[5] = m[0]  * m[10] * m[15] -
- m[0]  * m[11] * m[14] -
- m[8]  * m[2] * m[15] +
- m[8]  * m[3] * m[14] +
- m[12] * m[2] * m[11] -
- m[12] * m[3] * m[10];
- 
- inv[9] = -m[0]  * m[9] * m[15] +
- m[0]  * m[11] * m[13] +
- m[8]  * m[1] * m[15] -
- m[8]  * m[3] * m[13] -
- m[12] * m[1] * m[11] +
- m[12] * m[3] * m[9];
- 
- inv[13] = m[0]  * m[9] * m[14] -
- m[0]  * m[10] * m[13] -
- m[8]  * m[1] * m[14] +
- m[8]  * m[2] * m[13] +
- m[12] * m[1] * m[10] -
- m[12] * m[2] * m[9];
- 
- inv[2] = m[1]  * m[6] * m[15] -
- m[1]  * m[7] * m[14] -
- m[5]  * m[2] * m[15] +
- m[5]  * m[3] * m[14] +
- m[13] * m[2] * m[7] -
- m[13] * m[3] * m[6];
- 
- inv[6] = -m[0]  * m[6] * m[15] +
- m[0]  * m[7] * m[14] +
- m[4]  * m[2] * m[15] -
- m[4]  * m[3] * m[14] -
- m[12] * m[2] * m[7] +
- m[12] * m[3] * m[6];
- 
- inv[10] = m[0]  * m[5] * m[15] -
- m[0]  * m[7] * m[13] -
- m[4]  * m[1] * m[15] +
- m[4]  * m[3] * m[13] +
- m[12] * m[1] * m[7] -
- m[12] * m[3] * m[5];
- 
- inv[14] = -m[0]  * m[5] * m[14] +
- m[0]  * m[6] * m[13] +
- m[4]  * m[1] * m[14] -
- m[4]  * m[2] * m[13] -
- m[12] * m[1] * m[6] +
- m[12] * m[2] * m[5];
- 
- inv[3] = -m[1] * m[6] * m[11] +
- m[1] * m[7] * m[10] +
- m[5] * m[2] * m[11] -
- m[5] * m[3] * m[10] -
- m[9] * m[2] * m[7] +
- m[9] * m[3] * m[6];
- 
- inv[7] = m[0] * m[6] * m[11] -
- m[0] * m[7] * m[10] -
- m[4] * m[2] * m[11] +
- m[4] * m[3] * m[10] +
- m[8] * m[2] * m[7] -
- m[8] * m[3] * m[6];
- 
- inv[11] = -m[0] * m[5] * m[11] +
- m[0] * m[7] * m[9] +
- m[4] * m[1] * m[11] -
- m[4] * m[3] * m[9] -
- m[8] * m[1] * m[7] +
- m[8] * m[3] * m[5];
- 
- inv[15] = m[0] * m[5] * m[10] -
- m[0] * m[6] * m[9] -
- m[4] * m[1] * m[10] +
- m[4] * m[2] * m[9] +
- m[8] * m[1] * m[6] -
- m[8] * m[2] * m[5];
- 
- det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
- 
- if (det == 0)
- return false;
- 
- det = 1.0 / det;
- 
- for (i = 0; i < 16; i++)
- invOut[i] = inv[i] * det;
- 
- return true;
- }
- */
+
+bool gluInvertMatrix(const double m[16], double invOut[16]) {
+    double inv[16], det;
+    int i;
+    
+    inv[0] = m[5]  * m[10] * m[15] -
+    m[5]  * m[11] * m[14] -
+    m[9]  * m[6]  * m[15] +
+    m[9]  * m[7]  * m[14] +
+    m[13] * m[6]  * m[11] -
+    m[13] * m[7]  * m[10];
+    
+    inv[4] = -m[4]  * m[10] * m[15] +
+    m[4]  * m[11] * m[14] +
+    m[8]  * m[6]  * m[15] -
+    m[8]  * m[7]  * m[14] -
+    m[12] * m[6]  * m[11] +
+    m[12] * m[7]  * m[10];
+    
+    inv[8] = m[4]  * m[9] * m[15] -
+    m[4]  * m[11] * m[13] -
+    m[8]  * m[5] * m[15] +
+    m[8]  * m[7] * m[13] +
+    m[12] * m[5] * m[11] -
+    m[12] * m[7] * m[9];
+    
+    inv[12] = -m[4]  * m[9] * m[14] +
+    m[4]  * m[10] * m[13] +
+    m[8]  * m[5] * m[14] -
+    m[8]  * m[6] * m[13] -
+    m[12] * m[5] * m[10] +
+    m[12] * m[6] * m[9];
+    
+    inv[1] = -m[1]  * m[10] * m[15] +
+    m[1]  * m[11] * m[14] +
+    m[9]  * m[2] * m[15] -
+    m[9]  * m[3] * m[14] -
+    m[13] * m[2] * m[11] +
+    m[13] * m[3] * m[10];
+    
+    inv[5] = m[0]  * m[10] * m[15] -
+    m[0]  * m[11] * m[14] -
+    m[8]  * m[2] * m[15] +
+    m[8]  * m[3] * m[14] +
+    m[12] * m[2] * m[11] -
+    m[12] * m[3] * m[10];
+    
+    inv[9] = -m[0]  * m[9] * m[15] +
+    m[0]  * m[11] * m[13] +
+    m[8]  * m[1] * m[15] -
+    m[8]  * m[3] * m[13] -
+    m[12] * m[1] * m[11] +
+    m[12] * m[3] * m[9];
+    
+    inv[13] = m[0]  * m[9] * m[14] -
+    m[0]  * m[10] * m[13] -
+    m[8]  * m[1] * m[14] +
+    m[8]  * m[2] * m[13] +
+    m[12] * m[1] * m[10] -
+    m[12] * m[2] * m[9];
+    
+    inv[2] = m[1]  * m[6] * m[15] -
+    m[1]  * m[7] * m[14] -
+    m[5]  * m[2] * m[15] +
+    m[5]  * m[3] * m[14] +
+    m[13] * m[2] * m[7] -
+    m[13] * m[3] * m[6];
+    
+    inv[6] = -m[0]  * m[6] * m[15] +
+    m[0]  * m[7] * m[14] +
+    m[4]  * m[2] * m[15] -
+    m[4]  * m[3] * m[14] -
+    m[12] * m[2] * m[7] +
+    m[12] * m[3] * m[6];
+    
+    inv[10] = m[0]  * m[5] * m[15] -
+    m[0]  * m[7] * m[13] -
+    m[4]  * m[1] * m[15] +
+    m[4]  * m[3] * m[13] +
+    m[12] * m[1] * m[7] -
+    m[12] * m[3] * m[5];
+    
+    inv[14] = -m[0]  * m[5] * m[14] +
+    m[0]  * m[6] * m[13] +
+    m[4]  * m[1] * m[14] -
+    m[4]  * m[2] * m[13] -
+    m[12] * m[1] * m[6] +
+    m[12] * m[2] * m[5];
+    
+    inv[3] = -m[1] * m[6] * m[11] +
+    m[1] * m[7] * m[10] +
+    m[5] * m[2] * m[11] -
+    m[5] * m[3] * m[10] -
+    m[9] * m[2] * m[7] +
+    m[9] * m[3] * m[6];
+    
+    inv[7] = m[0] * m[6] * m[11] -
+    m[0] * m[7] * m[10] -
+    m[4] * m[2] * m[11] +
+    m[4] * m[3] * m[10] +
+    m[8] * m[2] * m[7] -
+    m[8] * m[3] * m[6];
+    
+    inv[11] = -m[0] * m[5] * m[11] +
+    m[0] * m[7] * m[9] +
+    m[4] * m[1] * m[11] -
+    m[4] * m[3] * m[9] -
+    m[8] * m[1] * m[7] +
+    m[8] * m[3] * m[5];
+    
+    inv[15] = m[0] * m[5] * m[10] -
+    m[0] * m[6] * m[9] -
+    m[4] * m[1] * m[10] +
+    m[4] * m[2] * m[9] +
+    m[8] * m[1] * m[6] -
+    m[8] * m[2] * m[5];
+    
+    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+
+    if (det == 0)
+        return false;
+    
+    det = 1.0 / det;
+    
+    for (i = 0; i < 16; i++)
+        invOut[i] = inv[i] * det;
+    
+    return true;
+}
+
 void MouseListener(int button, int state, int x, int y) {
     
     GLdouble model[16];
     GLdouble project[16];
+    GLdouble model_mat[4][4];
+    GLdouble project_mat[4][4];
     GLdouble model_project[16];
+    GLdouble model_project_mat[4][4];
+    GLdouble inverse_mat[16];
     GLint viewport[4];
     glGetDoublev(GL_MODELVIEW_MATRIX, model);
     glGetDoublev(GL_PROJECTION_MATRIX, project);
     glGetIntegerv(GL_VIEWPORT, viewport);
     GLdouble new_projection[4];
-    /*
-    puts("model");
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            printf("%f ", model[i*4+j]);
-        }
-        printf("\n");
-    }
-    / *
-    puts("project");
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            printf("%f ", project[i*4+j]);
-        }
-        printf("\n");
-    }
-    */
+    int sum = 0;
+  
     new_projection[0] = 2.0 * x / viewport[2] - 1;
     new_projection[1] = -(2.0 * y / viewport[3] + 1);
     new_projection[2] = 0;
     new_projection[3] = 1.0;
     
-    model_project[0] = project[0] * model[0] + project[1] * model[4] + project[2] * model[8] + project[3] * model[12];
-    model_project[1] = project[0] * model[1] + project[1] * model[5] + project[2] * model[9] + project[3] * model[13];
-    model_project[2] = project[0] * model[2] + project[1] * model[6] + project[2] * model[10] + project[3] * model[14];
-    model_project[3] = project[0] * model[3] + project[1] * model[7] + project[2] * model[11] + project[3] * model[15];
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            for (int k = 0; k < 4; k++) {
+                sum = sum + project_mat[i][k]*model_mat[k][j];
+            }
+            model_project_mat[i][j] = sum;
+            sum = 0;
+        }
+    }
     
-    //model_project[4] = project
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            model_project[i*4+j] = model_project_mat[i][j];
+        }
+    }
+    
+    bool success = gluInvertMatrix(model_project, inverse_mat);
+    if (success) puts("Yep");
     
     y = glutGet(GLUT_WINDOW_HEIGHT)-y; // Fix Mouse Y
-	//x = -(SCREEN_WIDTH - x * 2 - 1);
-	//y = SCREEN_HEIGHT - y * 2 - 1;
+    //x = -(SCREEN_WIDTH - x * 2 - 1);
+    //y = SCREEN_HEIGHT - y * 2 - 1;
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         // Place piece back on board if holding a piece
         if (holdingPiece >= 0) {
@@ -734,9 +734,9 @@ void MouseListener(int button, int state, int x, int y) {
 
 void MousePosition(int x, int y) {
     y = glutGet(GLUT_WINDOW_HEIGHT)-y; // Fix Mouse Y
-	//x = -(SCREEN_WIDTH - x * 2 - 1);
-	//y = SCREEN_HEIGHT - y * 2 - 1;
-	//printf("Mouse: %d %d\n", x, y);
+    //x = -(SCREEN_WIDTH - x * 2 - 1);
+    //y = SCREEN_HEIGHT - y * 2 - 1;
+    //printf("Mouse: %d %d\n", x, y);
     if (holdingPiece >= 0) {
         pieces[holdingPiece].x_centre = x;
         pieces[holdingPiece].y_centre = y;
@@ -780,7 +780,7 @@ void SpecialInput(int key, int x, int y) {
 void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
     
     switch (theKey) {
-        // ==========
+            // ==========
         case '-':
             glMatrixMode(GL_MODELVIEW);
             glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
@@ -833,7 +833,7 @@ void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
             glTranslated(15,0,0);
             glutPostRedisplay();
             break;
-        //==========
+            //==========
             
         case 'p':
         case 'P':
@@ -845,12 +845,12 @@ void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
         case 'R':
             for (int i = 0; i < NUM_OF_PIECES; i++) {
                 pieces[i].rotation = 0;
-				if (pieces[i].open_edges.up_open == closed) pieces[i].open_edges.up_open = opened;
-				if (pieces[i].open_edges.down_open == closed) pieces[i].open_edges.down_open = opened;
-				if (pieces[i].open_edges.left_open == closed) pieces[i].open_edges.left_open = opened;
-				if (pieces[i].open_edges.right_open == closed) pieces[i].open_edges.right_open = opened;
+                if (pieces[i].open_edges.up_open == closed) pieces[i].open_edges.up_open = opened;
+                if (pieces[i].open_edges.down_open == closed) pieces[i].open_edges.down_open = opened;
+                if (pieces[i].open_edges.left_open == closed) pieces[i].open_edges.left_open = opened;
+                if (pieces[i].open_edges.right_open == closed) pieces[i].open_edges.right_open = opened;
             }
-			printf("Puzzle reset\n");
+            printf("Puzzle reset\n");
             Draw_Puzzle_Pieces();
             break;
         case 't':
@@ -873,7 +873,7 @@ void KeyboardListener(unsigned char theKey, int mouseX, int mouseY) {
 }
 
 void WindowResize(int width, int height) {
-
+    
     Draw_Puzzle_Pieces();
 }
 
@@ -883,10 +883,10 @@ int main(int argc, char * argv[]) {
     
     for (int i = 0; i < NUM_OF_PIECES; i++) {
         Piece piece = { .piece_id = i,
-                        .x_centre = rand()%SCREEN_WIDTH,
-                        .y_centre = rand()%SCREEN_HEIGHT,
-                        .side_length = 50,
-                        .rotation = 0};
+            .x_centre = rand()%SCREEN_WIDTH,
+            .y_centre = rand()%SCREEN_HEIGHT,
+            .side_length = 50,
+            .rotation = 0};
         pieces[i] = piece;
     }
     MakeConnections();
@@ -910,6 +910,7 @@ int main(int argc, char * argv[]) {
     glEnable(GL_DEPTH_TEST);
     
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     
@@ -918,13 +919,11 @@ int main(int argc, char * argv[]) {
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    
-    gluLookAt(0, 0, -1, 1280/2, 720/2, 1, 0, 1, 0);
+    gluLookAt(0, 0, -3, 1280/2, 720/2, 1, 0, 1, 0);
     glTranslated(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0.0);
     glRotated(-90, 0, 1, 0);
     glTranslated(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2, 0.0);
-    
-    char filepath[] = "/Users/localash/Desktop/Giguesaur-Game/resources/puppy.png";
+    char filepath[] = "/Users/localash/Desktop/Giguesaur-Game/MacOS/resources/puppy.png";
     FILE *fp;
     if ((fp = fopen(filepath, "r")) == NULL)
         fprintf(stderr, "Failed to load image!\n");
