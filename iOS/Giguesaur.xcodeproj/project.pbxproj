@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		CE32B4261B27B96D00040528 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE32B4251B27B96D00040528 /* OpenGLES.framework */; };
 		CE32B4281B27B98300040528 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE32B4271B27B98300040528 /* QuartzCore.framework */; };
+		CE32B4611B28F77500040528 /* Giguesaur in Resources */ = {isa = PBXBuildFile; fileRef = CE32B4601B28F77500040528 /* Giguesaur */; };
 		CE8F7DE91B27B5EF008F8444 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8F7DE81B27B5EF008F8444 /* main.m */; };
 		CE8F7DEC1B27B5EF008F8444 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8F7DEB1B27B5EF008F8444 /* AppDelegate.m */; };
 		CE8F7DEE1B27B5EF008F8444 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = CE8F7DED1B27B5EF008F8444 /* Shader.fsh */; };
@@ -33,6 +34,7 @@
 /* Begin PBXFileReference section */
 		CE32B4251B27B96D00040528 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		CE32B4271B27B98300040528 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		CE32B4601B28F77500040528 /* Giguesaur */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Giguesaur; sourceTree = "<group>"; };
 		CE8F7DE31B27B5EF008F8444 /* Giguesaur.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Giguesaur.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE8F7DE71B27B5EF008F8444 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CE8F7DE81B27B5EF008F8444 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 		CE8F7DE51B27B5EF008F8444 /* Giguesaur */ = {
 			isa = PBXGroup;
 			children = (
+				CE32B4601B28F77500040528 /* Giguesaur */,
 				CE8F7DEA1B27B5EF008F8444 /* AppDelegate.h */,
 				CE8F7DEB1B27B5EF008F8444 /* AppDelegate.m */,
 				CE8F7DED1B27B5EF008F8444 /* Shader.fsh */,
@@ -218,6 +221,7 @@
 				CE8F7DF81B27B5EF008F8444 /* Images.xcassets in Resources */,
 				CE8F7DF01B27B5EF008F8444 /* Shader.vsh in Resources */,
 				CE8F7DEE1B27B5EF008F8444 /* Shader.fsh in Resources */,
+				CE32B4611B28F77500040528 /* Giguesaur in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,29 +8,30 @@
 #ifndef Giguesaur_Piece_h
 #define Giguesaur_Piece_h
 
-@interface PieceClass : NSObject
+//@interface PieceClass : NSObject
 
-struct Piece {
+struct Piece{
     int piece_id;
     double x_location;
     double y_location;
     double rotation;
     
-    struct Edge_piece {
+    struct {
         int up_piece;
         int down_piece;
         int left_piece;
         int right_piece;
-    };
+    } Edge_piece;
     
-    struct Edge_open {
+    struct {
         BOOL up_open;
         BOOL down_open;
         BOOL left_open;
         BOOL right_open;
-    };
+    } Edge_open;
+    
 };
 
-@end
+//@end
 
 #endif

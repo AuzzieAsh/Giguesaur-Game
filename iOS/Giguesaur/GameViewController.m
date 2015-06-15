@@ -28,7 +28,7 @@ enum
     NUM_ATTRIBUTES
 };
 
-GLfloat gCubeVertexData[216] = 
+GLfloat gCubeVertexData[216] =
 {
     // Data layout for each line below is:
     // positionX, positionY, positionZ,     normalX, normalY, normalZ,
@@ -75,6 +75,13 @@ GLfloat gCubeVertexData[216] =
     -0.5f, 0.5f, -0.5f,        0.0f, 0.0f, -1.0f
 };
 
+const GLfloat quadVertices[] = {
+    0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    1.0f,0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    0.0f,0.0f, 0.0f, 1.0f, 0.0f, 0.0f
+};
+
 @interface GameViewController () {
     GLuint _program;
     
@@ -104,7 +111,7 @@ GLfloat gCubeVertexData[216] =
     [super viewDidLoad];
     
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-
+    
     if (!self.context) {
         NSLog(@"Failed to create ES context");
     }
@@ -117,7 +124,7 @@ GLfloat gCubeVertexData[216] =
 }
 
 - (void)dealloc
-{    
+{
     [self tearDownGL];
     
     if ([EAGLContext currentContext] == self.context) {
@@ -128,7 +135,7 @@ GLfloat gCubeVertexData[216] =
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-
+    
     if ([self isViewLoaded] && ([[self view] window] == nil)) {
         self.view = nil;
         
@@ -139,7 +146,7 @@ GLfloat gCubeVertexData[216] =
         }
         self.context = nil;
     }
-
+    
     // Dispose of any resources that can be recreated.
 }
 
@@ -164,7 +171,7 @@ GLfloat gCubeVertexData[216] =
     
     glGenBuffers(1, &_vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(gCubeVertexData), gCubeVertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
     
     glEnableVertexAttribArray(GLKVertexAttribPosition);
     glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, 24, BUFFER_OFFSET(0));
@@ -191,8 +198,19 @@ GLfloat gCubeVertexData[216] =
 
 #pragma mark - GLKView and GLKViewController delegate methods
 
-- (void)update
-{
+- (void)update {
+    const GLfloat simpleTriangle[] = {
+        0.0f, 0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f
+    };
+    glClear(GL_COLOR_BUFFER_BIT);
+    glUseProgram(_program);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, simpleTriangle);
+    glEnableVertexAttribArray(0);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    
+    /*
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 100.0f);
     
@@ -218,12 +236,14 @@ GLfloat gCubeVertexData[216] =
     _modelViewProjectionMatrix = GLKMatrix4Multiply(projectionMatrix, modelViewMatrix);
     
     _rotation += self.timeSinceLastUpdate * 0.5f;
+     */
 }
 
-- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
-{
-    glClearColor(0.65f, 0.65f, 0.65f, 1.0f);
+- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
+    
+    glClearColor(0.0f, 0.5f, 0.9f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, 100, 100);
     
     glBindVertexArrayOES(_vertexArray);
     
@@ -234,11 +254,12 @@ GLfloat gCubeVertexData[216] =
     
     // Render the object again with ES2
     glUseProgram(_program);
-    
+    /*
     glUniformMatrix4fv(uniforms[UNIFORM_MODELVIEWPROJECTION_MATRIX], 1, 0, _modelViewProjectionMatrix.m);
     glUniformMatrix3fv(uniforms[UNIFORM_NORMAL_MATRIX], 1, 0, _normalMatrix.m);
+    */
+    glDrawArrays(GL_TRIANGLES, 0, 4);
     
-    glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 
 #pragma mark -  OpenGL ES 2 shader compilation
