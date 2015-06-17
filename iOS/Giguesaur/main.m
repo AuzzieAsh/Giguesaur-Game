@@ -1,10 +1,9 @@
-//
-//  main.m
-//  Giguesaur
-//
-//  Created by Local Ash on 6/10/15.
-//  Copyright (c) 2015 Local Ash. All rights reserved.
-//
+/*
+    File: main.m
+    Author: Ashley Manson
+ 
+    Description: The main, does main things, cause main is the main.
+ */
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"

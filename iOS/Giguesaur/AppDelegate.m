@@ -1,22 +1,24 @@
-//
-//  AppDelegate.m
-//  Giguesaur
-//
-//  Created by Local Ash on 6/10/15.
-//  Copyright (c) 2015 Local Ash. All rights reserved.
-//
+/*
+    File: AppDelegate.h
+    Author: Ashley Manson
+ 
+    Description: AppDelegate does delegate things.
+ */
+
 
 #import "AppDelegate.h"
 
-@interface AppDelegate ()
-
-@end
-
 @implementation AppDelegate
 
+@synthesize glView=_glView;
+@synthesize window=_window;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    CGRect screenBounds = [[UIScreen mainScreen] bounds];
+    self.glView = [[OpenGLView alloc] initWithFrame:screenBounds];
+    [self.window makeKeyAndVisible];
+    [self.window addSubview:_glView];
     return YES;
 }
 

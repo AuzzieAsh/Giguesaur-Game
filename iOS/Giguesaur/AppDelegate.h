@@ -1,16 +1,19 @@
-//
-//  AppDelegate.h
-//  Giguesaur
-//
-//  Created by Local Ash on 6/10/15.
-//  Copyright (c) 2015 Local Ash. All rights reserved.
-//
+/*
+    File: AppDelegate.h
+    Author: Ashley Manson
+ 
+    Description: AppDelegate does delegate things.
+ */
 
 #import <UIKit/UIKit.h>
+#import "OpenGLView.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : NSObject <UIApplicationDelegate> {
+    OpenGLView* _glView;
+}
 
-@property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, retain) IBOutlet UIWindow *window;
+@property (nonatomic, retain) IBOutlet OpenGLView *glView;
 
 @end
 

@@ -1,14 +1,12 @@
 /*
- File: Piece.h
- Author: Ashley Manson
+    File: Piece.h
+    Author: Ashley Manson
  
- Description: Header File for what a piece is.
+    Description: Header File for what a piece is.
  */
 
 #ifndef Giguesaur_Piece_h
 #define Giguesaur_Piece_h
-
-//@interface PieceClass : NSObject
 
 struct Piece{
     int piece_id;
@@ -31,7 +29,5 @@ struct Piece{
     } Edge_open;
     
 };
-
-//@end
 
 #endif
