@@ -7,10 +7,6 @@
 
 #import "MatrixMath.h"
 
-#define PI 3.141592653
-#define degToRad(DEG) (GLfloat)(DEG * PI / 180.0)
-//#define radToDeg(RAD) (GLfloat)(RAD * 180.0 / PI)
-
 @implementation MatrixMath
 
 - (void) identityMatrix: (GLfloat*) matOut {
@@ -64,7 +60,37 @@
     matOut[14] = -1;
     matOut[15] = 0;
 }
-
+/*
+- (void) projectionFromPerspective: (GLfloat*) matOut
+                            andFOV: (GLfloat) fov
+                         andAspect: (GLfloat) aspect
+                           andNear: (GLfloat) near
+                            andFar: (GLfloat) far {
+    
+    GLfloat h = 1 / tan(degToRad((0.5f * fov)));
+    GLfloat fmn = 1 / (far - near);
+    
+    matOut[0] = 1 * h / aspect;
+    matOut[1] = 0.0;
+    matOut[2] = 0.0;
+    matOut[3] = 0.0;
+    
+    matOut[4] = 0.0;
+    matOut[5] = h;
+    matOut[6] = 0.0;
+    matOut[7] = 0.0;
+    
+    matOut[8] = 0.0;
+    matOut[9] = 0.0;
+    matOut[10] = far * fmn;
+    matOut[11] = 1.0;
+    
+    matOut[12] = 0.0;
+    matOut[13] = 0.0;
+    matOut[14] = (-far * near) * fmn;
+    matOut[15] = 0.0;
+}
+*/
 - (void) translationMatrix: (GLfloat*) matOut
                     alongX: (GLfloat) x
                     alongY: (GLfloat) y

@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
+#import <GLKit/GLKit.h>
 
 @interface OpenGLView : UIView {
     
@@ -20,9 +21,9 @@
     GLuint _colorSlot;
     GLuint _projectionUniform;
     GLuint _modelViewUniform;
+    GLuint _depthRenderBuffer;
     
     float _currentRotation;
-    GLuint _depthRenderBuffer;
     
 }
 

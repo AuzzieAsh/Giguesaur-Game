@@ -8,6 +8,9 @@
 #ifndef Giguesaur_Piece_h
 #define Giguesaur_Piece_h
 
+#define SIDE_LENGTH 2
+#define SIDE_HALF (SIDE_LENGTH/2)
+
 struct Piece{
     int piece_id;
     double x_location;
