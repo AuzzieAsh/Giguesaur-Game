@@ -2,7 +2,7 @@
     File: OpenGLView.h
     Author: Ashley Manson
  
-    Description: OpenGL stuff.
+    OpenGL stuff.
  */
 
 #import <UIKit/UIKit.h>

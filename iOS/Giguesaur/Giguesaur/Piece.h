@@ -2,13 +2,13 @@
     File: Piece.h
     Author: Ashley Manson
  
-    Description: Header File for what a piece is.
+    Header File for what a piece is.
  */
 
 #ifndef Giguesaur_Piece_h
 #define Giguesaur_Piece_h
 
-#define SIDE_LENGTH 2
+#define SIDE_LENGTH 50
 #define SIDE_HALF (SIDE_LENGTH/2)
 
 struct Piece{

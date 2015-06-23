@@ -2,7 +2,7 @@
     File: main.m
     Author: Ashley Manson
  
-    Description: The main, does main things, cause main is the main.
+    The main, does main things, cause main is the main.
  */
 
 #import <UIKit/UIKit.h>

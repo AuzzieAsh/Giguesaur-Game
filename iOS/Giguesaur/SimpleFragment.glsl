@@ -2,7 +2,7 @@
     File: SimpleFragment.glsl
     Author: Ashley Manson
  
-    Description: Simple Fragment Shadder, doesn't do much.
+    Simple Fragment Shadder.
  */
 
 varying lowp vec4 DestinationColor;

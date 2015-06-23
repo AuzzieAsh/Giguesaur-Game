@@ -2,7 +2,7 @@
     File: AppDelegate.h
     Author: Ashley Manson
  
-    Description: AppDelegate does delegate things.
+    AppDelegate does delegate things.
  */
 
 

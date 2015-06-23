@@ -2,7 +2,7 @@
     File: SimpleVertex.glsl
     Author: Ashley Manson
  
-    Description: Simple Vertex Shadder, doesn't do much.
+    Simple Vertex Shadder.
  */
 
 attribute vec4 Position;

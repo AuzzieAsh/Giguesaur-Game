@@ -16,8 +16,8 @@
 		CE3CFEF11B3102C100165040 /* OpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3CFEF01B3102C100165040 /* OpenGLView.m */; };
 		CE3CFEF51B31061100165040 /* SimpleFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = CE3CFEF31B31061100165040 /* SimpleFragment.glsl */; };
 		CE3CFEF61B31061100165040 /* SimpleVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = CE3CFEF41B31061100165040 /* SimpleVertex.glsl */; };
-		CE3CFEFD1B310CF800165040 /* MatrixMath.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3CFEFC1B310CF800165040 /* MatrixMath.m */; };
 		CE3CFEFF1B310DB100165040 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE21F3F91B2F9F580099B71B /* ViewController.m */; };
+		CE6701E31B3909A50005B854 /* SimpleMath.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6701E21B3909A50005B854 /* SimpleMath.m */; };
 		CE6A512A1B2FA021000993DE /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6A51291B2FA021000993DE /* OpenGLES.framework */; };
 		CE6A512C1B2FA027000993DE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6A512B1B2FA027000993DE /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
@@ -50,10 +50,10 @@
 		CE3CFEF21B3102F200165040 /* OpenGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
 		CE3CFEF31B31061100165040 /* SimpleFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SimpleFragment.glsl; sourceTree = "<group>"; };
 		CE3CFEF41B31061100165040 /* SimpleVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SimpleVertex.glsl; sourceTree = "<group>"; };
-		CE3CFEFB1B310CF800165040 /* MatrixMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatrixMath.h; path = MatrixMath/MatrixMath.h; sourceTree = "<group>"; };
-		CE3CFEFC1B310CF800165040 /* MatrixMath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MatrixMath.m; path = MatrixMath/MatrixMath.m; sourceTree = "<group>"; };
 		CE3CFF001B310EC300165040 /* Piece.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Piece.h; path = Giguesaur/Piece.h; sourceTree = "<group>"; };
 		CE3CFF011B310EC300165040 /* Puzzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Puzzle.h; path = Giguesaur/Puzzle.h; sourceTree = "<group>"; };
+		CE6701E11B3908FD0005B854 /* SimpleMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleMath.h; sourceTree = "<group>"; };
+		CE6701E21B3909A50005B854 /* SimpleMath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleMath.m; sourceTree = "<group>"; };
 		CE6A51291B2FA021000993DE /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		CE6A512B1B2FA027000993DE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -102,7 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				CE3CFF021B310ECC00165040 /* Giguesaur */,
-				CE3CFEFE1B310D0800165040 /* MatrixMath */,
+				CE3CFEFE1B310D0800165040 /* SimpleMath */,
 				CE21F3F51B2F9F580099B71B /* AppDelegate.h */,
 				CE21F3F61B2F9F580099B71B /* AppDelegate.m */,
 				CE3CFEF21B3102F200165040 /* OpenGLView.h */,
@@ -145,13 +145,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		CE3CFEFE1B310D0800165040 /* MatrixMath */ = {
+		CE3CFEFE1B310D0800165040 /* SimpleMath */ = {
 			isa = PBXGroup;
 			children = (
-				CE3CFEFB1B310CF800165040 /* MatrixMath.h */,
-				CE3CFEFC1B310CF800165040 /* MatrixMath.m */,
+				CE6701E11B3908FD0005B854 /* SimpleMath.h */,
+				CE6701E21B3909A50005B854 /* SimpleMath.m */,
 			);
-			name = MatrixMath;
+			name = SimpleMath;
 			sourceTree = "<group>";
 		};
 		CE3CFF021B310ECC00165040 /* Giguesaur */ = {
@@ -267,7 +267,7 @@
 			files = (
 				CE3CFEFF1B310DB100165040 /* ViewController.m in Sources */,
 				CE21F3F71B2F9F580099B71B /* AppDelegate.m in Sources */,
-				CE3CFEFD1B310CF800165040 /* MatrixMath.m in Sources */,
+				CE6701E31B3909A50005B854 /* SimpleMath.m in Sources */,
 				CE21F3F41B2F9F580099B71B /* main.m in Sources */,
 				CE3CFEF11B3102C100165040 /* OpenGLView.m in Sources */,
 			);

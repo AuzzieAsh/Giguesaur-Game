@@ -2,11 +2,12 @@
     File: OpenGLView.m
     Author: Ashley Manson
  
-    Description: Does all the OpenGL magic and rendering.
+    Does all the OpenGL magic and rendering.
+    Note: iPad aspect ratio is 4:3
  */
 
 #import "OpenGLView.h"
-#import "MatrixMath/MatrixMath.h"
+#import "SimpleMath.h"
 #import "Giguesaur/Puzzle.h"
 
 typedef struct {
@@ -27,6 +28,25 @@ const GLubyte Indices[] = {
 };
 
 @implementation OpenGLView
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [[event allTouches] anyObject];
+    
+    // Get the specific point that was touched
+    CGPoint point = [touch locationInView:touch.view];
+    
+    point.y = BOARD_HIEGHT - point.y;
+    printf("%f, %f\n", point.x, point.y);
+    
+    for (int i = 0; i < NUM_OF_PIECES; i++) {
+        if(point.x >= pieces[i].x_location - SIDE_HALF && point.x < pieces[i].x_location + SIDE_HALF) {
+            if (point.y >= pieces[i].y_location - SIDE_HALF && point.y < pieces[i].y_location + SIDE_HALF) {
+                printf("Touched piece %i\n", i);
+                i = NUM_OF_PIECES;
+            }
+        }
+    }
+}
 
 /***** OpenGL Setup Code *****/
 + (Class)layerClass {
@@ -104,7 +124,6 @@ const GLubyte Indices[] = {
     }
     
     return shaderHandle;
-    
 }
 
 - (void)compileShaders {
@@ -149,41 +168,46 @@ const GLubyte Indices[] = {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 
-
 /***** DRAW CODE *****/
 - (void)render:(CADisplayLink*)displayLink {
-    MatrixMath* matrixMath = [[MatrixMath alloc] init];
     // Clear the screen
     glClearColor(0, 0.5, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     
     // Sort out projection Matrix
-    GLfloat projection[16];
-    float h = 4.0f * self.frame.size.height / self.frame.size.width;
-    float aspect = self.frame.size.height / self.frame.size.width;
-    //float h = 4.0f * BOARD_HIEGHT / BOARD_WIDTH;
-    //[matrixMath projectionFromFrustum:projection andLeft:-2 andRight:2 andBottom:-h/2 andTop:h/2 andNear:1 andFar:1000];
-    //[matrixMath projectionFromFrustum:projection andLeft:0 andRight:BOARD_WIDTH andBottom:0 andTop:BOARD_HIEGHT andNear:1 andFar:1000];
-    GLKMatrix4 new_projection = GLKMatrix4MakePerspective(degToRad(90.0f), aspect, 0.01f, 1000);
-    //GLKMatrix4 new_projection = GLKMatrix4MakeFrustum(-2, 2, -h/2, h/2, 1, 1000);
-    //GLKMatrix4 new_projection = GLKMatrix4MakeLookAt(0, 0, -5, self.frame.size.width/2, self.frame.size.height/2, 1, 0, 1, 0);
-    glUniformMatrix4fv(_projectionUniform, 1, 0, new_projection.m);
-    _currentRotation += displayLink.duration * 100;
+    //float aspectFrustum = 4.0f * BOARD_HIEGHT / BOARD_WIDTH;
+    //float aspect = BOARD_HIEGHT / BOARD_WIDTH;
+    //GLKMatrix4 projection = GLKMatrix4MakeFrustum(-2, 2, -aspectFrustum/2, aspectFrustum/2, 1, 1000);
+    //GLKMatrix4 projection = GLKMatrix4MakePerspective(degToRad(90), aspect, 0.01f, 1000.0f);
+    GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 1, 1000);
+    glUniformMatrix4fv(_projectionUniform, 1, 0, projection.m);
     
-    // Sort out translation matrix
-    GLfloat translation[16];
-    [matrixMath translationMatrix:translation alongX:0 alongY:0 alongZ:-10];
-    // Sort out rotation matrix
-    GLfloat rotation[16];
-    [matrixMath rotationMatrix:rotation aroundX:0 aroundY:0 aroundZ:_currentRotation];
-    // Sort out ModelView Matrix (Translation * Rotation)
-    GLfloat modelView[16];
-    [matrixMath multiplyMatrix:modelView first:translation second:rotation];
-    glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView);
+    /*
+    GLKMatrix4 identity = GLKMatrix4Identity;
+    GLKMatrix4 lookAt = GLKMatrix4MakeLookAt(0, 0, 0, self.frame.size.width/2, self.frame.size.height/2, 1, 0, 1, 0);
+    GLKMatrix4 plusTranslate = GLKMatrix4MakeTranslation(self.frame.size.width/2, self.frame.size.height/2, 0.0);
+    GLKMatrix4 negTranslate = GLKMatrix4MakeTranslation(-self.frame.size.width/2, -self.frame.size.height/2, 0.0);
+    GLKMatrix4 rotateY = GLKMatrix4MakeYRotation(degToRad(-90.0f));
+    GLKMatrix4 rotateX = GLKMatrix4MakeXRotation(degToRad(45.0f));
     
-    glViewport(0, 0, self.frame.size.width, self.frame.size.height);
-    //glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);
+    GLKMatrix4 result1 = GLKMatrix4Multiply(identity, lookAt);
+    GLKMatrix4 result2 = GLKMatrix4Multiply(result1, plusTranslate);
+    result1 = GLKMatrix4Multiply(result2, rotateY);
+    result2 = GLKMatrix4Multiply(result1, rotateX);
+    GLKMatrix4 modelView = GLKMatrix4Multiply(result2, negTranslate);
+    glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
+    */
+    _currentRotation += displayLink.duration * 90;
+    
+    // Sort out Model-View Matrix (For Orthographic View)
+    GLKMatrix4 translation = GLKMatrix4MakeTranslation(0,0,-1);
+    GLKMatrix4 rotation = GLKMatrix4MakeRotation(degToRad(0), 0, 0, 1);
+    GLKMatrix4 modelView = GLKMatrix4Multiply(translation, rotation);
+    
+    glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
+    
+    glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);// self.frame.size.width, self.frame.size.height);
     
     for (int i = 0; i < NUM_OF_PIECES; i++) {
         const Vertex NewPiece[] = {
@@ -192,7 +216,7 @@ const GLubyte Indices[] = {
             {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, {0, 0, 0, 1}},
             {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, {0, 0, 0, 1}}
         };
-        //NSLog(@"%d: %f, %f", i, pieces[i].x_location, pieces[i].y_location);
+        
         GLuint vertexBuffer;
         glGenBuffers(1, &vertexBuffer);
         glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -202,12 +226,6 @@ const GLubyte Indices[] = {
         glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
         glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
     }
-    /*
-    glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-    glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
-    
-    glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
-    */
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
@@ -216,9 +234,11 @@ const GLubyte Indices[] = {
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
+/* "Main" for the frame */
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        // Call all the openGl setup code
         [self setupLayer];
         [self setupContext];
         [self setupDepthBuffer];
@@ -229,10 +249,12 @@ const GLubyte Indices[] = {
         [self setupDisplayLink];
         
         for (int i = 0; i < NUM_OF_PIECES; i++) {
-            struct Piece piece = {.piece_id = i,
-                            .x_location = rand()%10,//BOARD_WIDTH,
-                            .y_location = rand()%10,//BOARD_HIEGHT,
-                .rotation = 0};
+            struct Piece piece = {
+                .piece_id = i,
+                .x_location = rand()%BOARD_WIDTH,
+                .y_location = rand()%BOARD_HIEGHT,
+                .rotation = 0
+            };
             pieces[i] = piece;
         }
     }
