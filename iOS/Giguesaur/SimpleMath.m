@@ -9,7 +9,7 @@
 
 @implementation SimpleMath
 
-- (NSArray*) pointsRotated: (struct Piece) piece {
+- (NSArray*) pointsRotated: (Piece) piece {
     
     int x = piece.x_location;
     int y = piece.y_location;
@@ -19,39 +19,38 @@
     // Top Left, index 0
     float xa = x - SIDE_HALF;
     float ya = y + SIDE_HALF;
-    float xa_new = cos(theta) * (xa - x) - sin(theta) * (ya - y) + x;
-    float ya_new = sin(theta) * (xa - x) + cos(theta) * (ya - y) + y;
+    float xa_new = cosf(theta) * (xa - x) - sinf(theta) * (ya - y) + x;
+    float ya_new = sinf(theta) * (xa - x) + cosf(theta) * (ya - y) + y;
     
     // Top Right, index 1
     float xb = x + SIDE_HALF;
     float yb = y + SIDE_HALF;
-    float xb_new = cos(theta) * (xb - x) - sin(theta) * (yb - y) + x;
-    float yb_new = sin(theta) * (xb - x) + cos(theta) * (yb - y) + y;
+    float xb_new = cosf(theta) * (xb - x) - sinf(theta) * (yb - y) + x;
+    float yb_new = sinf(theta) * (xb - x) + cosf(theta) * (yb - y) + y;
     
     // Bot Right, index 2
     float xc = x + SIDE_HALF;
     float yc = y - SIDE_HALF;
-    float xc_new = cos(theta) * (xc - x) - sin(theta) * (yc - y) + x;
-    float yc_new = sin(theta) * (xc - x) + cos(theta) * (yc - y) + y;
+    float xc_new = cosf(theta) * (xc - x) - sinf(theta) * (yc - y) + x;
+    float yc_new = sinf(theta) * (xc - x) + cosf(theta) * (yc - y) + y;
     
     // Bot Left, index 3
     float xd = x - SIDE_HALF;
     float yd = y - SIDE_HALF;
-    float xd_new = cos(theta) * (xd - x) - sin(theta) * (yd - y) + x;
-    float yd_new = sin(theta) * (xd - x) + cos(theta) * (yd - y) + y;
+    float xd_new = cosf(theta) * (xd - x) - sinf(theta) * (yd - y) + x;
+    float yd_new = sinf(theta) * (xd - x) + cosf(theta) * (yd - y) + y;
     
-    NSArray *newPoints = [NSArray arrayWithObjects:
-                          [NSValue valueWithCGPoint:CGPointMake(xa_new, ya_new)],
-                          [NSValue valueWithCGPoint:CGPointMake(xb_new, yb_new)],
-                          [NSValue valueWithCGPoint:CGPointMake(xc_new, yc_new)],
-                          [NSValue valueWithCGPoint:CGPointMake(xd_new, yd_new)],
-                          nil];
-    return newPoints;
+    return [NSArray arrayWithObjects:
+            [NSValue valueWithCGPoint:CGPointMake(xa_new, ya_new)],
+            [NSValue valueWithCGPoint:CGPointMake(xb_new, yb_new)],
+            [NSValue valueWithCGPoint:CGPointMake(xc_new, yc_new)],
+            [NSValue valueWithCGPoint:CGPointMake(xd_new, yd_new)],
+            nil];
 }
 
-- (NSArray*) distanceBetweenPiece: (struct Piece) originalPiece
-                    andOtherPiece: (struct Piece) otherPiece
-                      whichPoints: (pieceCompare) sideToCompare {
+- (NSArray*) distanceBetweenPiece: (Piece) originalPiece
+                    andOtherPiece: (Piece) otherPiece
+                        whichSide: (pieceSide) sideToCompare {
     
     NSArray *originalPieceRotated = [self pointsRotated:originalPiece];
     NSArray *otherPieceRotated = [self pointsRotated:otherPiece];
@@ -61,7 +60,7 @@
     CGPoint pieceBotRight = [[originalPieceRotated objectAtIndex:2] CGPointValue];
     CGPoint pieceBotLeft = [[originalPieceRotated objectAtIndex:3] CGPointValue];
     
-    float distance_1 = -1, distance_2 = -1;
+    float distance_1, distance_2;
     
     if (sideToCompare == P_UP) {
         CGPoint upBotLeft = [[otherPieceRotated objectAtIndex:3] CGPointValue];
@@ -115,12 +114,47 @@
             powf((pieceBotRight.y - rightBotLeft.y), 2);
     }
     
-    NSArray *distances = [NSArray arrayWithObjects:
-                          [NSNumber numberWithFloat:distance_1],
-                          [NSNumber numberWithFloat:distance_2],
-                          nil];
+    return [NSArray arrayWithObjects:
+            [NSNumber numberWithFloat:distance_1],
+            [NSNumber numberWithFloat:distance_2],
+            nil];
+}
+
+- (CGPoint) newCoordinates: (Piece) neighbourPiece
+                 whichSide: (pieceSide) sideOfNeighbour {
     
-    return distances;
+    float rads = degToRad(neighbourPiece.rotation);
+    float adj, opp, x_new, y_new;
+    
+    if (sideOfNeighbour == P_UP) {
+        opp = SIDE_LENGTH * sinf(rads);
+        adj = SIDE_LENGTH * cosf(rads);
+        x_new = neighbourPiece.x_location + opp;
+        y_new = neighbourPiece.y_location - adj;
+    }
+    
+    else if (sideOfNeighbour == P_DOWN) {
+        opp = SIDE_LENGTH * sinf(rads);
+        adj = SIDE_LENGTH * cosf(rads);
+        x_new = neighbourPiece.x_location - opp;
+        y_new = neighbourPiece.y_location + adj;
+    }
+    
+    else if (sideOfNeighbour == P_LEFT) {
+        opp = SIDE_LENGTH * cosf(rads);
+        adj = SIDE_LENGTH * sinf(rads);
+        x_new = neighbourPiece.x_location + opp;
+        y_new = neighbourPiece.y_location + adj;
+    }
+    
+    else if (sideOfNeighbour == P_RIGHT) {
+        opp = SIDE_LENGTH * cosf(rads);
+        adj = SIDE_LENGTH * sinf(rads);
+        x_new = neighbourPiece.x_location - opp;
+        y_new = neighbourPiece.y_location - adj;
+    }
+    
+    return CGPointMake(x_new, y_new);
 }
 
 @end

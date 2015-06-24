@@ -10,6 +10,10 @@
 #import "SimpleMath.h"
 #import "Giguesaur/Puzzle.h"
 
+/***** Global Varibles for the Puzzle *****/
+Piece pieces[NUM_OF_PIECES];
+int holdingPiece = -1;
+
 typedef struct {
     float Position[3];
     float Colour[4];
@@ -38,11 +42,20 @@ const GLubyte Indices[] = {
     point.y = BOARD_HIEGHT - point.y;
     printf("%f, %f\n", point.x, point.y);
     
-    for (int i = 0; i < NUM_OF_PIECES; i++) {
-        if(point.x >= pieces[i].x_location - SIDE_HALF && point.x < pieces[i].x_location + SIDE_HALF) {
-            if (point.y >= pieces[i].y_location - SIDE_HALF && point.y < pieces[i].y_location + SIDE_HALF) {
-                printf("Touched piece %i\n", i);
-                i = NUM_OF_PIECES;
+    if (holdingPiece >= 0) {
+        printf("Placed piece %i\n", holdingPiece);
+        pieces[holdingPiece].x_location = point.x;
+        pieces[holdingPiece].y_location = point.y;
+        holdingPiece = -1;
+    }
+    else {
+        for (int i = 0; i < NUM_OF_PIECES; i++) {
+            if(point.x >= pieces[i].x_location - SIDE_HALF && point.x < pieces[i].x_location + SIDE_HALF) {
+                if (point.y >= pieces[i].y_location - SIDE_HALF && point.y < pieces[i].y_location + SIDE_HALF) {
+                    printf("Touched piece %i\n", i);
+                    holdingPiece = i;
+                    i = NUM_OF_PIECES;
+                }
             }
         }
     }
@@ -210,21 +223,40 @@ const GLubyte Indices[] = {
     glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);// self.frame.size.width, self.frame.size.height);
     
     for (int i = 0; i < NUM_OF_PIECES; i++) {
-        const Vertex NewPiece[] = {
-            {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, {0, 0, 0, 1}},
-            {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, {0, 0, 0, 1}},
-            {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, {0, 0, 0, 1}},
-            {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, {0, 0, 0, 1}}
-        };
-        
-        GLuint vertexBuffer;
-        glGenBuffers(1, &vertexBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(NewPiece), NewPiece, GL_STATIC_DRAW);
-        
-        glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-        glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
-        glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
+        if (i != holdingPiece) {
+            const Vertex NewPiece[] = {
+                {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, {0, 0, 0, 1}},
+                {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, {0, 0, 0, 1}},
+                {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, {0, 0, 0, 1}},
+                {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, {0, 0, 0, 1}}
+            };
+            
+            GLuint vertexBuffer;
+            glGenBuffers(1, &vertexBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(NewPiece), NewPiece, GL_STATIC_DRAW);
+            
+            glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+            glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
+            glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
+        }
+        else {
+            const Vertex NewPiece[] = {
+                {{SIDE_LENGTH, 0, 0}, {0.6, 0.6, 0.6, 0.5}},
+                {{SIDE_LENGTH, SIDE_LENGTH, 0}, {0.6, 0.6, 0.6, 0.5}},
+                {{0, SIDE_LENGTH, 0}, {0.6, 0.6, 0.6, 0.5}},
+                {{0, 0, 0}, {0.6, 0.6, 0.6, 0.5}}
+            };
+            
+            GLuint vertexBuffer;
+            glGenBuffers(1, &vertexBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(NewPiece), NewPiece, GL_STATIC_DRAW);
+            
+            glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+            glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
+            glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
+        }
     }
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
@@ -248,15 +280,7 @@ const GLubyte Indices[] = {
         [self setupVBOs];
         [self setupDisplayLink];
         
-        for (int i = 0; i < NUM_OF_PIECES; i++) {
-            struct Piece piece = {
-                .piece_id = i,
-                .x_location = rand()%BOARD_WIDTH,
-                .y_location = rand()%BOARD_HIEGHT,
-                .rotation = 0
-            };
-            pieces[i] = piece;
-        }
+        generatePieces(pieces);
     }
     return self;
 }

@@ -2,7 +2,7 @@
     File: Piece.h
     Author: Ashley Manson
  
-    Header File for what a piece is.
+    Defines what a puzzle piece is.
  */
 
 #ifndef Giguesaur_Piece_h
@@ -11,26 +11,28 @@
 #define SIDE_LENGTH 50
 #define SIDE_HALF (SIDE_LENGTH/2)
 
-struct Piece{
+typedef enum {invalid, isClosed, isOpen} ACCESSIBLE_EDGE;
+
+typedef struct {
     int piece_id;
-    double x_location;
-    double y_location;
-    double rotation;
+    float x_location;
+    float y_location;
+    float rotation;
     
-    struct {
+    struct NEIGHBOUR_PIECE {
         int up_piece;
         int down_piece;
         int left_piece;
         int right_piece;
-    } Edge_piece;
+    } neighbourPiece;
     
-    struct {
-        BOOL up_open;
-        BOOL down_open;
-        BOOL left_open;
-        BOOL right_open;
-    } Edge_open;
+    struct OPEN_EDGE {
+        ACCESSIBLE_EDGE up_open;
+        ACCESSIBLE_EDGE down_open;
+        ACCESSIBLE_EDGE left_open;
+        ACCESSIBLE_EDGE right_open;
+    } openEdge;
     
-};
+} Piece;
 
 #endif
