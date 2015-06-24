@@ -153,20 +153,67 @@ const GLubyte Indices[] = {
 
 // Move a piece if it in range to snap to another piece
 - (void) checkToSnap: (int) pieceID {
-    if (pieces[pieceID].neighbourPiece.up_piece >= 0) {
-        NSArray *distances =
+	
+	int upID = pieces[pieceID].neighbourPiece.up_piece;
+	int downID = pieces[pieceID].neighbourPiece.down_piece;
+	int leftID = pieces[pieceID].neighbourPiece.left_piece;
+	int rightID = pieces[pieceID].neighbourPiece.right_piece;
+	NSArray *distances;
+	CGPoint newPoints;
+	
+    if (upID >= 0) {
+        distances =
         [simpleMath distanceBetweenPiece:pieces[pieceID]
-                           andOtherPiece:pieces[pieces[pieceID].neighbourPiece.up_piece]
+                           andOtherPiece:pieces[upID]
                                whichSide:P_UP];
         if ([[distances objectAtIndex:0] floatValue] < DISTANCE_BEFORE_SNAP &&
             [[distances objectAtIndex:1] floatValue] < DISTANCE_BEFORE_SNAP) {
-            CGPoint new_points =
-            [simpleMath newCoordinates:pieces[pieces[pieceID].neighbourPiece.up_piece] whichSide:P_UP];
-            pieces[pieceID].x_location = new_points.x;
-            pieces[pieceID].y_location = new_points.y;
-            pieces[pieceID].rotation = pieces[pieces[pieceID].neighbourPiece.up_piece].rotation;
+            newPoints =
+            [simpleMath newCoordinates:pieces[upID] whichSide:P_UP];
+            pieces[pieceID].x_location = newPoints.x;
+            pieces[pieceID].y_location = newPoints.y;
+            pieces[pieceID].rotation = pieces[upID].rotation;
         }
     }
+	
+	if (downID >= 0) {
+		distances =
+		[simpleMath distanceBetweenPiece:pieces[pieceID] andOtherPiece:pieces[downID] whichSide:P_DOWN];
+		if ([[distances objectAtIndex:0] floatValue] < DISTANCE_BEFORE_SNAP &&
+		[[distances objectAtIndex:1] floatValue] < DISTANCE_BEFORE_SNAP) {
+			newPoints =
+			[simpleMath newCoordinates:pieces[downID] whichSide:P_DOWN];
+			pieces[pieceID].x_location = newPoints.x;
+			pieces[pieceID].y_location = newPoints.y;
+			pieces[pieceID].rotation = pieces[downID].rotation;
+		}
+	}
+	
+	if (leftID >= 0) {
+		distances =
+		[simpleMath distanceBetweenPiece:pieces[pieceID] andOtherPiece:pieces[leftID] whichSide:P_LEFT];
+		if ([[distances objectAtIndex:0] floatValue] < DISTANCE_BEFORE_SNAP &&
+		[[distances objectAtIndex:1] floatValue] < DISTANCE_BEFORE_SNAP) {
+			newPoints =
+			[simpleMath newCoordinates:pieces[leftID] whichSide:P_LEFT];
+			pieces[pieceID].x_location = newPoints.x;
+			pieces[pieceID].y_location = newPoints.y;
+			pieces[pieceID].rotation = pieces[leftID].rotation;
+		}
+	}
+	
+	if (rightID >= 0) {
+		distances = 
+		[simpleMath distanceBetweenPiece:pieces[pieceID] andOtherPiece:pieces[rightID] whichSide:P_RIGHT];
+		if ([[distances objectAtIndex:0] floatValue] < DISTANCE_BEFORE_SNAP &&
+		[[distances objectAtIndex:1] floatValue] < DISTANCE_BEFORE_SNAP) {
+			newPoints =
+			[simpleMath newCoordinates:pieces[rightID] whichSide: P_RIGHT];
+			pieces[pieceID].x_location = newPoints.x;
+			pieces[pieceID].y_location = newPoints.y;
+			pieces[pieceID].rotation = pieces[rightID].rotation;
+		}
+	}
 }
 
 /***** Screen Touch *****/
