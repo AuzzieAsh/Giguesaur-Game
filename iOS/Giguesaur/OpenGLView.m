@@ -7,8 +7,6 @@
  */
 
 #import "OpenGLView.h"
-#import "SimpleMath.h"
-#import "Giguesaur/Puzzle.h"
 
 /***** Global Varibles for the Puzzle *****/
 Piece pieces[NUM_OF_PIECES];
@@ -32,34 +30,6 @@ const GLubyte Indices[] = {
 };
 
 @implementation OpenGLView
-
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [[event allTouches] anyObject];
-    
-    // Get the specific point that was touched
-    CGPoint point = [touch locationInView:touch.view];
-    
-    point.y = BOARD_HIEGHT - point.y;
-    printf("%f, %f\n", point.x, point.y);
-    
-    if (holdingPiece >= 0) {
-        printf("Placed piece %i\n", holdingPiece);
-        pieces[holdingPiece].x_location = point.x;
-        pieces[holdingPiece].y_location = point.y;
-        holdingPiece = -1;
-    }
-    else {
-        for (int i = 0; i < NUM_OF_PIECES; i++) {
-            if(point.x >= pieces[i].x_location - SIDE_HALF && point.x < pieces[i].x_location + SIDE_HALF) {
-                if (point.y >= pieces[i].y_location - SIDE_HALF && point.y < pieces[i].y_location + SIDE_HALF) {
-                    printf("Touched piece %i\n", i);
-                    holdingPiece = i;
-                    i = NUM_OF_PIECES;
-                }
-            }
-        }
-    }
-}
 
 /***** OpenGL Setup Code *****/
 + (Class)layerClass {
@@ -181,6 +151,54 @@ const GLubyte Indices[] = {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 
+// Move a piece if it in range to snap to another piece
+- (void) checkToSnap: (int) pieceID {
+    if (pieces[pieceID].neighbourPiece.up_piece >= 0) {
+        NSArray *distances =
+        [simpleMath distanceBetweenPiece:pieces[pieceID]
+                           andOtherPiece:pieces[pieces[pieceID].neighbourPiece.up_piece]
+                               whichSide:P_UP];
+        if ([[distances objectAtIndex:0] floatValue] < DISTANCE_BEFORE_SNAP &&
+            [[distances objectAtIndex:1] floatValue] < DISTANCE_BEFORE_SNAP) {
+            CGPoint new_points =
+            [simpleMath newCoordinates:pieces[pieces[pieceID].neighbourPiece.up_piece] whichSide:P_UP];
+            pieces[pieceID].x_location = new_points.x;
+            pieces[pieceID].y_location = new_points.y;
+            pieces[pieceID].rotation = pieces[pieces[pieceID].neighbourPiece.up_piece].rotation;
+        }
+    }
+}
+
+/***** Screen Touch *****/
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [[event allTouches] anyObject];
+    
+    // Get the specific point that was touched
+    CGPoint point = [touch locationInView:touch.view];
+    
+    point.y = BOARD_HIEGHT - point.y;
+    printf("%f, %f\n", point.x, point.y);
+    
+    if (holdingPiece >= 0) {
+        printf("Placed piece %i\n", holdingPiece);
+        pieces[holdingPiece].x_location = point.x;
+        pieces[holdingPiece].y_location = point.y;
+        [self checkToSnap:holdingPiece];
+        holdingPiece = -1;
+    }
+    else {
+        for (int i = 0; i < NUM_OF_PIECES; i++) {
+            if(point.x >= pieces[i].x_location - SIDE_HALF && point.x < pieces[i].x_location + SIDE_HALF) {
+                if (point.y >= pieces[i].y_location - SIDE_HALF && point.y < pieces[i].y_location + SIDE_HALF) {
+                    printf("Touched piece %i\n", i);
+                    holdingPiece = i;
+                    i = NUM_OF_PIECES;
+                }
+            }
+        }
+    }
+}
+
 /***** DRAW CODE *****/
 - (void)render:(CADisplayLink*)displayLink {
     // Clear the screen
@@ -220,15 +238,15 @@ const GLubyte Indices[] = {
     
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
     
-    glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);// self.frame.size.width, self.frame.size.height);
+    glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);
     
     for (int i = 0; i < NUM_OF_PIECES; i++) {
         if (i != holdingPiece) {
             const Vertex NewPiece[] = {
-                {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, {0, 0, 0, 1}},
-                {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, {0, 0, 0, 1}},
-                {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, {0, 0, 0, 1}},
-                {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, {0, 0, 0, 1}}
+                {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, C_BLACK},
+                {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, C_BLACK},
+                {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, C_BLACK},
+                {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, C_BLACK}
             };
             
             GLuint vertexBuffer;
@@ -242,10 +260,10 @@ const GLubyte Indices[] = {
         }
         else {
             const Vertex NewPiece[] = {
-                {{SIDE_LENGTH, 0, 0}, {0.6, 0.6, 0.6, 0.5}},
-                {{SIDE_LENGTH, SIDE_LENGTH, 0}, {0.6, 0.6, 0.6, 0.5}},
-                {{0, SIDE_LENGTH, 0}, {0.6, 0.6, 0.6, 0.5}},
-                {{0, 0, 0}, {0.6, 0.6, 0.6, 0.5}}
+                {{SIDE_LENGTH, 0, 0}, C_GRAY},
+                {{SIDE_LENGTH, SIDE_LENGTH, 0}, C_GRAY},
+                {{0, SIDE_LENGTH, 0}, C_GRAY},
+                {{0, 0, 0}, C_GRAY}
             };
             
             GLuint vertexBuffer;
@@ -279,7 +297,7 @@ const GLubyte Indices[] = {
         [self compileShaders];
         [self setupVBOs];
         [self setupDisplayLink];
-        
+        simpleMath = [[SimpleMath alloc] init];
         generatePieces(pieces);
     }
     return self;

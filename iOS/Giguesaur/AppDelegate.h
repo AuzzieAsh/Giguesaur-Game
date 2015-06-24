@@ -16,4 +16,3 @@
 @property (nonatomic, retain) IBOutlet OpenGLView *glView;
 
 @end
-

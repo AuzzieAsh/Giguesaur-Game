@@ -13,7 +13,7 @@
 #define NUM_OF_ROWS 2
 #define NUM_OF_COLS 2
 #define NUM_OF_PIECES (NUM_OF_ROWS*NUM_OF_COLS)
-#define DISTANCE_BEFORE_SNAP 250
+#define DISTANCE_BEFORE_SNAP 500
 #define NO_NEIGHBOUR -1
 // iPad 2 Simulator size, W=1024, H=768
 #define BOARD_WIDTH 1024

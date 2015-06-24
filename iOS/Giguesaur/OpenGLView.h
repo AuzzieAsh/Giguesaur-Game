@@ -10,6 +10,11 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import <GLKit/GLKit.h>
+#import "SimpleMath.h"
+#import "Giguesaur/Puzzle.h"
+
+#define C_BLACK {0, 0, 0, 1}
+#define C_GRAY {0.5, 0.5, 0.5, 1}
 
 @interface OpenGLView : UIView {
     
@@ -23,9 +28,10 @@
     GLuint _modelViewUniform;
     GLuint _depthRenderBuffer;
     
+    SimpleMath *simpleMath;
+    
     float _currentRotation;
     
 }
 
 @end
-
