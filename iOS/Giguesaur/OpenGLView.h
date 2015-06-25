@@ -2,7 +2,7 @@
     File: OpenGLView.h
     Author: Ashley Manson
  
-    OpenGL stuff.
+    OpenGL stuff and interface control.
  */
 
 #import <UIKit/UIKit.h>
@@ -12,6 +12,7 @@
 #import <GLKit/GLKit.h>
 #import "SimpleMath.h"
 #import "Giguesaur/Puzzle.h"
+#include "Debug.h"
 
 #define C_BLACK {0, 0, 0, 1}
 #define C_GRAY {0.5, 0.5, 0.5, 1}

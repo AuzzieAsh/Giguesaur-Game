@@ -77,3 +77,23 @@ void makeConnections(Piece *pieces) {
         pieces[i].openEdge.right_open = right;
     }
 }
+
+// Check if the puzzle has been solved
+int checkIfSolved(Piece *pieces) {
+    
+    for (int i = 0; i < NUM_OF_PIECES; i++) {
+        if (pieces[i].openEdge.up_open == isOpen) {
+            return 0;
+        }
+        if (pieces[i].openEdge.down_open == isOpen) {
+            return 0;
+        }
+        if (pieces[i].openEdge.left_open == isOpen) {
+            return 0;
+        }
+        if (pieces[i].openEdge.right_open == isOpen) {
+            return 0;
+        }
+    }
+    return 1;
+}

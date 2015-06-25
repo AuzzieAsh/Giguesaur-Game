@@ -1,9 +1,9 @@
 /*
-    File: OpenGLView.m
-    Author: Ashley Manson
+ File: OpenGLView.m
+ Author: Ashley Manson
  
-    Does all the OpenGL magic and rendering.
-    Note: iPad aspect ratio is 4:3
+ Does all the OpenGL magic and rendering, and handles the interface.
+ Note: iPad aspect ratio is 4:3
  */
 
 #import "OpenGLView.h"
@@ -151,69 +151,174 @@ const GLubyte Indices[] = {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
 }
 
-// Move a piece if it in range to snap to another piece
-- (void) checkToSnap: (int) pieceID {
-	
-	int upID = pieces[pieceID].neighbourPiece.up_piece;
-	int downID = pieces[pieceID].neighbourPiece.down_piece;
-	int leftID = pieces[pieceID].neighbourPiece.left_piece;
-	int rightID = pieces[pieceID].neighbourPiece.right_piece;
-	NSArray *distances;
-	CGPoint newPoints;
-	
-    if (upID >= 0) {
-        distances =
-        [simpleMath distanceBetweenPiece:pieces[pieceID]
-                           andOtherPiece:pieces[upID]
-                               whichSide:P_UP];
-        if ([[distances objectAtIndex:0] floatValue] < DISTANCE_BEFORE_SNAP &&
-            [[distances objectAtIndex:1] floatValue] < DISTANCE_BEFORE_SNAP) {
-            newPoints =
-            [simpleMath newCoordinates:pieces[upID] whichSide:P_UP];
+// Move a piece if it is in range to snap to another piece
+- (void) checkThenSnapPiece: (int) pieceID {
+    
+    CGPoint newPoints;
+    int upID = pieces[pieceID].neighbourPiece.up_piece;
+    int downID = pieces[pieceID].neighbourPiece.down_piece;
+    int leftID = pieces[pieceID].neighbourPiece.left_piece;
+    int rightID = pieces[pieceID].neighbourPiece.right_piece;
+    
+    if (upID >= 0 &&
+        [simpleMath shouldPieceSnap:pieces[pieceID]
+                     withOtherPiece:pieces[upID]
+                          whichSide:P_UP
+                 distanceBeforeSnap:DISTANCE_BEFORE_SNAP]) {
+            
+            newPoints = [simpleMath newCoordinates:pieces[upID] whichSide:P_UP];
             pieces[pieceID].x_location = newPoints.x;
             pieces[pieceID].y_location = newPoints.y;
             pieces[pieceID].rotation = pieces[upID].rotation;
+            
+            DEBUG_PRINT("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
+                        pieceID, newPoints.x, newPoints.y);
         }
+    
+    if (downID >= 0 &&
+        [simpleMath shouldPieceSnap:pieces[pieceID]
+                     withOtherPiece:pieces[downID]
+                          whichSide:P_DOWN
+                 distanceBeforeSnap:DISTANCE_BEFORE_SNAP]) {
+            
+            newPoints = [simpleMath newCoordinates:pieces[downID] whichSide:P_DOWN];
+            pieces[pieceID].x_location = newPoints.x;
+            pieces[pieceID].y_location = newPoints.y;
+            pieces[pieceID].rotation = pieces[downID].rotation;
+            
+            DEBUG_PRINT("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
+                        pieceID, newPoints.x, newPoints.y);
+        }
+    
+    if (leftID >= 0 &&
+        [simpleMath shouldPieceSnap:pieces[pieceID]
+                     withOtherPiece:pieces[leftID]
+                          whichSide:P_LEFT
+                 distanceBeforeSnap:DISTANCE_BEFORE_SNAP]) {
+            
+            newPoints = [simpleMath newCoordinates:pieces[leftID] whichSide:P_LEFT];
+            pieces[pieceID].x_location = newPoints.x;
+            pieces[pieceID].y_location = newPoints.y;
+            pieces[pieceID].rotation = pieces[leftID].rotation;
+            
+            DEBUG_PRINT("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
+                        pieceID, newPoints.x, newPoints.y);
+            
+        }
+    
+    if (rightID >= 0 &&
+        [simpleMath shouldPieceSnap:pieces[pieceID]
+                     withOtherPiece:pieces[rightID]
+                          whichSide:P_RIGHT
+                 distanceBeforeSnap:DISTANCE_BEFORE_SNAP]) {
+            
+            newPoints = [simpleMath newCoordinates:pieces[rightID] whichSide: P_RIGHT];
+            pieces[pieceID].x_location = newPoints.x;
+            pieces[pieceID].y_location = newPoints.y;
+            pieces[pieceID].rotation = pieces[rightID].rotation;
+            
+            DEBUG_PRINT("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
+                        pieceID, newPoints.x, newPoints.y);
+        }
+}
+
+// Check if a piece joined its neighbours then closes their edges
+- (void) checkThenCloseEdge: (int) pieceID {
+    
+    int upID = pieces[pieceID].neighbourPiece.up_piece;
+    int downID = pieces[pieceID].neighbourPiece.down_piece;
+    int leftID = pieces[pieceID].neighbourPiece.left_piece;
+    int rightID = pieces[pieceID].neighbourPiece.right_piece;
+    
+    if (upID >= 0 &&
+        [simpleMath didPieceConnect:pieces[pieceID]
+                     withOtherPiece:pieces[upID]
+                          whichSide:P_UP]) {
+        
+            pieces[pieceID].openEdge.up_open = isClosed;
+            pieces[upID].openEdge.down_open = isClosed;
+            
+            DEBUG_PRINT("checkThenCloseEdge :: Piece %i joined piece %i\n",
+                        pieceID, upID);
     }
-	
-	if (downID >= 0) {
-		distances =
-		[simpleMath distanceBetweenPiece:pieces[pieceID] andOtherPiece:pieces[downID] whichSide:P_DOWN];
-		if ([[distances objectAtIndex:0] floatValue] < DISTANCE_BEFORE_SNAP &&
-		[[distances objectAtIndex:1] floatValue] < DISTANCE_BEFORE_SNAP) {
-			newPoints =
-			[simpleMath newCoordinates:pieces[downID] whichSide:P_DOWN];
-			pieces[pieceID].x_location = newPoints.x;
-			pieces[pieceID].y_location = newPoints.y;
-			pieces[pieceID].rotation = pieces[downID].rotation;
-		}
-	}
-	
-	if (leftID >= 0) {
-		distances =
-		[simpleMath distanceBetweenPiece:pieces[pieceID] andOtherPiece:pieces[leftID] whichSide:P_LEFT];
-		if ([[distances objectAtIndex:0] floatValue] < DISTANCE_BEFORE_SNAP &&
-		[[distances objectAtIndex:1] floatValue] < DISTANCE_BEFORE_SNAP) {
-			newPoints =
-			[simpleMath newCoordinates:pieces[leftID] whichSide:P_LEFT];
-			pieces[pieceID].x_location = newPoints.x;
-			pieces[pieceID].y_location = newPoints.y;
-			pieces[pieceID].rotation = pieces[leftID].rotation;
-		}
-	}
-	
-	if (rightID >= 0) {
-		distances = 
-		[simpleMath distanceBetweenPiece:pieces[pieceID] andOtherPiece:pieces[rightID] whichSide:P_RIGHT];
-		if ([[distances objectAtIndex:0] floatValue] < DISTANCE_BEFORE_SNAP &&
-		[[distances objectAtIndex:1] floatValue] < DISTANCE_BEFORE_SNAP) {
-			newPoints =
-			[simpleMath newCoordinates:pieces[rightID] whichSide: P_RIGHT];
-			pieces[pieceID].x_location = newPoints.x;
-			pieces[pieceID].y_location = newPoints.y;
-			pieces[pieceID].rotation = pieces[rightID].rotation;
-		}
-	}
+    
+    if (downID >= 0 &&
+        [simpleMath didPieceConnect:pieces[pieceID]
+                     withOtherPiece:pieces[downID]
+                          whichSide:P_DOWN]) {
+        
+            pieces[pieceID].openEdge.down_open = isClosed;
+            pieces[downID].openEdge.up_open = isClosed;
+            
+            DEBUG_PRINT("checkThenCloseEdge :: Piece %i joined piece %i\n",
+                        pieceID, downID);
+    }
+    
+    if (leftID >= 0 &&
+        [simpleMath didPieceConnect:pieces[pieceID]
+                     withOtherPiece:pieces[leftID]
+                          whichSide:P_LEFT]) {
+        
+            pieces[pieceID].openEdge.left_open = isClosed;
+            pieces[leftID].openEdge.right_open = isClosed;
+            
+            DEBUG_PRINT("checkThenCloseEdge :: Piece %i joined piece %i\n",
+                        pieceID, leftID);
+    }
+    
+    if (rightID >= 0 &&
+        [simpleMath didPieceConnect:pieces[pieceID]
+                     withOtherPiece:pieces[rightID]
+                          whichSide:P_RIGHT]) {
+        
+            pieces[pieceID].openEdge.right_open = isClosed;
+            pieces[rightID].openEdge.left_open = isClosed;
+            
+            DEBUG_PRINT("checkThenCloseEdge :: Piece %i joined piece %i\n",
+                        pieceID, rightID);
+    }
+}
+
+// Open closed edges of pickedup piece and neighbouring edges
+- (void) openClosedEdges: (int) pieceID {
+    
+    int upID = pieces[pieceID].neighbourPiece.up_piece;
+    int downID = pieces[pieceID].neighbourPiece.down_piece;
+    int leftID = pieces[pieceID].neighbourPiece.left_piece;
+    int rightID = pieces[pieceID].neighbourPiece.right_piece;
+    
+    if (upID >= 0) {
+        pieces[pieceID].openEdge.up_open = isOpen;
+        pieces[upID].openEdge.down_open = isOpen;
+        
+        DEBUG_PRINT("openClosedEdges :: Piece %i up_open = isOpen\n"
+                    "                   Piece %i down_open = isOpen\n",
+                    pieceID, upID);
+    }
+    if (downID >= 0) {
+        pieces[pieceID].openEdge.down_open = isOpen;
+        pieces[downID].openEdge.up_open = isOpen;
+        
+        DEBUG_PRINT("openClosedEdges :: Piece %i down_open = isOpen\n"
+                    "                   Piece %i up_open = isOpen\n",
+                    pieceID, downID);
+    }
+    if (leftID >= 0) {
+        pieces[pieceID].openEdge.left_open = isOpen;
+        pieces[leftID].openEdge.right_open = isOpen;
+        
+        DEBUG_PRINT("openClosedEdges :: Piece %i left_open = isOpen\n"
+                    "                   Piece %i right_open = isOpen\n",
+                    pieceID, leftID);
+    }
+    if (rightID >= 0) {
+        pieces[pieceID].openEdge.right_open = isOpen;
+        pieces[rightID].openEdge.left_open = isOpen;
+        
+        DEBUG_PRINT("openClosedEdges :: Piece %i right_open = isOpen\n"
+                    "                   Piece %i left_open = isOpen\n",
+                    pieceID, rightID);
+    }
 }
 
 /***** Screen Touch *****/
@@ -224,26 +329,29 @@ const GLubyte Indices[] = {
     CGPoint point = [touch locationInView:touch.view];
     
     point.y = BOARD_HIEGHT - point.y;
-    printf("%f, %f\n", point.x, point.y);
     
     if (holdingPiece >= 0) {
-        printf("Placed piece %i\n", holdingPiece);
+        DEBUG_PRINT("touchesBegan :: Placed piece %i\n", holdingPiece);
         pieces[holdingPiece].x_location = point.x;
         pieces[holdingPiece].y_location = point.y;
-        [self checkToSnap:holdingPiece];
+        [self checkThenSnapPiece:holdingPiece];
+        [self checkThenCloseEdge:holdingPiece];
         holdingPiece = -1;
     }
     else {
         for (int i = 0; i < NUM_OF_PIECES; i++) {
             if(point.x >= pieces[i].x_location - SIDE_HALF && point.x < pieces[i].x_location + SIDE_HALF) {
                 if (point.y >= pieces[i].y_location - SIDE_HALF && point.y < pieces[i].y_location + SIDE_HALF) {
-                    printf("Touched piece %i\n", i);
+                    DEBUG_PRINT("touchesBegan :: Picked up piece %i\n", i);
+                    [self openClosedEdges:i];
                     holdingPiece = i;
                     i = NUM_OF_PIECES;
                 }
             }
         }
     }
+    DEBUG_PRINT("checkIfSolved :: %s\n",
+                (checkIfSolved(pieces) ? "Solved" : "Not Solved"));
 }
 
 /***** DRAW CODE *****/
@@ -262,20 +370,20 @@ const GLubyte Indices[] = {
     glUniformMatrix4fv(_projectionUniform, 1, 0, projection.m);
     
     /*
-    GLKMatrix4 identity = GLKMatrix4Identity;
-    GLKMatrix4 lookAt = GLKMatrix4MakeLookAt(0, 0, 0, self.frame.size.width/2, self.frame.size.height/2, 1, 0, 1, 0);
-    GLKMatrix4 plusTranslate = GLKMatrix4MakeTranslation(self.frame.size.width/2, self.frame.size.height/2, 0.0);
-    GLKMatrix4 negTranslate = GLKMatrix4MakeTranslation(-self.frame.size.width/2, -self.frame.size.height/2, 0.0);
-    GLKMatrix4 rotateY = GLKMatrix4MakeYRotation(degToRad(-90.0f));
-    GLKMatrix4 rotateX = GLKMatrix4MakeXRotation(degToRad(45.0f));
-    
-    GLKMatrix4 result1 = GLKMatrix4Multiply(identity, lookAt);
-    GLKMatrix4 result2 = GLKMatrix4Multiply(result1, plusTranslate);
-    result1 = GLKMatrix4Multiply(result2, rotateY);
-    result2 = GLKMatrix4Multiply(result1, rotateX);
-    GLKMatrix4 modelView = GLKMatrix4Multiply(result2, negTranslate);
-    glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
-    */
+     GLKMatrix4 identity = GLKMatrix4Identity;
+     GLKMatrix4 lookAt = GLKMatrix4MakeLookAt(0, 0, 0, self.frame.size.width/2, self.frame.size.height/2, 1, 0, 1, 0);
+     GLKMatrix4 plusTranslate = GLKMatrix4MakeTranslation(self.frame.size.width/2, self.frame.size.height/2, 0.0);
+     GLKMatrix4 negTranslate = GLKMatrix4MakeTranslation(-self.frame.size.width/2, -self.frame.size.height/2, 0.0);
+     GLKMatrix4 rotateY = GLKMatrix4MakeYRotation(degToRad(-90.0f));
+     GLKMatrix4 rotateX = GLKMatrix4MakeXRotation(degToRad(45.0f));
+     
+     GLKMatrix4 result1 = GLKMatrix4Multiply(identity, lookAt);
+     GLKMatrix4 result2 = GLKMatrix4Multiply(result1, plusTranslate);
+     result1 = GLKMatrix4Multiply(result2, rotateY);
+     result2 = GLKMatrix4Multiply(result1, rotateX);
+     GLKMatrix4 modelView = GLKMatrix4Multiply(result2, negTranslate);
+     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
+     */
     _currentRotation += displayLink.duration * 90;
     
     // Sort out Model-View Matrix (For Orthographic View)

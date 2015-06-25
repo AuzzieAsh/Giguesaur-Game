@@ -50,7 +50,7 @@
 
 - (NSArray*) distanceBetweenPiece: (Piece) originalPiece
                     andOtherPiece: (Piece) otherPiece
-                        whichSide: (pieceSide) sideToCompare {
+                        whichSide: (pieceSide) sideToCheck {
     
     NSArray *originalPieceRotated = [self pointsRotated:originalPiece];
     NSArray *otherPieceRotated = [self pointsRotated:otherPiece];
@@ -62,7 +62,7 @@
     
     float distance_1, distance_2;
     
-    if (sideToCompare == P_UP) {
+    if (sideToCheck == P_UP) {
         CGPoint upBotLeft = [[otherPieceRotated objectAtIndex:3] CGPointValue];
         CGPoint upBotRight = [[otherPieceRotated objectAtIndex:2] CGPointValue];
         
@@ -75,7 +75,7 @@
             powf((pieceTopRight.y - upBotRight.y), 2);
     }
     
-    else if (sideToCompare == P_DOWN) {
+    else if (sideToCheck == P_DOWN) {
         CGPoint downTopLeft = [[otherPieceRotated objectAtIndex:0] CGPointValue];
         CGPoint downTopRight = [[otherPieceRotated objectAtIndex:1] CGPointValue];
         
@@ -88,7 +88,7 @@
             powf((pieceBotRight.y - downTopRight.y), 2);
     }
     
-    else if (sideToCompare == P_LEFT) {
+    else if (sideToCheck == P_LEFT) {
         CGPoint leftTopRight = [[otherPieceRotated objectAtIndex:1] CGPointValue];
         CGPoint leftBotRight = [[otherPieceRotated objectAtIndex:2] CGPointValue];
         
@@ -101,7 +101,7 @@
             powf((pieceBotLeft.y - leftBotRight.y), 2);
     }
     
-    else if (sideToCompare == P_RIGHT) {
+    else if (sideToCheck == P_RIGHT) {
         CGPoint rightTopLeft = [[otherPieceRotated objectAtIndex:0] CGPointValue];
         CGPoint rightBotLeft = [[otherPieceRotated objectAtIndex:3] CGPointValue];
         
@@ -118,6 +118,19 @@
             [NSNumber numberWithFloat:distance_1],
             [NSNumber numberWithFloat:distance_2],
             nil];
+}
+
+- (BOOL) shouldPieceSnap: (Piece) originalPiece
+          withOtherPiece: (Piece) otherPiece
+               whichSide: (pieceSide) sideToCheck
+      distanceBeforeSnap: (int) distanceToSnap {
+    
+    NSArray *distances = [self distanceBetweenPiece:originalPiece
+                                      andOtherPiece:otherPiece
+                                          whichSide:sideToCheck];
+    
+    return ([[distances objectAtIndex:0] floatValue] < distanceToSnap &&
+            [[distances objectAtIndex:1] floatValue] < distanceToSnap);
 }
 
 - (CGPoint) newCoordinates: (Piece) neighbourPiece
@@ -155,6 +168,21 @@
     }
     
     return CGPointMake(x_new, y_new);
+}
+
+- (BOOL) didPieceConnect: (Piece) originalPiece
+          withOtherPiece: (Piece) otherPiece
+               whichSide: (pieceSide) sideToCheck {
+    
+    CGPoint newPoints = [self newCoordinates:otherPiece whichSide:sideToCheck];
+    
+    BOOL xCase = originalPiece.x_location - newPoints.x < 1 &&
+    originalPiece.x_location - newPoints.x > -1;
+    
+    BOOL yCase = originalPiece.y_location - newPoints.y < 1 &&
+    originalPiece.y_location - newPoints.y > -1;
+    
+    return (xCase && yCase);
 }
 
 @end

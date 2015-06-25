@@ -56,6 +56,7 @@
 		CE6701E11B3908FD0005B854 /* SimpleMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleMath.h; sourceTree = "<group>"; };
 		CE6701E41B3A34590005B854 /* SimpleMath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleMath.m; sourceTree = "<group>"; };
 		CE6701EC1B3A47C80005B854 /* Puzzle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Puzzle.c; path = Giguesaur/Puzzle.c; sourceTree = "<group>"; };
+		CE6701EE1B3BA38D0005B854 /* Debug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Debug.h; sourceTree = "<group>"; };
 		CE6A51291B2FA021000993DE /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		CE6A512B1B2FA027000993DE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -109,6 +110,7 @@
 				CE21F3F61B2F9F580099B71B /* AppDelegate.m */,
 				CE3CFEF21B3102F200165040 /* OpenGLView.h */,
 				CE3CFEF01B3102C100165040 /* OpenGLView.m */,
+				CE6701EE1B3BA38D0005B854 /* Debug.h */,
 				CE3CFEF31B31061100165040 /* SimpleFragment.glsl */,
 				CE3CFEF41B31061100165040 /* SimpleVertex.glsl */,
 				CE21F3FB1B2F9F580099B71B /* Main.storyboard */,
