@@ -25,7 +25,7 @@ void generatePieces(Piece *pieces);
 // Assigns neigbours to each piece
 void makeConnections(Piece *pieces);
 
-// Return true if the puzzle has been solved
+// Return 1 if the puzzle has been solved, 0 if not
 int checkIfSolved(Piece *pieces);
 
 #endif

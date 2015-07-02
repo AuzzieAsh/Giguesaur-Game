@@ -171,7 +171,7 @@ const GLubyte Indices[] = {
             pieces[pieceID].y_location = newPoints.y;
             pieces[pieceID].rotation = pieces[upID].rotation;
             
-            DEBUG_PRINT("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
+            DEBUG_PRINT_2("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
                         pieceID, newPoints.x, newPoints.y);
         }
     
@@ -186,7 +186,7 @@ const GLubyte Indices[] = {
             pieces[pieceID].y_location = newPoints.y;
             pieces[pieceID].rotation = pieces[downID].rotation;
             
-            DEBUG_PRINT("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
+            DEBUG_PRINT_2("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
                         pieceID, newPoints.x, newPoints.y);
         }
     
@@ -201,7 +201,7 @@ const GLubyte Indices[] = {
             pieces[pieceID].y_location = newPoints.y;
             pieces[pieceID].rotation = pieces[leftID].rotation;
             
-            DEBUG_PRINT("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
+            DEBUG_PRINT_2("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
                         pieceID, newPoints.x, newPoints.y);
             
         }
@@ -217,7 +217,7 @@ const GLubyte Indices[] = {
             pieces[pieceID].y_location = newPoints.y;
             pieces[pieceID].rotation = pieces[rightID].rotation;
             
-            DEBUG_PRINT("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
+            DEBUG_PRINT_2("checkThenSnapPiece :: Moved piece %i to (%.2f, %.2f)\n",
                         pieceID, newPoints.x, newPoints.y);
         }
 }
@@ -238,7 +238,7 @@ const GLubyte Indices[] = {
             pieces[pieceID].openEdge.up_open = isClosed;
             pieces[upID].openEdge.down_open = isClosed;
             
-            DEBUG_PRINT("checkThenCloseEdge :: Piece %i joined piece %i\n",
+            DEBUG_PRINT_2("checkThenCloseEdge :: Piece %i joined piece %i\n",
                         pieceID, upID);
     }
     
@@ -250,7 +250,7 @@ const GLubyte Indices[] = {
             pieces[pieceID].openEdge.down_open = isClosed;
             pieces[downID].openEdge.up_open = isClosed;
             
-            DEBUG_PRINT("checkThenCloseEdge :: Piece %i joined piece %i\n",
+            DEBUG_PRINT_2("checkThenCloseEdge :: Piece %i joined piece %i\n",
                         pieceID, downID);
     }
     
@@ -262,7 +262,7 @@ const GLubyte Indices[] = {
             pieces[pieceID].openEdge.left_open = isClosed;
             pieces[leftID].openEdge.right_open = isClosed;
             
-            DEBUG_PRINT("checkThenCloseEdge :: Piece %i joined piece %i\n",
+            DEBUG_PRINT_2("checkThenCloseEdge :: Piece %i joined piece %i\n",
                         pieceID, leftID);
     }
     
@@ -274,7 +274,7 @@ const GLubyte Indices[] = {
             pieces[pieceID].openEdge.right_open = isClosed;
             pieces[rightID].openEdge.left_open = isClosed;
             
-            DEBUG_PRINT("checkThenCloseEdge :: Piece %i joined piece %i\n",
+            DEBUG_PRINT_2("checkThenCloseEdge :: Piece %i joined piece %i\n",
                         pieceID, rightID);
     }
 }
@@ -291,7 +291,7 @@ const GLubyte Indices[] = {
         pieces[pieceID].openEdge.up_open = isOpen;
         pieces[upID].openEdge.down_open = isOpen;
         
-        DEBUG_PRINT("openClosedEdges :: Piece %i up_open = isOpen\n"
+        DEBUG_PRINT_2("openClosedEdges :: Piece %i up_open = isOpen\n"
                     "                   Piece %i down_open = isOpen\n",
                     pieceID, upID);
     }
@@ -299,7 +299,7 @@ const GLubyte Indices[] = {
         pieces[pieceID].openEdge.down_open = isOpen;
         pieces[downID].openEdge.up_open = isOpen;
         
-        DEBUG_PRINT("openClosedEdges :: Piece %i down_open = isOpen\n"
+        DEBUG_PRINT_2("openClosedEdges :: Piece %i down_open = isOpen\n"
                     "                   Piece %i up_open = isOpen\n",
                     pieceID, downID);
     }
@@ -307,7 +307,7 @@ const GLubyte Indices[] = {
         pieces[pieceID].openEdge.left_open = isOpen;
         pieces[leftID].openEdge.right_open = isOpen;
         
-        DEBUG_PRINT("openClosedEdges :: Piece %i left_open = isOpen\n"
+        DEBUG_PRINT_2("openClosedEdges :: Piece %i left_open = isOpen\n"
                     "                   Piece %i right_open = isOpen\n",
                     pieceID, leftID);
     }
@@ -315,7 +315,7 @@ const GLubyte Indices[] = {
         pieces[pieceID].openEdge.right_open = isOpen;
         pieces[rightID].openEdge.left_open = isOpen;
         
-        DEBUG_PRINT("openClosedEdges :: Piece %i right_open = isOpen\n"
+        DEBUG_PRINT_2("openClosedEdges :: Piece %i right_open = isOpen\n"
                     "                   Piece %i left_open = isOpen\n",
                     pieceID, rightID);
     }
@@ -331,7 +331,7 @@ const GLubyte Indices[] = {
     point.y = BOARD_HIEGHT - point.y;
     
     if (holdingPiece >= 0) {
-        DEBUG_PRINT("touchesBegan :: Placed piece %i\n", holdingPiece);
+        DEBUG_PRINT_1("touchesBegan :: Placed piece %i\n", holdingPiece);
         pieces[holdingPiece].x_location = point.x;
         pieces[holdingPiece].y_location = point.y;
         [self checkThenSnapPiece:holdingPiece];
@@ -342,7 +342,7 @@ const GLubyte Indices[] = {
         for (int i = 0; i < NUM_OF_PIECES; i++) {
             if(point.x >= pieces[i].x_location - SIDE_HALF && point.x < pieces[i].x_location + SIDE_HALF) {
                 if (point.y >= pieces[i].y_location - SIDE_HALF && point.y < pieces[i].y_location + SIDE_HALF) {
-                    DEBUG_PRINT("touchesBegan :: Picked up piece %i\n", i);
+                    DEBUG_PRINT_1("touchesBegan :: Picked up piece %i\n", i);
                     [self openClosedEdges:i];
                     holdingPiece = i;
                     i = NUM_OF_PIECES;
@@ -350,7 +350,7 @@ const GLubyte Indices[] = {
             }
         }
     }
-    DEBUG_PRINT("checkIfSolved :: %s\n",
+    DEBUG_PRINT_1("checkIfSolved :: %s\n",
                 (checkIfSolved(pieces) ? "Solved" : "Not Solved"));
 }
 
