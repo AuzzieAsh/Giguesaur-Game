@@ -10,20 +10,18 @@
 #ifndef Giguesaur_Puzzle_h
 #define Giguesaur_Puzzle_h
 
-#define NUM_OF_ROWS 3
-#define NUM_OF_COLS 3
+#define NUM_OF_ROWS 4
+#define NUM_OF_COLS 4
 #define NUM_OF_PIECES (NUM_OF_ROWS*NUM_OF_COLS)
+#define TEXTURE_WIDTH (1.0/NUM_OF_COLS)
+#define TEXTURE_HEIGHT (1.0/NUM_OF_ROWS)
 #define DISTANCE_BEFORE_SNAP 300
 #define NO_NEIGHBOUR -1
-// iPad 2 Simulator size, W=1024, H=768
 #define BOARD_WIDTH 1024
 #define BOARD_HIEGHT 768
 
-// Generate each piece of the puzzle, calls makeConnections
+// Generate each piece of the puzzle
 void generatePieces(Piece *pieces);
-
-// Assigns neigbours to each piece
-void makeConnections(Piece *pieces);
 
 // Return 1 if the puzzle has been solved, 0 if not
 int checkIfSolved(Piece *pieces);

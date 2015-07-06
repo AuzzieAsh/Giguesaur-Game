@@ -16,11 +16,13 @@
 
 #define C_BLACK {0, 0, 0, 1}
 #define C_GRAY {0.5, 0.5, 0.5, 1}
+#define C_WHITE {1, 1, 1, 1}
 
 @interface OpenGLView : UIView {
     
     CAEAGLLayer* _eaglLayer;
     EAGLContext* _context;
+    SimpleMath *simpleMath;
     
     GLuint _colorRenderBuffer;
     GLuint _positionSlot;
@@ -28,8 +30,9 @@
     GLuint _projectionUniform;
     GLuint _modelViewUniform;
     GLuint _depthRenderBuffer;
-    
-    SimpleMath *simpleMath;
+    GLuint _puzzleTexture;
+    GLuint _texCoordSlot;
+    GLuint _textureUniform;
     
     float _currentRotation;
     

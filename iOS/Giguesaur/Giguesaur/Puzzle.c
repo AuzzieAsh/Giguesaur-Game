@@ -21,14 +21,7 @@ void generatePieces(Piece *pieces) {
         pieces[i] = piece;
     }
     
-    makeConnections(pieces);
-    
-}
-
-// Assigns all the neighbour pieces of the puzzle
-void makeConnections(Piece *pieces) {
-    
-    // A neighbour is defined by the index of the array
+    // Make connections, a neighbour is defined by the index of the array
     int index = 0;
     for (int row = 0; row < NUM_OF_ROWS; row++) {
         for (int col = 0; col < NUM_OF_COLS; col++) {

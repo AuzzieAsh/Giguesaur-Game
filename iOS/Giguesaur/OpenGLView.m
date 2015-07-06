@@ -15,13 +15,14 @@ int holdingPiece = -1;
 typedef struct {
     float Position[3];
     float Colour[4];
+    float TexCoord[2];
 } Vertex;
 
 const Vertex Vertices[] = {
-    {{1, -1, 0}, {0, 0, 0, 1}},
-    {{1, 1, 0}, {0, 0, 0, 1}},
-    {{-1, 1, 0}, {0, 0, 0, 1}},
-    {{-1, -1, 0}, {0, 0, 0, 1}}
+    {{1, -1, 0}, {0, 0, 0, 1}, {1, 0}},
+    {{1, 1, 0}, {0, 0, 0, 1}, {1, 1}},
+    {{-1, 1, 0}, {0, 0, 0, 1}, {0, 1}},
+    {{-1, -1, 0}, {0, 0, 0, 1}, {0, 0}}
 };
 
 const GLubyte Indices[] = {
@@ -32,16 +33,16 @@ const GLubyte Indices[] = {
 @implementation OpenGLView
 
 /***** OpenGL Setup Code *****/
-+ (Class)layerClass {
++ (Class) layerClass {
     return [CAEAGLLayer class];
 }
 
-- (void)setupLayer {
+- (void) setupLayer {
     _eaglLayer = (CAEAGLLayer*) self.layer;
     _eaglLayer.opaque = YES;
 }
 
-- (void)setupContext {
+- (void) setupContext {
     EAGLRenderingAPI api = kEAGLRenderingAPIOpenGLES2;
     _context = [[EAGLContext alloc] initWithAPI:api];
     if (!_context) {
@@ -55,19 +56,19 @@ const GLubyte Indices[] = {
     }
 }
 
-- (void)setupRenderBuffer {
+- (void) setupRenderBuffer {
     glGenRenderbuffers(1, &_colorRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
     [_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:_eaglLayer];
 }
 
-- (void)setupDepthBuffer {
+- (void) setupDepthBuffer {
     glGenRenderbuffers(1, &_depthRenderBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _depthRenderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, self.frame.size.width, self.frame.size.height);
 }
 
-- (void)setupFrameBuffer {
+- (void) setupFrameBuffer {
     GLuint framebuffer;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -76,7 +77,7 @@ const GLubyte Indices[] = {
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthRenderBuffer);
 }
 
-- (GLuint)compileShader:(NSString*)shaderName withType:(GLenum)shaderType {
+- (GLuint) compileShader: (NSString*) shaderName withType: (GLenum) shaderType {
     
     NSString* shaderPath = [[NSBundle mainBundle] pathForResource:shaderName
                                                            ofType:@"glsl"];
@@ -109,7 +110,7 @@ const GLubyte Indices[] = {
     return shaderHandle;
 }
 
-- (void)compileShaders {
+- (void) compileShaders {
     
     GLuint vertexShader = [self compileShader:@"SimpleVertex" withType:GL_VERTEX_SHADER];
     GLuint fragmentShader = [self compileShader:@"SimpleFragment" withType:GL_FRAGMENT_SHADER];
@@ -137,9 +138,12 @@ const GLubyte Indices[] = {
     glEnableVertexAttribArray(_colorSlot);
     _projectionUniform = glGetUniformLocation(programHandle, "Projection");
     _modelViewUniform = glGetUniformLocation(programHandle, "Modelview");
+    _texCoordSlot = glGetAttribLocation(programHandle, "TexCoordIn");
+    glEnableVertexAttribArray(_texCoordSlot);
+    _textureUniform = glGetUniformLocation(programHandle, "Texture");
 }
 
-- (void)setupVBOs {
+- (void) setupVBOs {
     GLuint vertexBuffer;
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -149,6 +153,37 @@ const GLubyte Indices[] = {
     glGenBuffers(1, &indexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Indices), Indices, GL_STATIC_DRAW);
+}
+
+- (GLuint) setupTexture: (NSString *) fileName {
+    
+    CGImageRef spriteImage = [UIImage imageNamed:fileName].CGImage;
+    if (!spriteImage) {
+        NSLog(@"Failed to load image %@", fileName);
+        exit(1);
+    }
+    
+    size_t width = CGImageGetWidth(spriteImage);
+    size_t height = CGImageGetHeight(spriteImage);
+    
+    GLubyte *spriteData = (GLubyte *)calloc(width*height*4, sizeof(GLubyte));
+    
+    CGContextRef spriteContext = CGBitmapContextCreate(spriteData, width, height, 8, width*4, CGImageGetColorSpace(spriteImage), kCGImageAlphaPremultipliedLast);
+    
+    CGContextDrawImage(spriteContext, CGRectMake(0, 0, width, height), spriteImage);
+    
+    CGContextRelease(spriteContext);
+    
+    GLuint texName;
+    glGenTextures(1, &texName);
+    glBindTexture(GL_TEXTURE_2D, texName);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, spriteData);
+    
+    free(spriteData);
+    return texName;
 }
 
 // Move a piece if it is in range to snap to another piece
@@ -396,40 +431,77 @@ const GLubyte Indices[] = {
     glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);
     
     for (int i = 0; i < NUM_OF_PIECES; i++) {
+        // set row and col to get the sub-section of the texture
+        int row = 0;
+        int col = 0;
+        int index = 0;
+        while (index != pieces[i].piece_id) {
+            col++;
+            index++;
+            if (col >= NUM_OF_COLS) {
+                col = 0;
+                row++;
+            }
+        }
+        Vertex NewPiece[4];
+        // Piece on the board
         if (i != holdingPiece) {
-            const Vertex NewPiece[] = {
-                {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, C_BLACK},
-                {{pieces[i].x_location + SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, C_BLACK},
-                {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0}, C_BLACK},
-                {{pieces[i].x_location - SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0}, C_BLACK}
+            NewPiece[0] = (Vertex) {
+                {pieces[i].x_location + SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0},
+                C_WHITE,
+                {TEXTURE_WIDTH * (col+1), TEXTURE_HEIGHT * (row + 1)}
             };
-            
-            GLuint vertexBuffer;
-            glGenBuffers(1, &vertexBuffer);
-            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(NewPiece), NewPiece, GL_STATIC_DRAW);
-            
-            glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-            glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
-            glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
+            NewPiece[1] = (Vertex) {
+                {pieces[i].x_location + SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0},
+                C_WHITE,
+                {TEXTURE_WIDTH * (col+1), TEXTURE_HEIGHT * row}
+            };
+            NewPiece[2] = (Vertex) {
+                {pieces[i].x_location - SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0},
+                C_WHITE,
+                {TEXTURE_WIDTH * col, TEXTURE_HEIGHT * row}
+            };
+            NewPiece[3] = (Vertex) {
+                {pieces[i].x_location - SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0},
+                C_WHITE,
+                {TEXTURE_WIDTH * col, TEXTURE_HEIGHT * (row+1)}
+            };
         }
+        // Piece being held
         else {
-            const Vertex NewPiece[] = {
-                {{SIDE_LENGTH, 0, 0}, C_GRAY},
-                {{SIDE_LENGTH, SIDE_LENGTH, 0}, C_GRAY},
-                {{0, SIDE_LENGTH, 0}, C_GRAY},
-                {{0, 0, 0}, C_GRAY}
+            NewPiece[0] = (Vertex) {
+                {SIDE_LENGTH, 0, 0},
+                C_GRAY,
+                {TEXTURE_WIDTH * (col+1), TEXTURE_HEIGHT * (row + 1)}
             };
-            
-            GLuint vertexBuffer;
-            glGenBuffers(1, &vertexBuffer);
-            glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(NewPiece), NewPiece, GL_STATIC_DRAW);
-            
-            glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-            glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
-            glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
+            NewPiece[1] = (Vertex) {
+                {SIDE_LENGTH, SIDE_LENGTH, 0},
+                C_GRAY,
+                {TEXTURE_WIDTH * (col+1), TEXTURE_HEIGHT * row}
+            };
+            NewPiece[2] = (Vertex) {
+                {0, SIDE_LENGTH, 0},
+                C_GRAY,
+                {TEXTURE_WIDTH * col, TEXTURE_HEIGHT * row}
+            };
+            NewPiece[3] = (Vertex) {
+                {0, 0, 0},
+                C_GRAY,
+                {TEXTURE_WIDTH * col, TEXTURE_HEIGHT * (row+1)}
+            };
         }
+        GLuint vertexBuffer;
+        glGenBuffers(1, &vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(NewPiece), NewPiece, GL_STATIC_DRAW);
+        
+        glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+        glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
+        glVertexAttribPointer(_texCoordSlot, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float) * 7));
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, _puzzleTexture);
+        glUniform1i(_textureUniform, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
     }
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
@@ -452,6 +524,7 @@ const GLubyte Indices[] = {
         [self compileShaders];
         [self setupVBOs];
         [self setupDisplayLink];
+        _puzzleTexture = [self setupTexture:@"puppy.png"];
         simpleMath = [[SimpleMath alloc] init];
         generatePieces(pieces);
     }

@@ -21,6 +21,7 @@
 		CE6701ED1B3A47C80005B854 /* Puzzle.c in Sources */ = {isa = PBXBuildFile; fileRef = CE6701EC1B3A47C80005B854 /* Puzzle.c */; };
 		CE6A512A1B2FA021000993DE /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6A51291B2FA021000993DE /* OpenGLES.framework */; };
 		CE6A512C1B2FA027000993DE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6A512B1B2FA027000993DE /* QuartzCore.framework */; };
+		CEA2E6ED1B49E96100474889 /* puppy.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA2E6EC1B49E96100474889 /* puppy.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		CE6701EE1B3BA38D0005B854 /* Debug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Debug.h; sourceTree = "<group>"; };
 		CE6A51291B2FA021000993DE /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		CE6A512B1B2FA027000993DE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		CEA2E6EC1B49E96100474889 /* puppy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = puppy.png; path = Giguesaur/resources/puppy.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 		CE21F3F01B2F9F580099B71B /* Giguesaur */ = {
 			isa = PBXGroup;
 			children = (
+				CEA2E6EE1B49E96A00474889 /* resources */,
 				CE3CFF021B310ECC00165040 /* Giguesaur */,
 				CE3CFEFE1B310D0800165040 /* SimpleMath */,
 				CE21F3F51B2F9F580099B71B /* AppDelegate.h */,
@@ -168,6 +171,15 @@
 			name = Giguesaur;
 			sourceTree = "<group>";
 		};
+		CEA2E6EE1B49E96A00474889 /* resources */ = {
+			isa = PBXGroup;
+			children = (
+				CEA2E6EC1B49E96100474889 /* puppy.png */,
+			);
+			name = resources;
+			path = ..;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -217,6 +229,7 @@
 				TargetAttributes = {
 					CE21F3ED1B2F9F580099B71B = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = W3WEK8S6RC;
 					};
 					CE21F4061B2F9F580099B71B = {
 						CreatedOnToolsVersion = 6.3.2;
@@ -252,6 +265,7 @@
 				CE21F4021B2F9F580099B71B /* LaunchScreen.xib in Resources */,
 				CE21F3FF1B2F9F580099B71B /* Images.xcassets in Resources */,
 				CE3CFEF51B31061100165040 /* SimpleFragment.glsl in Resources */,
+				CEA2E6ED1B49E96100474889 /* puppy.png in Resources */,
 				CE3CFEF61B31061100165040 /* SimpleVertex.glsl in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -403,10 +417,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Giguesaur/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -414,10 +431,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Giguesaur/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
