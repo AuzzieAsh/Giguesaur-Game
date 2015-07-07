@@ -387,10 +387,11 @@ const GLubyte Indices[] = {
     }
     DEBUG_PRINT_1("checkIfSolved :: %s\n",
                 (checkIfSolved(pieces) ? "Solved" : "Not Solved"));
+    [self render];
 }
 
 /***** DRAW CODE *****/
-- (void)render:(CADisplayLink*)displayLink {
+- (void)render{//:(CADisplayLink*)displayLink {
     // Clear the screen
     glClearColor(0, 0.5, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -419,7 +420,7 @@ const GLubyte Indices[] = {
      GLKMatrix4 modelView = GLKMatrix4Multiply(result2, negTranslate);
      glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
      */
-    _currentRotation += displayLink.duration * 90;
+    //_currentRotation += displayLink.duration * 90;
     
     // Sort out Model-View Matrix (For Orthographic View)
     GLKMatrix4 translation = GLKMatrix4MakeTranslation(0,0,-1);
@@ -523,10 +524,11 @@ const GLubyte Indices[] = {
         [self setupFrameBuffer];
         [self compileShaders];
         [self setupVBOs];
-        [self setupDisplayLink];
+        //[self setupDisplayLink];
         _puzzleTexture = [self setupTexture:@"puppy.png"];
         simpleMath = [[SimpleMath alloc] init];
         generatePieces(pieces);
+        [self render];
     }
     return self;
 }

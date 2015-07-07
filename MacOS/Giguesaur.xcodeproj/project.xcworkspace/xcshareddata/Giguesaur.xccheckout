@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>F9877DBB-C8AD-4A9B-A256-EB09500F7CC1</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>Giguesaur</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>6B3C76B1071D239E3B9B5E546688B5AB6BA52569</key>
 		<string>https://www.github.com/AuzzieAsh/Giguesaur-Game.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>MacOS/Giguesaur.xcodeproj/project.xcworkspace</string>
+	<string>MacOS/Giguesaur.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>6B3C76B1071D239E3B9B5E546688B5AB6BA52569</key>

@@ -22,7 +22,7 @@
     
     CAEAGLLayer* _eaglLayer;
     EAGLContext* _context;
-    SimpleMath *simpleMath;
+    SimpleMath* simpleMath;
     
     GLuint _colorRenderBuffer;
     GLuint _positionSlot;
@@ -31,6 +31,7 @@
     GLuint _modelViewUniform;
     GLuint _depthRenderBuffer;
     GLuint _puzzleTexture;
+    GLuint _backgroundTexture;
     GLuint _texCoordSlot;
     GLuint _textureUniform;
     
