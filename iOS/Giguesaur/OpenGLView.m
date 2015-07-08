@@ -11,6 +11,7 @@
 /***** Global Varibles for the Puzzle *****/
 Piece pieces[NUM_OF_PIECES];
 int holdingPiece = -1;
+int reset = 0;
 
 typedef struct {
     float Position[3];
@@ -372,6 +373,7 @@ const GLubyte Indices[] = {
         [self checkThenSnapPiece:holdingPiece];
         [self checkThenCloseEdge:holdingPiece];
         holdingPiece = -1;
+        reset = 0;
     }
     else {
         for (int i = 0; i < NUM_OF_PIECES; i++) {
@@ -381,12 +383,26 @@ const GLubyte Indices[] = {
                     [self openClosedEdges:i];
                     holdingPiece = i;
                     i = NUM_OF_PIECES;
+                    reset = 0;
                 }
             }
         }
     }
     DEBUG_PRINT_1("checkIfSolved :: %s\n",
                 (checkIfSolved(pieces) ? "Solved" : "Not Solved"));
+    
+    if (holdingPiece < 0 && point.x < 20 && point.y < 20) {
+        if (reset >= 10) {
+            generatePieces(pieces);
+            reset = 0;
+            DEBUG_SAY("Puzzle Reset!\n");
+        }
+        else {
+            reset++;
+            DEBUG_PRINT_1("touchesBegan :: Reset Counter = %i\n", reset);
+        }
+    }
+    
     [self render];
 }
 

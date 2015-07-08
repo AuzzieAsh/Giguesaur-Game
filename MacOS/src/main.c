@@ -24,8 +24,8 @@
 #define NUM_OF_PIECES NUM_OF_ROWS*NUM_OF_COLS
 #define PLUS_ROTATION 15
 #define DISTANCE_BEFORE_SNAP 250
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 
 typedef struct {
     // top left
@@ -175,6 +175,7 @@ void Draw_Piece(Piece piece, bool draw_bounding_box, bool draw_id) {
 
 void Draw_Puzzle_Pieces() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    /*
     glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
     glBegin(GL_LINE_LOOP);
     glVertex2d(0, 0);
@@ -183,6 +184,19 @@ void Draw_Puzzle_Pieces() {
     glVertex2d(0, SCREEN_HEIGHT);
     glVertex2d(0, 0);
     glEnd();
+    */
+    //Board, colour seems fucked up xD
+    glColor4f(0.0f, 1.0f, 1.0f, 0.5f);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBegin(GL_POLYGON);
+    glVertex2d(0, 0);
+    glVertex2d(SCREEN_WIDTH, 0);
+    glVertex2d(SCREEN_WIDTH, SCREEN_HEIGHT);
+    glVertex2d(0, SCREEN_HEIGHT);
+    glVertex2d(0, 0);
+    glEnd();
+    glDisable(GL_BLEND);
     for (int i = 0; i < NUM_OF_PIECES; i++) {
         // Fix out of bounds
         if (pieces[i].x_centre + (pieces[i].side_length / 2) > glutGet(GLUT_WINDOW_WIDTH)) {
@@ -896,7 +910,7 @@ int main(int argc, char * argv[]) {
     
     glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
     glutInitWindowPosition((1920-SCREEN_WIDTH)/2, 0);
-    glutCreateWindow("Giguesaur Alpha");
+    glutCreateWindow("Giguesaur Alpha - Perspective Demo");
     
     glutDisplayFunc(Render);
     glutMouseFunc(MouseListener);
@@ -914,7 +928,7 @@ int main(int argc, char * argv[]) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     
-    gluPerspective(90.0f, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.01f, 1000.0f);
+    gluPerspective(90.0f, (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT, 0.01f, 5000.0f);
     //glOrtho(-0, SCREEN_WIDTH, -0, SCREEN_HEIGHT, -1000, 1000);
     
     glMatrixMode(GL_MODELVIEW);
