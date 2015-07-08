@@ -393,7 +393,7 @@ const GLubyte Indices[] = {
 /***** DRAW CODE *****/
 - (void)render{//:(CADisplayLink*)displayLink {
     // Clear the screen
-    glClearColor(0, 0.5, 1.0, 1.0);
+    glClearColor(230.0/255.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     
@@ -448,22 +448,22 @@ const GLubyte Indices[] = {
         // Piece on the board
         if (i != holdingPiece) {
             NewPiece[0] = (Vertex) {
-                {pieces[i].x_location + SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0},
+                {pieces[i].x_location + SIDE_HALF, pieces[i].y_location - SIDE_HALF, -0.1},
                 C_WHITE,
                 {TEXTURE_WIDTH * (col+1), TEXTURE_HEIGHT * (row + 1)}
             };
             NewPiece[1] = (Vertex) {
-                {pieces[i].x_location + SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0},
+                {pieces[i].x_location + SIDE_HALF, pieces[i].y_location + SIDE_HALF, -0.1},
                 C_WHITE,
                 {TEXTURE_WIDTH * (col+1), TEXTURE_HEIGHT * row}
             };
             NewPiece[2] = (Vertex) {
-                {pieces[i].x_location - SIDE_HALF, pieces[i].y_location + SIDE_HALF, 0},
+                {pieces[i].x_location - SIDE_HALF, pieces[i].y_location + SIDE_HALF, -0.1},
                 C_WHITE,
                 {TEXTURE_WIDTH * col, TEXTURE_HEIGHT * row}
             };
             NewPiece[3] = (Vertex) {
-                {pieces[i].x_location - SIDE_HALF, pieces[i].y_location - SIDE_HALF, 0},
+                {pieces[i].x_location - SIDE_HALF, pieces[i].y_location - SIDE_HALF, -0.1},
                 C_WHITE,
                 {TEXTURE_WIDTH * col, TEXTURE_HEIGHT * (row+1)}
             };
@@ -471,23 +471,23 @@ const GLubyte Indices[] = {
         // Piece being held
         else {
             NewPiece[0] = (Vertex) {
-                {SIDE_LENGTH, 0, 0},
-                C_GRAY,
+                {SIDE_LENGTH*2+10, 10, 0},
+                C_GOLD,
                 {TEXTURE_WIDTH * (col+1), TEXTURE_HEIGHT * (row + 1)}
             };
             NewPiece[1] = (Vertex) {
-                {SIDE_LENGTH, SIDE_LENGTH, 0},
-                C_GRAY,
+                {SIDE_LENGTH*2+10, SIDE_LENGTH*2+10, 0},
+                C_GOLD,
                 {TEXTURE_WIDTH * (col+1), TEXTURE_HEIGHT * row}
             };
             NewPiece[2] = (Vertex) {
-                {0, SIDE_LENGTH, 0},
-                C_GRAY,
+                {10, SIDE_LENGTH*2+10, 0},
+                C_GOLD,
                 {TEXTURE_WIDTH * col, TEXTURE_HEIGHT * row}
             };
             NewPiece[3] = (Vertex) {
-                {0, 0, 0},
-                C_GRAY,
+                {10, 10, 0},
+                C_GOLD,
                 {TEXTURE_WIDTH * col, TEXTURE_HEIGHT * (row+1)}
             };
         }

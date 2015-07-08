@@ -17,6 +17,7 @@
 #define C_BLACK {0, 0, 0, 1}
 #define C_GRAY {0.5, 0.5, 0.5, 1}
 #define C_WHITE {1, 1, 1, 1}
+#define C_GOLD {255.0/255.0, 223.0/255.0, 0.0/255.0, 1}
 
 @interface OpenGLView : UIView {
     

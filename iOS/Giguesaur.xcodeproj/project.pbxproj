@@ -22,7 +22,7 @@
 		CE6A512A1B2FA021000993DE /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6A51291B2FA021000993DE /* OpenGLES.framework */; };
 		CE6A512C1B2FA027000993DE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6A512B1B2FA027000993DE /* QuartzCore.framework */; };
 		CEA2E6ED1B49E96100474889 /* puppy.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA2E6EC1B49E96100474889 /* puppy.png */; };
-		CEA2E6F21B4B5C2400474889 /* background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEA2E6F11B4B5C2400474889 /* background.jpg */; };
+		CEA2E6F41B4CA70900474889 /* kitty.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA2E6F31B4CA70900474889 /* kitty.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +62,7 @@
 		CE6A51291B2FA021000993DE /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		CE6A512B1B2FA027000993DE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CEA2E6EC1B49E96100474889 /* puppy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = puppy.png; path = Giguesaur/resources/puppy.png; sourceTree = "<group>"; };
-		CEA2E6F11B4B5C2400474889 /* background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = background.jpg; path = Giguesaur/resources/background.jpg; sourceTree = "<group>"; };
+		CEA2E6F31B4CA70900474889 /* kitty.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = kitty.png; path = Giguesaur/resources/kitty.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -176,7 +176,7 @@
 		CEA2E6EE1B49E96A00474889 /* resources */ = {
 			isa = PBXGroup;
 			children = (
-				CEA2E6F11B4B5C2400474889 /* background.jpg */,
+				CEA2E6F31B4CA70900474889 /* kitty.png */,
 				CEA2E6EC1B49E96100474889 /* puppy.png */,
 			);
 			name = resources;
@@ -266,7 +266,7 @@
 			files = (
 				CE21F3FD1B2F9F580099B71B /* Main.storyboard in Resources */,
 				CE21F4021B2F9F580099B71B /* LaunchScreen.xib in Resources */,
-				CEA2E6F21B4B5C2400474889 /* background.jpg in Resources */,
+				CEA2E6F41B4CA70900474889 /* kitty.png in Resources */,
 				CE21F3FF1B2F9F580099B71B /* Images.xcassets in Resources */,
 				CE3CFEF51B31061100165040 /* SimpleFragment.glsl in Resources */,
 				CEA2E6ED1B49E96100474889 /* puppy.png in Resources */,

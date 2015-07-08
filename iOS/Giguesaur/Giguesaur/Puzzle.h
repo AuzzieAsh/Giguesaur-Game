@@ -10,12 +10,12 @@
 #ifndef Giguesaur_Puzzle_h
 #define Giguesaur_Puzzle_h
 
-#define NUM_OF_ROWS 5
-#define NUM_OF_COLS 5
+#define NUM_OF_ROWS 4
+#define NUM_OF_COLS 4
 #define NUM_OF_PIECES (NUM_OF_ROWS*NUM_OF_COLS)
 #define TEXTURE_WIDTH (1.0/NUM_OF_COLS)
 #define TEXTURE_HEIGHT (1.0/NUM_OF_ROWS)
-#define DISTANCE_BEFORE_SNAP 300
+#define DISTANCE_BEFORE_SNAP 500
 #define NO_NEIGHBOUR -1
 #define BOARD_WIDTH 1024
 #define BOARD_HIEGHT 768
