@@ -899,7 +899,7 @@ int main(int argc, char * argv[]) {
         Piece piece = { .piece_id = i,
             .x_centre = rand()%SCREEN_WIDTH,
             .y_centre = rand()%SCREEN_HEIGHT,
-            .side_length = 50,
+            .side_length = 100,
             .rotation = 0};
         pieces[i] = piece;
     }
