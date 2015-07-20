@@ -31,12 +31,11 @@
     GLuint _projectionUniform;
     GLuint _modelViewUniform;
     GLuint _depthRenderBuffer;
+
     GLuint _puzzleTexture;
     GLuint _backgroundTexture;
     GLuint _texCoordSlot;
     GLuint _textureUniform;
-    
-    float _currentRotation;
     
 }
 

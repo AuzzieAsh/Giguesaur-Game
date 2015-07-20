@@ -164,12 +164,12 @@ const GLubyte Indices[] = {
         exit(1);
     }
     
-    size_t width = CGImageGetWidth(spriteImage);
-    size_t height = CGImageGetHeight(spriteImage);
+    int width = (int)CGImageGetWidth(spriteImage);
+    int height = (int)CGImageGetHeight(spriteImage);
     
     GLubyte *spriteData = (GLubyte *)calloc(width*height*4, sizeof(GLubyte));
     
-    CGContextRef spriteContext = CGBitmapContextCreate(spriteData, width, height, 8, width*4, CGImageGetColorSpace(spriteImage), kCGImageAlphaPremultipliedLast);
+    CGContextRef spriteContext = CGBitmapContextCreate(spriteData, width, height, 8, width*4, CGImageGetColorSpace(spriteImage), (CGBitmapInfo)kCGImageAlphaPremultipliedLast);
     
     CGContextDrawImage(spriteContext, CGRectMake(0, 0, width, height), spriteImage);
     
@@ -407,36 +407,15 @@ const GLubyte Indices[] = {
 }
 
 /***** DRAW CODE *****/
-- (void)render{//:(CADisplayLink*)displayLink {
+- (void) render {//:(CADisplayLink*)displayLink {
     // Clear the screen
     glClearColor(230.0/255.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     
     // Sort out projection Matrix
-    //float aspectFrustum = 4.0f * BOARD_HIEGHT / BOARD_WIDTH;
-    //float aspect = BOARD_HIEGHT / BOARD_WIDTH;
-    //GLKMatrix4 projection = GLKMatrix4MakeFrustum(-2, 2, -aspectFrustum/2, aspectFrustum/2, 1, 1000);
-    //GLKMatrix4 projection = GLKMatrix4MakePerspective(degToRad(90), aspect, 0.01f, 1000.0f);
     GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 1, 1000);
     glUniformMatrix4fv(_projectionUniform, 1, 0, projection.m);
-    
-    /*
-     GLKMatrix4 identity = GLKMatrix4Identity;
-     GLKMatrix4 lookAt = GLKMatrix4MakeLookAt(0, 0, 0, self.frame.size.width/2, self.frame.size.height/2, 1, 0, 1, 0);
-     GLKMatrix4 plusTranslate = GLKMatrix4MakeTranslation(self.frame.size.width/2, self.frame.size.height/2, 0.0);
-     GLKMatrix4 negTranslate = GLKMatrix4MakeTranslation(-self.frame.size.width/2, -self.frame.size.height/2, 0.0);
-     GLKMatrix4 rotateY = GLKMatrix4MakeYRotation(degToRad(-90.0f));
-     GLKMatrix4 rotateX = GLKMatrix4MakeXRotation(degToRad(45.0f));
-     
-     GLKMatrix4 result1 = GLKMatrix4Multiply(identity, lookAt);
-     GLKMatrix4 result2 = GLKMatrix4Multiply(result1, plusTranslate);
-     result1 = GLKMatrix4Multiply(result2, rotateY);
-     result2 = GLKMatrix4Multiply(result1, rotateX);
-     GLKMatrix4 modelView = GLKMatrix4Multiply(result2, negTranslate);
-     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
-     */
-    //_currentRotation += displayLink.duration * 90;
     
     // Sort out Model-View Matrix (For Orthographic View)
     GLKMatrix4 translation = GLKMatrix4MakeTranslation(0,0,-1);
@@ -446,7 +425,22 @@ const GLubyte Indices[] = {
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
     
     glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);
-    
+
+    const Vertex Background[] = {
+        {{0, 0, 0}, C_WHITE, {0, 0}},
+        {{0, 1, 0}, C_WHITE, {0, 1}},
+        {{1, 1, 0}, C_WHITE, {1, 1}},
+        {{1, 0, 0}, C_WHITE, {1, 0}}
+    };
+    GLuint vertexBuffer;
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Background), Background, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+    glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
+    glVertexAttribPointer(_texCoordSlot, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float) * 7));
+
     for (int i = 0; i < NUM_OF_PIECES; i++) {
         // set row and col to get the sub-section of the texture
         int row = 0;
@@ -515,6 +509,7 @@ const GLubyte Indices[] = {
         glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
         glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
         glVertexAttribPointer(_texCoordSlot, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float) * 7));
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, _puzzleTexture);
         glUniform1i(_textureUniform, 0);
@@ -522,12 +517,12 @@ const GLubyte Indices[] = {
     }
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
-
+/*
 - (void)setupDisplayLink {
     CADisplayLink* displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
-
+*/
 /* "Main" for the frame */
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -542,6 +537,7 @@ const GLubyte Indices[] = {
         [self setupVBOs];
         //[self setupDisplayLink];
         _puzzleTexture = [self setupTexture:@"puppy.png"];
+        _backgroundTexture = [self setupTexture:@"kitty.png"];
         simpleMath = [[SimpleMath alloc] init];
         generatePieces(pieces);
         [self render];
