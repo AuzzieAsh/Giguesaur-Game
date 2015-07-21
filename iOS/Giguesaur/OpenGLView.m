@@ -401,8 +401,8 @@ const GLubyte Indices2[] = {
     GLKVector3 newPoints = GLKVector3Make(new_x, new_y, 0);
     GLKVector3 result = GLKMatrix4MultiplyVector3(viewProjectionInverse, newPoints);
 
-    point.x = result.v[0] + (BOARD_WIDTH / 2);
-    point.y = result.v[1] + (BOARD_HIEGHT / 2);
+    point.x = result.v[0];// + (BOARD_WIDTH / 2);
+    point.y = result.v[1];// + (BOARD_HIEGHT / 2);
 
     DEBUG_PRINT_2("touchesBegan :: Converted [x,y] = [%.2f,%.2f]\n", point.x, point.y);
     
@@ -457,15 +457,15 @@ const GLubyte Indices2[] = {
     glEnable(GL_DEPTH_TEST);
     
     // Sort out projection Matrix
-    GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 0.1, 1000);
-    //float h = 4.0 * BOARD_WIDTH / BOARD_HIEGHT;
-    //GLKMatrix4 projection = GLKMatrix4MakeFrustum(-2, 2, -h/2, h/2, 0.1, 1000);
+    //GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 0.1, 1000);
+    float h = 4.0 * BOARD_WIDTH / BOARD_HIEGHT;
+    GLKMatrix4 projection = GLKMatrix4MakeFrustum(-2, 2, -h/2, h/2, 0.1, 1000);
 
     _projectionMatrix = projection;
     glUniformMatrix4fv(_projectionUniform, 1, 0, projection.m);
     
-    // Sort out Model-View Matrix (For Orthographic View)
-    GLKMatrix4 translation = GLKMatrix4MakeTranslation(0,0,-1);
+    // Sort out Model-View Matrix
+    GLKMatrix4 translation = GLKMatrix4MakeTranslation(-BOARD_WIDTH/2,-BOARD_HIEGHT/2,-25);
     GLKMatrix4 rotation = GLKMatrix4MakeRotation(degToRad(0), 0, 0, 1);
     GLKMatrix4 modelView = GLKMatrix4Multiply(translation, rotation);
     
@@ -474,6 +474,7 @@ const GLubyte Indices2[] = {
     
     glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);
 
+    // Draw Default Piece
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(DefaultPiece), DefaultPiece, GL_STATIC_DRAW);
@@ -562,14 +563,17 @@ const GLubyte Indices2[] = {
         glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
     }
 
+    // Set Orthographic Projection for Background Image
+    projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 0.1, 1000);
+    glUniformMatrix4fv(_projectionUniform, 1, 0, projection.m);
+
+    // Send Background Image to the back
+    modelView = GLKMatrix4MakeTranslation(0, 0, -999);
+    glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
+
     glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer2);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer2);
-
-    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _backgroundTexture);
-    glUniform1i(_textureUniform, 0);
-
-    glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
 
     glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
     glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
@@ -577,7 +581,7 @@ const GLubyte Indices2[] = {
 
     glDrawElements(GL_TRIANGLE_STRIP, sizeof(Indices2)/sizeof(Indices2[0]), GL_UNSIGNED_BYTE, 0);
 
-    // Flush everything to the screen
+    // Flush Everything to the screen
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
 /*
