@@ -32,6 +32,9 @@
     GLuint _modelViewUniform;
     GLuint _depthRenderBuffer;
 
+    GLKMatrix4 _projectionMatrix;
+    GLKMatrix4 _modelViewMatrix;
+
     GLuint _puzzleTexture;
     GLuint _backgroundTexture;
     GLuint _texCoordSlot;

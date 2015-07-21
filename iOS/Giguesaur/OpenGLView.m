@@ -391,8 +391,20 @@ const GLubyte Indices2[] = {
     
     // Get the specific point that was touched
     CGPoint point = [touch locationInView:touch.view];
-    
-    point.y = BOARD_HIEGHT - point.y;
+
+    // Convert Screen to World Coordinates
+    float new_x = 2.0 * point.x / BOARD_WIDTH - 1;
+    float new_y = -2.0 * point.y / BOARD_HIEGHT + 1;
+    bool success;
+
+    GLKMatrix4 viewProjectionInverse = GLKMatrix4Invert(GLKMatrix4Multiply(_projectionMatrix, _modelViewMatrix), &success);
+    GLKVector3 newPoints = GLKVector3Make(new_x, new_y, 0);
+    GLKVector3 result = GLKMatrix4MultiplyVector3(viewProjectionInverse, newPoints);
+
+    point.x = result.v[0] + (BOARD_WIDTH / 2);
+    point.y = result.v[1] + (BOARD_HIEGHT / 2);
+
+    DEBUG_PRINT_2("touchesBegan :: Converted [x,y] = [%.2f,%.2f]\n", point.x, point.y);
     
     if (holdingPiece >= 0) {
         DEBUG_PRINT_1("touchesBegan :: Placed piece %i\n", holdingPiece);
@@ -436,8 +448,8 @@ const GLubyte Indices2[] = {
 
 /***** DRAW CODE *****/
 - (void) render {//:(CADisplayLink*)displayLink {
-    //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    //glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
 
     // Clear the screen
     glClearColor(230.0/255.0, 1.0, 1.0, 1.0);
@@ -446,12 +458,15 @@ const GLubyte Indices2[] = {
     
     // Sort out projection Matrix
     GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 0.1, 1000);
+
+    _projectionMatrix = projection;
     glUniformMatrix4fv(_projectionUniform, 1, 0, projection.m);
     
     // Sort out Model-View Matrix (For Orthographic View)
     GLKMatrix4 translation = GLKMatrix4MakeTranslation(0,0,-1);
     GLKMatrix4 rotation = GLKMatrix4MakeRotation(degToRad(0), 0, 0, 1);
     GLKMatrix4 modelView = GLKMatrix4Multiply(translation, rotation);
+    _modelViewMatrix = modelView;
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
     
     glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);

@@ -6,13 +6,6 @@
  */
 
 /*
- OpenGLView.m: Global Variable
-
-
-
- */
-
-/*
  OpenGLView.m: - (void) render
 
  // Projection Matrix
