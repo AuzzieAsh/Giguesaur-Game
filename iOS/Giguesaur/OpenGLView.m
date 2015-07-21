@@ -24,10 +24,10 @@ typedef struct {
 } Vertex;
 
 const Vertex DefaultPiece[] = {
-    {{1, -1, 0}, {0, 0, 0, 1}, {1, 0}},
-    {{1, 1, 0}, {0, 0, 0, 1}, {1, 1}},
-    {{-1, 1, 0}, {0, 0, 0, 1}, {0, 1}},
-    {{-1, -1, 0}, {0, 0, 0, 1}, {0, 0}}
+    {{SIDE_HALF, -SIDE_HALF, PIECE_Z}, C_BLACK, {1, 0}},
+    {{SIDE_HALF, SIDE_HALF, PIECE_Z}, C_BLACK, {1, 1}},
+    {{-SIDE_HALF, SIDE_HALF, PIECE_Z}, C_BLACK, {0, 1}},
+    {{-SIDE_HALF, -SIDE_HALF, PIECE_Z}, C_BLACK, {0, 0}}
 };
 
 const Vertex BackgroundVertices[] = {
@@ -458,6 +458,8 @@ const GLubyte Indices2[] = {
     
     // Sort out projection Matrix
     GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 0.1, 1000);
+    //float h = 4.0 * BOARD_WIDTH / BOARD_HIEGHT;
+    //GLKMatrix4 projection = GLKMatrix4MakeFrustum(-2, 2, -h/2, h/2, 0.1, 1000);
 
     _projectionMatrix = projection;
     glUniformMatrix4fv(_projectionUniform, 1, 0, projection.m);
@@ -466,10 +468,21 @@ const GLubyte Indices2[] = {
     GLKMatrix4 translation = GLKMatrix4MakeTranslation(0,0,-1);
     GLKMatrix4 rotation = GLKMatrix4MakeRotation(degToRad(0), 0, 0, 1);
     GLKMatrix4 modelView = GLKMatrix4Multiply(translation, rotation);
+    
     _modelViewMatrix = modelView;
     glUniformMatrix4fv(_modelViewUniform, 1, 0, modelView.m);
     
     glViewport(0, 0, BOARD_WIDTH, BOARD_HIEGHT);
+
+    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(DefaultPiece), DefaultPiece, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+    glVertexAttribPointer(_colorSlot, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float)*3));
+    glVertexAttribPointer(_texCoordSlot, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (sizeof(float) * 7));
+
+    glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
 
     // Draw each Puzzle Piece
     for (int i = 0; i < NUM_OF_PIECES; i++) {
@@ -564,6 +577,7 @@ const GLubyte Indices2[] = {
 
     glDrawElements(GL_TRIANGLE_STRIP, sizeof(Indices2)/sizeof(Indices2[0]), GL_UNSIGNED_BYTE, 0);
 
+    // Flush everything to the screen
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
 /*
@@ -576,7 +590,7 @@ const GLubyte Indices2[] = {
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        // Call all the openGl setup code
+        // Call all the OpenGL setup code
         [self setupLayer];
         [self setupContext];
         [self setupDepthBuffer];
