@@ -36,7 +36,11 @@
     GLuint _backgroundTexture;
     GLuint _texCoordSlot;
     GLuint _textureUniform;
-    
+
+    GLuint _vertexBuffer;
+    GLuint _indexBuffer;
+    GLuint _vertexBuffer2;
+    GLuint _indexBuffer2;
 }
 
 @end
