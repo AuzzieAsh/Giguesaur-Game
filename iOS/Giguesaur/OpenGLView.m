@@ -8,7 +8,6 @@
 
 #import "OpenGLView.h"
 
-#define BACKGROUND_Z -0.01
 #define PIECE_Z 0
 #define HOLDING_Z 0.01
 
@@ -31,10 +30,10 @@ const Vertex DefaultPiece[] = {
 };
 
 const Vertex BackgroundVertices[] = {
-    {{BOARD_WIDTH, 0, BACKGROUND_Z}, C_WHITE, {1, 1}},
-    {{BOARD_WIDTH, BOARD_HIEGHT, BACKGROUND_Z}, C_WHITE, {1, 0}},
-    {{0, BOARD_HIEGHT, BACKGROUND_Z}, C_WHITE, {0, 0}},
-    {{0, 0, BACKGROUND_Z}, C_WHITE, {0, 1}}
+    {{BOARD_WIDTH, 0, 0}, C_WHITE, {1, 1}},
+    {{BOARD_WIDTH, BOARD_HIEGHT, 0}, C_WHITE, {1, 0}},
+    {{0, BOARD_HIEGHT, 0}, C_WHITE, {0, 0}},
+    {{0, 0, 0}, C_WHITE, {0, 1}}
 };
 
 const GLubyte Indices[] = {
@@ -392,7 +391,7 @@ const GLubyte Indices2[] = {
     // Get the specific point that was touched
     CGPoint point = [touch locationInView:touch.view];
 
-    // Convert Screen to World Coordinates
+    // Convert Screen to World Coordinates (Orthagraphic Projection)
     float new_x = 2.0 * point.x / BOARD_WIDTH - 1;
     float new_y = -2.0 * point.y / BOARD_HIEGHT + 1;
     bool success;
@@ -401,8 +400,8 @@ const GLubyte Indices2[] = {
     GLKVector3 newPoints = GLKVector3Make(new_x, new_y, 0);
     GLKVector3 result = GLKMatrix4MultiplyVector3(viewProjectionInverse, newPoints);
 
-    point.x = result.v[0];// + (BOARD_WIDTH / 2);
-    point.y = result.v[1];// + (BOARD_HIEGHT / 2);
+    point.x = result.v[0] + (BOARD_WIDTH / 2);
+    point.y = result.v[1] + (BOARD_HIEGHT / 2);
 
     DEBUG_PRINT_2("touchesBegan :: Converted [x,y] = [%.2f,%.2f]\n", point.x, point.y);
     
@@ -457,15 +456,16 @@ const GLubyte Indices2[] = {
     glEnable(GL_DEPTH_TEST);
     
     // Sort out projection Matrix
-    //GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 0.1, 1000);
-    float h = 4.0 * BOARD_WIDTH / BOARD_HIEGHT;
-    GLKMatrix4 projection = GLKMatrix4MakeFrustum(-2, 2, -h/2, h/2, 0.1, 1000);
+    GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 0.1, 1000);
+    //float h = 4.0 * BOARD_WIDTH / BOARD_HIEGHT;
+    //GLKMatrix4 projection = GLKMatrix4MakeFrustum(-2, 2, -h/2, h/2, 0.1, 1000);
 
     _projectionMatrix = projection;
     glUniformMatrix4fv(_projectionUniform, 1, 0, projection.m);
     
     // Sort out Model-View Matrix
-    GLKMatrix4 translation = GLKMatrix4MakeTranslation(-BOARD_WIDTH/2,-BOARD_HIEGHT/2,-25);
+    GLKMatrix4 translation = GLKMatrix4MakeTranslation(0,0,-1);
+    //GLKMatrix4 translation = GLKMatrix4MakeTranslation(-BOARD_WIDTH/2,-BOARD_HIEGHT/2,-25);
     GLKMatrix4 rotation = GLKMatrix4MakeRotation(degToRad(0), 0, 0, 1);
     GLKMatrix4 modelView = GLKMatrix4Multiply(translation, rotation);
     
@@ -581,15 +581,18 @@ const GLubyte Indices2[] = {
 
     glDrawElements(GL_TRIANGLE_STRIP, sizeof(Indices2)/sizeof(Indices2[0]), GL_UNSIGNED_BYTE, 0);
 
-    // Flush Everything to the screen
+    // Flush everything to the screen
     [_context presentRenderbuffer:GL_RENDERBUFFER];
 }
+
 /*
+// Renders the game in 60fps
 - (void)setupDisplayLink {
     CADisplayLink* displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 */
+
 /* "Main" for the frame */
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
