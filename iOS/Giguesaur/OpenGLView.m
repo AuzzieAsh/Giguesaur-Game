@@ -15,6 +15,7 @@
 Piece pieces[NUM_OF_PIECES];
 int holdingPiece = -1;
 int reset = 0;
+int puzzleNumber = 0;
 
 typedef struct {
     float Position[3];
@@ -400,6 +401,8 @@ const GLubyte Indices2[] = {
     GLKVector3 newPoints = GLKVector3Make(new_x, new_y, 0);
     GLKVector3 result = GLKMatrix4MultiplyVector3(viewProjectionInverse, newPoints);
 
+    DEBUG_PRINT_2("touchesBegan :: Original [x,y] = [%.2f,%.2f]\n", point.x, point.y);
+    
     point.x = result.v[0] + (BOARD_WIDTH / 2);
     point.y = result.v[1] + (BOARD_HIEGHT / 2);
 
@@ -429,9 +432,10 @@ const GLubyte Indices2[] = {
     }
     DEBUG_PRINT_1("checkIfSolved :: %s\n",
                 (checkIfSolved(pieces) ? "Solved" : "Not Solved"));
-    
+
+    // Reset the puzzle
     if (holdingPiece < 0 && point.x < 20 && point.y < 20) {
-        if (reset >= 10) {
+        if (reset >= 5) {
             generatePieces(pieces);
             reset = 0;
             DEBUG_SAY("Puzzle Reset!\n");
@@ -439,6 +443,20 @@ const GLubyte Indices2[] = {
         else {
             reset++;
             DEBUG_PRINT_1("touchesBegan :: Reset Counter = %i\n", reset);
+        }
+    }
+
+    // Change the puzzle picture
+    if (holdingPiece < 0 && point.x > BOARD_WIDTH - 20 && point.y < 20) {
+        if (puzzleNumber == 0) {
+            _puzzleTexture = [self setupTexture:@"kitty.png"];
+            DEBUG_SAY("Image changed to kitty.png\n");
+            puzzleNumber = 1;
+        }
+        else {
+            _puzzleTexture = [self setupTexture:@"puppy.png"];
+            DEBUG_SAY("Image changed to puppy.png\n");
+            puzzleNumber = 0;
         }
     }
     
@@ -586,7 +604,7 @@ const GLubyte Indices2[] = {
 }
 
 /*
-// Renders the game in 60fps
+// Renders the game to the refesh rate of the screen
 - (void)setupDisplayLink {
     CADisplayLink* displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render:)];
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
