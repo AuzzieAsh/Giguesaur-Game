@@ -391,7 +391,7 @@ const GLubyte Indices2[] = {
     
     // Get the specific point that was touched
     CGPoint point = [touch locationInView:touch.view];
-
+    /*
     // Convert Screen to World Coordinates (Orthagraphic Projection)
     float new_x = 2.0 * point.x / BOARD_WIDTH - 1;
     float new_y = -2.0 * point.y / BOARD_HIEGHT + 1;
@@ -400,11 +400,33 @@ const GLubyte Indices2[] = {
     GLKMatrix4 viewProjectionInverse = GLKMatrix4Invert(GLKMatrix4Multiply(_projectionMatrix, _modelViewMatrix), &success);
     GLKVector3 newPoints = GLKVector3Make(new_x, new_y, 0);
     GLKVector3 result = GLKMatrix4MultiplyVector3(viewProjectionInverse, newPoints);
+     */
+
+    // Convert Screen to World Coordinates (Perspective Projection)
+    float correctY = BOARD_HIEGHT - point.y;
+    float new_x = point.x * 2.0f / BOARD_WIDTH - 1.0;
+    float new_y = correctY * 2.0f / BOARD_HIEGHT - 1.0;
+    float new_z = -1.0f;
+    float new_w = 1.0f;
+    bool canInvert;
+    GLKVector4 normalizedPoints = GLKVector4Make(new_x, new_y, new_z, new_w);
+    GLKMatrix4 transformMatrix = GLKMatrix4Multiply(_projectionMatrix, _modelViewMatrix);
+    GLKMatrix4 invertedMatrix = GLKMatrix4Invert(transformMatrix, &canInvert);
+    GLKVector4 outPoints = GLKMatrix4MultiplyVector4(invertedMatrix, normalizedPoints);
+    printf("%.2f, ", outPoints.x);
+    printf("%.2f, ", outPoints.y);
+    printf("%.2f, ", outPoints.z);
+    printf("%.2f\n", outPoints.w);
+    float actual_x = outPoints.x / outPoints.w;
+    float actual_y = outPoints.y / outPoints.w;
 
     DEBUG_PRINT_2("touchesBegan :: Original [x,y] = [%.2f,%.2f]\n", point.x, point.y);
-    
+    /*
     point.x = result.v[0] + (BOARD_WIDTH / 2);
     point.y = result.v[1] + (BOARD_HIEGHT / 2);
+    */
+    point.x = actual_x;
+    point.y = actual_y;
 
     DEBUG_PRINT_2("touchesBegan :: Converted [x,y] = [%.2f,%.2f]\n", point.x, point.y);
     
@@ -474,16 +496,16 @@ const GLubyte Indices2[] = {
     glEnable(GL_DEPTH_TEST);
     
     // Sort out projection Matrix
-    GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 0.1, 1000);
-    //float h = 4.0 * BOARD_WIDTH / BOARD_HIEGHT;
-    //GLKMatrix4 projection = GLKMatrix4MakeFrustum(-2, 2, -h/2, h/2, 0.1, 1000);
+    //GLKMatrix4 projection = GLKMatrix4MakeOrtho(0, BOARD_WIDTH, 0, BOARD_HIEGHT, 0.1, 1000);
+    float h = 4.0 * BOARD_HIEGHT / BOARD_WIDTH;
+    GLKMatrix4 projection = GLKMatrix4MakeFrustum(-2, 2, -h/2, h/2, 1, 1000);
 
     _projectionMatrix = projection;
     glUniformMatrix4fv(_projectionUniform, 1, 0, projection.m);
     
     // Sort out Model-View Matrix
-    GLKMatrix4 translation = GLKMatrix4MakeTranslation(0,0,-1);
-    //GLKMatrix4 translation = GLKMatrix4MakeTranslation(-BOARD_WIDTH/2,-BOARD_HIEGHT/2,-25);
+    //GLKMatrix4 translation = GLKMatrix4MakeTranslation(0,0,-1);
+    GLKMatrix4 translation = GLKMatrix4MakeTranslation(-BOARD_WIDTH/2,-BOARD_HIEGHT/2,-500);
     GLKMatrix4 rotation = GLKMatrix4MakeRotation(degToRad(0), 0, 0, 1);
     GLKMatrix4 modelView = GLKMatrix4Multiply(translation, rotation);
     
