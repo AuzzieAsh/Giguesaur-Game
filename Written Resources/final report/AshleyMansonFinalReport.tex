@@ -6,6 +6,9 @@
 
 \usepackage{graphicx} % Required for the inclusion of images
 \usepackage{tocloft}
+\usepackage[nottoc,numbib]{tocbibind} % Reference in TOC and numbered
+\usepackage{url} % Reference include URL
+
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 \renewcommand{\labelenumi}{\alph{enumi}.}
 
@@ -58,6 +61,7 @@ The Giguesaur application development was divided into three different component
 
 % Background including what a puzzle and other games
 \subsection{Background}
+There are many jigsaw puzzle games that are available for iOS and other hand-held devices, such as Magic Jigsaw Puzzles \cite{MagicJigsaw} and Jigsaw Puzzle \cite{JigsawPuzzle}, but the majority of them are limited in the way they look due to them using an orthographic projection to render the jigsaw puzzles. What this projection means is that the puzzle pieces of the jigsaw puzzle are flat on the screen, the player can only look at the jigsaw puzzle from top down, there is no depth and all the puzzle pieces are displayed as the same size. This is something that won't work for the project as the puzzle pieces will have to be rendered in a perspective projection, so that when I start rendering the jigsaw puzzle onto a board it will look more realistic, as puzzle pieces that are further away from the camera will be shown to be smaller than pieces that are closer to the camera. Another limitation of jigsaw puzzle games is the way they can be interacted with, by which I mean the way they can be solved. The puzzle pieces have to be placed into a predefined grid. Farms And Animals Puzzles \cite{FarmPuzzle} is an example of a game that has this grid layout for the puzzle pieces to be placed in. This means that all the puzzle pieces will be placed in the centre of the screen. This is something I don’t want to do as I want to have the jigsaw puzzle able to be solved anywhere on the board, be it in the centre or off in a corner of the board. I also believe that it will make for a more interesting game.
 
 % Brief introduction on my work
 \subsection{Game Logic}
@@ -82,6 +86,12 @@ As I stated previously, I was in charge of developing the game logic for the Gig
 \subsection{Integration}
 
 %---------------------------------------------------------------------------
+% Results
+%---------------------------------------------------------------------------
+
+\section{Results}
+
+%---------------------------------------------------------------------------
 % Conclusion
 %---------------------------------------------------------------------------
 
@@ -92,6 +102,8 @@ As I stated previously, I was in charge of developing the game logic for the Gig
 
 % What hasn't been done
 \subsection{Future Work}
+
+\subsection{Final Words}
 
 %\begin{figure}[h]
 %\begin{center}
@@ -105,10 +117,9 @@ As I stated previously, I was in charge of developing the game logic for the Gig
 % References
 %---------------------------------------------------------------------------
 
-\pagebreak
-\section{References}
+\clearpage
 \bibliographystyle{ieeetr}
-\bibliography{sample}
+\bibliography{references}
 
 %---------------------------------------------------------------------------
 % End
