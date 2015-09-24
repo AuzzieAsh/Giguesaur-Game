@@ -59,9 +59,20 @@ Our vision for our completed Giguesaur application was allowing a classroom of c
 \subsection{Overview}
 The Giguesaur application development was divided into three different components. Joshua La Pine was in charge of developing the computer vsion part of the project, which allows for the puzzle pieces to be rendered over top the 'game board' in the real world. Shahne Rodgers took charge of the networking component of the project, which was crucial in allowing more than one player to interact with the jigsaw puzzle. Finally my part of the project was to develop the game logic and render the game to the iPad's screen.
 
-% Background including what a puzzle and other games
+% Background including what a puzzle is and other games
 \subsection{Background}
-There are many jigsaw puzzle games that are available for iOS and other hand-held devices, such as Magic Jigsaw Puzzles \cite{MagicJigsaw} and Jigsaw Puzzle \cite{JigsawPuzzle}, but the majority of them are limited in the way they look due to them using an orthographic projection to render the jigsaw puzzles. What this projection means is that the puzzle pieces of the jigsaw puzzle are flat on the screen, the player can only look at the jigsaw puzzle from top down, there is no depth and all the puzzle pieces are displayed as the same size. This is something that won't work for the project as the puzzle pieces will have to be rendered in a perspective projection, so that when I start rendering the jigsaw puzzle onto a board it will look more realistic, as puzzle pieces that are further away from the camera will be shown to be smaller than pieces that are closer to the camera. Another limitation of jigsaw puzzle games is the way they can be interacted with, by which I mean the way they can be solved. The puzzle pieces have to be placed into a predefined grid. Farms And Animals Puzzles \cite{FarmPuzzle} is an example of a game that has this grid layout for the puzzle pieces to be placed in. This means that all the puzzle pieces will be placed in the centre of the screen. This is something I don’t want to do as I want to have the jigsaw puzzle able to be solved anywhere on the board, be it in the centre or off in a corner of the board. I also believe that it will make for a more interesting game.
+There are many jigsaw puzzle games that are available for iOS and other hand-held devices, such as Magic Jigsaw Puzzles \cite{ref:MagicJigsaw} and Jigsaw Puzzle \cite{ref:JigsawPuzzle}, but the majority of them are limited in the way they look due to them using an orthographic projection to render the jigsaw puzzles. What this projection means is that the puzzle pieces of the jigsaw puzzle are flat on the screen, the player can only look at the jigsaw puzzle from top down, there is no depth and all the puzzle pieces are displayed as the same size. This is something that does not work for the Giguesaur project as the puzzle pieces are rendered in a perspective projection, so when the jigsaw puzzle is rendered onto the game board it looks more realistic, as puzzle pieces that are further away from the camera are shown to be smaller than pieces that are closer to the camera. Another limitation of jigsaw puzzle games is the way they can be interacted with, by which I mean the way they can be solved. The puzzle pieces have to be placed into a predefined grid. Farms And Animals Puzzles \cite{ref:FarmPuzzle} is an example of a game that has this grid layout for the puzzle pieces to be placed in, which is shown in figure \ref{fig:FarmsAnimals}, it also shows the limited orthographic perspective of the game. This means that all the puzzle pieces will be placed in the centre of the screen. This is something that was illogical for the project and I did not want to limit the scope of the game. I have made it possible for the jigsaw puzzle to be solved anywhere on the board, be it in the centre of the game board or off in a corner of the game board. I also believe that it makes for a more interesting game.
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.85\textwidth]{images/FarmAnimalsJigsawImage}
+\caption{Screenshot of Farms And Animals Puzzles \cite{img:FarmPuzzle}.}
+\label{fig:FarmsAnimals}
+\end{center}
+\end{figure}
+
+\subsection{iOS}
+
 
 % Brief introduction on my work
 \subsection{Game Logic}
@@ -104,14 +115,6 @@ As I stated previously, I was in charge of developing the game logic for the Gig
 \subsection{Future Work}
 
 \subsection{Final Words}
-
-%\begin{figure}[h]
-%\begin{center}
-%\includegraphics[width=0.65\textwidth]{placeholder} % Include the image placeholder.png
-%\caption{Figure caption.}
-%\end{center}
-%\end{figure}
-
 
 %---------------------------------------------------------------------------
 % References

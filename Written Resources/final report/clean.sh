@@ -1,7 +1,9 @@
 #!/bin/bash
-rm *.aux
-rm *.bbl
-rm *.blg
-rm *.log
-rm *.toc
-rm *~
+rm -f *.aux
+rm -f *.bbl
+rm -f *.blg
+rm -f *.log
+rm -f *.out
+rm -f *.toc
+rm -f *~
+rm -f .DS_Store
