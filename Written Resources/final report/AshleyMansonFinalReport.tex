@@ -496,10 +496,17 @@ each pieces' edge has been closed or not.
 
 There are still a couple things that I have missed out on implementing for the
 game logic and rendering of the Giguesaur application. Firstly, puzzle pieces
-are still only simple square polygons. Secondly, the application is quite slow,
-with it only running at a maximum of five frames per second, performing even
-worst than that on average. Due to the fact that the OpenCV functions that
-calculate the perspective projection matrix are quite slow.
+are still only simple square polygons. In future, this would be changed so that
+pieces have curved edges, similar to figure \ref{fig:FarmsAnimals} earlier in
+the document, where you can see the curved edges of pieces. The curved edges to
+pieces would not only make the game look more like jigsaw puzzle game, but it
+would also allow for players to easily solve the puzzle rather than having to
+match the images on the current puzzle pieces. This would be implemented using a
+random number generator that would choose a certain number of points along the each pieces edge, and than map vertices along each point, Secondly, the
+application is quite slow, with it only running at a maximum of five frames per
+second, performing even worst than that on average. Due to the fact that the
+OpenCV functions that calculate the perspective projection matrix are quite
+slow.
 
 % Final Wrap Up
 \subsection{Discussion}
