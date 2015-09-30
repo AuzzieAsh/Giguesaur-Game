@@ -9,6 +9,7 @@
 \usepackage[nottoc,numbib]{tocbibind} % Reference in TOC and numbered 
 \usepackage{url} % References include URLs
 \usepackage{mathtools} %Math stuff
+\usepackage[export]{adjustbox}
 
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} 
 \renewcommand{\labelenumi}{\alph{enumi}.}
@@ -204,7 +205,7 @@ the jigsaw puzzle has been put together to be solved.
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=1\textwidth]{images/MacBuildImage}
+\includegraphics[width=1.2\textwidth,center]{images/MacBuildImage}
 \caption{Screenshot of a prototype build on the Mac.}
 \label{fig:MacBuild}
 \end{center}
@@ -314,7 +315,7 @@ progress.
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=0.85\textwidth]{images/iPadPortImage}
+\includegraphics[width=0.95\textwidth]{images/iPadPortImage}
 \caption{Screenshot of the first port to iOS.}
 \label{fig:iPadPort}
 \end{center}
@@ -460,7 +461,6 @@ image frame.
 %---------------------------------------------------------------------------
 
 \section{Results}
-[Note: Unsure what else to add in this section]\\
 
 We have managed to build a functional application, where multiple people can
 play with the same instance of a jigsaw puzzle game, picking up and placing back
@@ -477,7 +477,7 @@ each pieces' edge has been closed or not.
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=0.85\textwidth]{images/iPadFinalImage}
+\includegraphics[width=0.95\textwidth]{images/iPadFinalImage}
 \caption{Screenshot of the final build running on an iPad.}
 \label{fig:iPadFinal}
 \end{center}
@@ -491,9 +491,6 @@ each pieces' edge has been closed or not.
 
 % What hasn't been done
 \subsection{Future Work}
-[Note: I need to expand out each future work; 1. Why wasn't it done? 2. How
-  could it be finished? 3. Idea for future implementations?]\\
-
 There are still a couple things that I have missed out on implementing for the
 game logic and rendering of the Giguesaur application. Firstly, puzzle pieces
 are still only simple square polygons. In future, this would be changed so that
@@ -502,15 +499,32 @@ the document, where you can see the curved edges of pieces. The curved edges to
 pieces would not only make the game look more like jigsaw puzzle game, but it
 would also allow for players to easily solve the puzzle rather than having to
 match the images on the current puzzle pieces. This would be implemented using a
-random number generator that would choose a certain number of points along the each pieces edge, and than map vertices along each point, Secondly, the
-application is quite slow, with it only running at a maximum of five frames per
-second, performing even worst than that on average. Due to the fact that the
-OpenCV functions that calculate the perspective projection matrix are quite
-slow.
+random number generator that would choose a certain number of points along the
+each pieces edge, and than map vertices along each point, which would hopefully
+generate a curve. Secondly, the application is quite slow, with it only running
+at a maximum of five frames per second, performing even worse than that on
+average. This is caused by the OpenCV functions that compute the perspective
+projection matrix. The routines are looking for a checkerboard pattern every
+frame from the camera, which is what causing the huge bottleneck in the
+application. Another slow down to the application could be due to how we are
+rendering the game, as each frame from the camera is being processed and sent to
+the OpenGL code for rendering. If we had more time to experiment we could
+attempt to try have the puzzle pieces being rendered over top of the video feed
+coming from the camera. We may have to change how the rendering is being done or
+how we get access to the camera feed however, due to the problem of overlapping
+layers. Finally, there is no real way to know when you as a player are holding a
+puzzle piece. As of right now, when a player picks up a puzzle piece it moves to
+the centre of the screen and than gets projected onto the game board. This would
+be used to show where, if the player were to tap the screen, the piece would be
+placed back onto the board. What should be happening is when a player picks up a
+piece it should show a larger image of the puzzle piece in the centre of the
+screen with it being partially transparent, and be casting a shadow where the
+piece will appear on the game board. 
 
 % Final Wrap Up
 \subsection{Discussion}
-[Place Holder Text]
+I believe we have achieved what was set out for the project. We have created a
+complicated and large piece of software that has 
 
 %---------------------------------------------------------------------------
 % References
