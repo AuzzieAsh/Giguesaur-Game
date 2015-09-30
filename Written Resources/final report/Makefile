@@ -6,7 +6,7 @@ pdf:
 	pdflatex *.tex
 	pdflatex *.tex
 
-word:
+count:
 	detex *.tex | wc -w
 
 clean:
