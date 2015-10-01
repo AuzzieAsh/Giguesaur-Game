@@ -11,7 +11,7 @@
 \usepackage{mathtools} % Math stuff
 \usepackage[export]{adjustbox}
 
-%\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} 
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} 
 \renewcommand{\labelenumi}{\alph{enumi}.}
 
 \setlength\parindent{0pt} % Removes all indentation from paragraphs
@@ -28,8 +28,9 @@
 \date{\today}
 
 \begin{titlepage}
-
+\clearpage
 \maketitle
+\thispagestyle{empty} % Remove page number from title page
 
 \begin{center}
 \large 
@@ -49,8 +50,9 @@ University of Otago
 % Table of Contents
 %----------------------------------------------------------------------------
 
+\clearpage
 \tableofcontents
-\newpage
+\clearpage
 
 %----------------------------------------------------------------------------
 % Introduction
@@ -59,66 +61,55 @@ University of Otago
 \section{Introduction}
 
 Our vision for our completed Giguesaur application was allowing a classroom of
-children, each with their own iPad, to run around and solve a jigsaw puzzle
-together. Imagine a classroom full of kids where they are all trying to work on
-a single conventional jigsaw puzzle; such a scheme is in no way
-practical. Giguesaur on the other hand is a jigsaw puzzle game, that aimed to be
-more entertaining than a conventional jigsaw puzzle. The main goal of our
-project, besides all the design and technical subgoals, was simply to make an
-application that is fun for children to play and work together to solve a jigsaw
-puzzle.
+children, each with their own iPad, to run around and solve a virtual jigsaw
+puzzle together. Imagine a classroom full of kids where they are all trying to
+work on a single conventional jigsaw puzzle; such a scheme is in no way
+practical. Giguesaur allows you to view a virtual jigsaw puzzle in the real
+world through the iPad's screen and camera. The main goal of our project was to
+make an application that is fun for children to play.
 
 % Overview of the project
 \subsection{Overview}
-The Giguesaur project is an application that is ran on iPads which allows a
-group of people to collabortively solve a virtural jigsaw puzzle that is
-rendered using augmented reality. The virtural jigsaw puzzle is assembled on a
+The Giguesaur project is an application that is run on iPads which allows a
+group of people to collaboratively solve a virtual jigsaw puzzle, that is
+rendered using augmented reality. The virtual jigsaw puzzle is assembled on a
 `game board' in the real world, where the game board is a checkerboard marker
-for the iPads camera to track. The jigsaw puzzle pieces that are rendered on
+for the iPad's camera to track. The jigsaw puzzle pieces that are rendered on
 screen will be shown to be superimposed upon the game board. The user is able to
 interact with the jigsaw puzzle by tapping the iPads screen, rotating and moving
-the iPad around while looking at the marker. The touch gestures and movement with
-the iPad allows the user to pickup, place and move the jigsaw puzzle pieces in
-the game. The iPads are connected to a central server ran on a Mac, which allows
-for multiple people to interact with the jigsaw puzzle.
+the iPad around while looking at the marker. The touch gestures and movement
+with the iPad allows the user to pickup, place and move the jigsaw puzzle pieces
+in the game. The iPad's are connected to a central server ran on a Mac, which
+allows for multiple people to interact with the jigsaw puzzle.
 
 % Format of the project
 \subsection{Project Format}
-Due to the complexity and size of the Giguesaur project, it had to be
-divided into three different components, as no single person would have been
-able to achieve the aims and goals of the project in a single year. Joshua La
-Pine was in charge of developing the computer vsion component of the project,
-which allows for the puzzle pieces to be rendered over top of the game board in
-the real world. Shahne Rodgers took charge of the networking component of the
-project, which was crucial in allowing more than one player to interact with the
-jigsaw puzzle. Finally my part of the project was to develop the game logic and
-render the game to the iPad's screen.
+Due to the complexity and size of the Giguesaur project, it had to be divided
+into three different components, as no single person would have been able to
+achieve the aims and goals of the project in a single year. Joshua La Pine was
+in charge of developing the computer vison component of the project, which
+allows for the puzzle pieces to be rendered on top of the game board in the real
+world. Shahne Rodgers took charge of the networking component of the project,
+which allows more than one player to interact with the jigsaw puzzle. Finally my
+part of the project was to develop the game logic and render the game to the
+iPad's screen.
 
 % Background including what a puzzle is and other games
 \subsection{Background}
-There are many jigsaw puzzle games that are available for iOS and other
-hand-held devices, such as Magic Jigsaw Puzzles \cite{ref:MagicJigsaw} and
-Jigsaw Puzzle \cite{ref:JigsawPuzzle}, but the majority of them are limited in
-the way they look due to them using an orthographic projection to render the
-jigsaw puzzles. What this projection means is that the puzzle pieces of the
-jigsaw puzzle are flat on the screen, the player can only look at the jigsaw
-puzzle from top down, there is no depth and all the puzzle pieces are displayed
-as the same size. This is something that does not work for the Giguesaur project
-as the puzzle pieces are rendered in a perspective projection, so when the
-jigsaw puzzle is rendered onto the game board it looks more realistic, as puzzle
-pieces that are further away from the camera are shown to be smaller than pieces
-that are closer to the camera. Another limitation of jigsaw puzzle games is the
-way they can be interacted with, by which I mean the way they can be solved. The
-puzzle pieces have to be placed into a predefined grid. Farms And Animals
-Puzzles \cite{ref:FarmPuzzle} is an example of a game that has this grid layout
-for the puzzle pieces to be placed in. Figure \ref{fig:FarmsAnimals} is a
-screenshot of Farms and Animals puzzle game which shows the limited orthographic
-perspective of the game. The grid means that all the puzzle pieces will be
-placed in the centre of the screen. This is something that was illogical for the
-project and I did not want to limit the scope of the game. I have made it
-possible for the jigsaw puzzle to be solved anywhere on the board, be it in the
-centre of the game board or off in a corner of the game board. I also believe
-that it makes for a more interesting game.
+There are many existing jigsaw puzzle games such as Magic Jigsaw Puzzles
+\cite{ref:MagicJigsaw} and Jigsaw Puzzle \cite{ref:JigsawPuzzle}. The existing
+games are limited in the way they look because they use an orthographic
+projection to render the jigsaw puzzles on a two dimensional board on the
+computer screen. The puzzle pieces of the jigsaw puzzle are flat on the
+screen. The player can only look at the virtual puzzle from top down, there is
+no depth. This is something that does not work for the Giguesaur project, we
+want it to appear that the virtual pieces exist in the real world. Another
+limitation of the existing games is how the puzzles are solved, the pieces have
+to be assembled into a grid. Farms And Animals Puzzles \cite{ref:FarmPuzzle} has
+the grid layout shown in figure \ref{fig:FarmsAnimals}, all the pieces have an
+absolute location to be placed in. For Giguesaur I have made it possible for the
+jigsaw puzzle to be solved anywhere on the board, be it in the centre of the
+game board or off in a corner of the game board.
 
 \begin{figure}[ht]
 \begin{center}
@@ -130,28 +121,26 @@ that it makes for a more interesting game.
 
 % iOS compared to Android
 \subsection{Why iOS?}
-iOS is a phone operating system made for Apple's mobile devices, which are
-similar in many ways such as hardware and software implementaions. Android on
-the other hand is an open source operating system based on Linux, which is ran
-on a wide range of devices crossing multiple different versions of the operating
-system and adapted to a lot of different hardware. The devices that Android are
-ran on have a wide range of screen resoultions and processing power. We had
-decided that the Giguesaur game would be developed for iOS for a couple of
+iOS is an operating system made for Apple's mobile devices, which all present a
+similar interface for the user. Android is an open source operating system based
+on Linux. It runs in many version on many different devices. The devices that
+Android runs cover a wide range of screen resolutions and processing power. We
+had decided that the Giguesaur game would be developed for iOS for a couple of
 reasons. iOS hardware was more standardized than Android, as Apple are the only
 developers of iPhones and iPads. It made it easy for us to write the code,
-knowing that we would be relatively safe that what we developed would work on the
-majority of iOS devices, at least the ones with cameras. We couldn't be certain
-that any Android development of an application would work, nor would it have
-been possible for a forth year project to ensure that the application would have
-worked on all kinds of different Android devices. Apple also have a powerful and
-intuitive integrated development environemnt (IDE) called Xcode, that made
+knowing that we would be relatively sure that what we developed would work on
+the majority of iOS devices, at least the ones with cameras. We couldn't be
+certain that any Android development of an application would work, nor would it
+have been possible, in a fourth year project, to ensure that the application would
+work on all kinds of Android devices. Apple also have a powerful and
+intuitive integrated development environment (IDE) called Xcode, that made
 development of the Giguesaur application very easy. With its detailed profiling
 tools and other features such as interface builders, it made it easier for us to
 develop and quickly prototype our ideas for the application.
 
 % Brief explaination of AR and examples
 \subsection{Augmented Reality}
-Augmented reality is the idea of superimposing virtural objects on top of the
+Augmented reality is the idea of superimposing virtual objects on top of the
 real world that looks convincing enough for someone to believe what they are
 seeing is actually physically real. Figure \ref{fig:ARDefender} has a game
 world being played on a simple coffee table. The game is a simple tower defence
@@ -174,29 +163,28 @@ puzzle pieces in the real world.
 
 % Brief introduction on my work
 \subsection{Game Logic}
-As I stated previously, I was in charge of developing the game logic for the
-Giguesaur game. This meant I had to create the logic for how jigsaw puzzle
-pieces interacted with each other and how the user interacted with the game. The
-jigsaw puzzle is made up of a grid with a specific number of rows and columns,
-where each part of the grid is a piece. Each piece has four edges, and an edge
-either has a neighbouring piece or not. If a piece edge has a neighbour, it is
-given the ID of its neighbour for that edge, if it has no neighbour, than the
-value -1 is given to that edge. An edge of a piece can be open, meaning it has
-not joined to its neighbour currently or closed meaning it has joined to its
-neighbour currently, or if the edge has no neighbour it is unjoinable, meaning
-it can't join or be joined to another piece for that edge. An unjoinable edge is
-the outside edge of the puzzle. Each piece of the puzzle has a unique ID, a
-position in space, or an x, y coordinate on the board, and a rotation with a
-value between 0 and 360 degrees. The z coordinate is assumed to be 0, so it is
-ignored. This is what makes up the game logic for the jigsaw puzzle. I made up
-my own data structure to store these details. All the pieces that are in the
-game are stored in an array, where the piece ID is the index of the array the
-piece is stored. The x, y coordinate determines where on the board the piece is
-displayed and the rotation affects the orientation of the piece. The board that
-the pieces are placed on has a width and length, which are along the x, y axis,
-which confines where the puzzle pieces can be placed, as all the pieces have an
-x, y coordinate. Figure \ref{fig:GameLogic} is a diagram of the above game
-logic.
+I was in charge of developing the game logic for the Giguesaur game. This meant
+I had to create the logic for how jigsaw puzzle pieces interacted with each
+other and how the user interacted with the game. The jigsaw puzzle is made up of
+a grid with a specific number of rows and columns, where each part of the grid
+is a piece. Each piece has four edges, and an edge either has a neighbouring
+piece or not. If a piece edge has a neighbour, it is given the ID of its
+neighbour for that edge, if it has no neighbour, than the value -1 is given to
+that edge. An edge of a piece can be open, meaning it has not joined to its
+neighbour or closed meaning it has joined to its neighbour, or if the edge has
+no neighbour it is unjoinable, meaning it can't join or be joined to another
+piece for that edge. An unjoinable edge is the outside edge of the puzzle. Each
+piece of the puzzle has a unique ID, a position in space, or an x, y coordinate
+on the board, and a rotation with a value between 0 and 360 degrees. The z
+coordinate is assumed to be 0, so it is ignored. This is what makes up the game
+logic for the jigsaw puzzle. I made up my own data structure to store these
+details. All the pieces that are in the game are stored in an array, where the
+piece ID is the index of the array the piece is stored. The x, y coordinate
+determines where on the board the piece is displayed and the rotation affects
+the orientation of the piece. The board that the pieces are placed on has a
+width and length, which are along the x, y axis, which confines where the puzzle
+pieces can be placed, as all the pieces have an x, y coordinate. Figure
+\ref{fig:GameLogic} is a diagram of the above game logic.
 
 \begin{figure}[ht]
 \begin{center}
@@ -244,7 +232,9 @@ snapped together, as some of the jigsaw pieces are directly adjacent.
 \subsection{Game Mechanics}
 
 % The logic for piece snapping
-\subsubsection{Snapping Pieces} % Diagram of piece snapping <<<<<<<<<<<<<<<<<<<<<<
+\subsubsection{Snapping Pieces}
+[TODO: Diagram of piece snapping]\\
+
 I wanted to enable a feature that allowed pieces to snap together, meaning if a
 piece was in a specified dtance from its neighbour, the piece being placed back
 on the board would move so that the two pieces were right next to each other, or
@@ -398,6 +388,19 @@ incorrectly and be offset from each other showing a visible line between
 them. The fix was to refactor the integer locations into floats.
 
 \subsubsection{Vision and Game Logic}
+The integration of the vision and game logic did not go as smoothly as we would
+have liked. The challenge here was to have the puzzle pieces rendered on top of
+the game board in the real world. We had Josh's OpenCV code computing a
+model-view matrix which was passed to my OpenGL code. The model-view matrix
+would be used to correctly transform and change the perspective of the rendering
+routines to have the pieces rendered upon the game board. This failed however,
+as when we put this plan into pratice the puzzle pieces dissappeared from
+view. Development on the project came to a halt as we tried to fix the issue,
+but after a lot of time was spent attemping to solve the problem, we decided to
+have OpenCV render the puzzle pieces instead, so we could move on with the rest
+of the project.\\
+
+\iffalse
 The first issue we encountered when integrating the vision and game logic
 components was trying to get the puzzle pieces rendered over top of the video feed
 coming from the camera. The issue we found here was that OpenCV was showing the
@@ -440,21 +443,21 @@ together, it was decided that OpenCV would be used to render the puzzle pieces
 being superimposed on the game board. For this to work, the vision code gets a
 reference to the pieces array, gets and calculates the correct coordinates for
 the pieces in world space, than using some simple OpenCV drawing routines, draws
-the pieces over top of the game board. This allowed for not only rendering the
+the pieces on top of the game board. This allowed for not only rendering the
 pieces in a correct perspective, but also solving the issue of the puzzle
 textures not appearing, meaning pieces were rendering correctly. However due to
 OpenGL and OpenCV having different coordinate systems, the textures of the
 puzzle pieces were appearing flipped when they were rendered to the screen.
 Lucklily though this was an easy fix which just required reversing the texture
 coordinates of the pieces so that they appeared correctly.\\
+\fi
 
 The different coordinate systems of OpenGL and OpenCV resulted in reverse logic
-for snapping of puzzle pieces as well. As I had written my routines with the
-y-axis going bottom-up as OpenGL does it, OpenCV has the y-axis going
-top-down. The change to my code that I had to do to make this work was when
-calculating whether a piece can snap to its up/down neighbour, reverse the
-result, so when a piece would have snapped above a piece, it will now snap below
-it.\\
+for snapping of puzzle pieces. As I had written my routines with the y-axis
+going bottom-up as OpenGL does it, OpenCV has the y-axis going top-down. The
+change to my code that I had to do to make this work was when calculating
+whether a piece can snap to its up/down neighbour, reverse the result, so when a
+piece would have snapped above a piece, it will now snap below it.\\
 
 Now the rendering and setting up of the frames is being handled by the OpenCV
 routines, and my OpenGL code is being used to render the frames to the iPad's
@@ -466,7 +469,7 @@ I was using OpenGL to do the rendering of the Mac prototype build and the
 initial port to iOS, however in the final integrated application, OpenCV was
 being used to create an image that is passed to the OpenGL code for it to be
 rendered to the screen. The reason it is done this way is because the puzzle
-piece textures have to be copied over top of the frame coming in from the
+piece textures have to be copied on top of the frame coming in from the
 camera, which requires some extra processing to ensure the textures are shown
 correctly, rather than having the puzzle pieces being rendered over the video
 feed coming from the camera. Once the client recieves an image file from the
@@ -484,31 +487,19 @@ image frame.
 %---------------------------------------------------------------------------
 
 \section{Results}
-
 We have managed to build a working application. The following video shows a
 small demonstration of the Giguesaur application: [TODO: Link to video]. Figure
-\ref{fig:iPadFinal} is a screenshot of one perspective and figure [ref] from a
-second perspective. Both prespectives are looking at the same jigsaw puzzle. of
-the running application
-
- We have managed to build a functional application, where multiple people can
- play with the same instance of a jigsaw puzzle game, picking up and placing
- back down pieces, all the while trying to solve the puzzle on screen. Figure
- \ref{fig:iPadFinal} shows what the game looks like. The puzzle pieces are
- rendered over top of the game board which is represented by the checkerboard,
- each piece has its own rotation which is on display here. All the pieces are
- simple square polygons on screen, this is due to OpenCV's limited drawing
- capabilities with its drawing routines, as OpenCV can only do simple geometric
- shapes. The puzzle can be solved by having all the puzzle pieces placed
- together in their correct positions, the server will do a check to see if the
- puzzle has been solved or not, by going through each piece in an array,
- checking to see if each pieces' edge has been closed or not.
+\ref{fig:iPadFinal} is two screenshots from different perspectives of two
+iPads. Both iPads are able to see the same puzzle being rendered upon the game
+board. You are able to pickup and place down puzzle pieces. The puzzle can
+be solved by having all the pieces join up to their corresponding neighbours.
 
 \begin{figure}[ht]
 \begin{center}
-\includegraphics[width=0.95\textwidth]{images/iPadFinalImage}
-\caption{Screenshot of the final build running on an iPad.}
-\label{fig:iPadFinal1}
+\includegraphics[width=0.49\textwidth]{images/iPadFinalImage1}
+\includegraphics[width=0.49\textwidth]{images/iPadFinalImage2}
+\caption{Screenshot of the final build running on two different iPads.}
+\label{fig:iPadFinal}
 \end{center}
 \end{figure}
 
@@ -518,42 +509,61 @@ the running application
 
 \section{Conclusion}
 
+% Final Wrap Up
+\subsection{Discussion}
+The Giguesaur application is working, though there are still couple problems
+with the finished product. The performance of the application is slow, as it
+runs at a low five frames a second. This is not ideal as this causes issue when
+interacting with the puzzle on screen. If you were to move the iPad away from
+the marker it tracks, it would grind to a halt and stall. It often takes too
+long to recover for it to be reasonable, so it does not make for a fun game. Due
+to the low frame rate, it can be difficult to pickup and place puzzle pieces. A
+group of players are able to play with the same jigsaw puzzle, though we have
+only tested this with two iPads as that's all we have. One player is able to
+pickup a piece and the other player would be able to see that piece disappear
+from the game board. The two players are able to work together to solve the
+virtual jigsaw puzzle. Using the iPad's camera, they are able to see the puzzle
+pieces on top of the real world game board. Though we were met with challenges
+and problems, I believe we have achieved what was set out from the original aims
+and objectives; to build an augmented reality jigsaw puzzle game where a number
+of people can play together. 
+
 % What hasn't been done
 \subsection{Future Work}
 There are still a couple things that I have missed out on implementing for the
 game logic and rendering of the Giguesaur application. Firstly, puzzle pieces
 are still only simple square polygons. In future, this would be changed so that
 pieces have curved edges, similar to figure \ref{fig:FarmsAnimals} earlier in
-the document, where you can see the curved edges of pieces. The curved edges to
-pieces would not only make the game look more like jigsaw puzzle game, but it
-would also allow for players to easily solve the puzzle rather than having to
-match the images on the current puzzle pieces. This would be implemented using a
-random number generator that would choose a certain number of points along the
-each pieces edge, and than map vertices along each point, which would hopefully
-generate a curve. Secondly, the application is quite slow, with it only running
-at a maximum of five frames per second, performing even worse than that on
-average. This is caused by the OpenCV functions that compute the perspective
-projection matrix. The routines are looking for a checkerboard pattern every
-frame from the camera, which is what causing the huge bottleneck in the
-application. Another slow down to the application could be due to how we are
-rendering the game, as each frame from the camera is being processed and sent to
-the OpenGL code for rendering. If we had more time to experiment we could
-attempt to try have the puzzle pieces being rendered over top of the video feed
-coming from the camera. We may have to change how the rendering is being done or
-how we get access to the camera feed however, due to the problem of overlapping
-layers. Finally, there is no real way to know when you as a player are holding a
-puzzle piece. As of right now, when a player picks up a puzzle piece it moves to
-the centre of the screen and than gets projected onto the game board. This would
-be used to show where, if the player were to tap the screen, the piece would be
+the document. The curved edges to pieces would make the virtual jigsaw puzzle
+look more like a conventional jigsaw puzzle, and it would allow for players to
+easily solve the puzzle rather than having to match the images on the current
+puzzle pieces. This could be implemented using a random number generator that
+would choose a certain number of points along each piece's edge, and than map
+vertices along each point, which would hopefully generate a curve.\\
+
+Secondly, the application is quite slow, with it only running at a maximum of
+five frames per second. This is caused by the OpenCV functions that compute the
+perspective projection matrix. The routines are looking for a checkerboard
+pattern every frame from the camera. Another slow down to the application could
+be due to how we are rendering the game, as each frame from the camera is being
+processed and sent to the OpenGL code for rendering. If we had more time to
+experiment we could attempt to try have the puzzle pieces being rendered on top
+of the video feed coming from the camera.\\
+
+Finally, there is no real way to know when you as a player are holding a puzzle
+piece. As of right now, when a player picks up a puzzle piece it moves to the
+centre of the screen and than gets projected onto the game board. This would be
+used to show where, if the player were to tap the screen, the piece would be
 placed back onto the board. What should be happening is when a player picks up a
 piece it should show a larger image of the puzzle piece in the centre of the
 screen with it being partially transparent, and be casting a shadow where the
-piece will appear on the game board. 
+piece will appear on the game board.
 
-% Final Wrap Up
-\subsection{Discussion}
-I believe we have achieved what was set out for the project. We have created a
-complicated and large piece of software that has 
+\subsection{Final Thoughts}
+The Giguesaur project has been a challenging and fun experience for me. I have
+learnt a lot about developing a large piece of software while collaborating with
+a team. I would have loved to have had more time to do further work on the
+project to implement the future work, but alas, time was not on our side.
 
 %---------------------------------------------------------------------------
 % References
@@ -562,6 +572,14 @@ complicated and large piece of software that has
 \clearpage
 \bibliographystyle{ieeetr}
 \bibliography{references}
+
+%---------------------------------------------------------------------------
+% Glossary
+%---------------------------------------------------------------------------
+
+\clearpage
+\section{Glossary}
+[TODO]
 
 %---------------------------------------------------------------------------
 % End
