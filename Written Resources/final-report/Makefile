@@ -1,18 +1,25 @@
+FILE=AshleyMansonFinalReport
+
 default: pdf
 
 pdf:
-	pdflatex *.tex
-	bibtex *.aux
-	pdflatex *.tex
-	pdflatex *.tex
+	pdflatex $(FILE)
+	makeglossaries $(FILE)
+	bibtex $(FILE)
+	pdflatex $(FILE)
+	pdflatex $(FILE)
 
 count:
-	detex *.tex | wc -w
+	detex $(FILE).tex | wc -w
 
 clean:
 	rm -f *.aux
 	rm -f *.bbl
 	rm -f *.blg
+	rm -f *.glg
+	rm -f *.glo
+	rm -f *.gls
+	rm -f *.ist
 	rm -f *.log
 	rm -f *.out
 	rm -f *.toc
